@@ -1,0 +1,6 @@
+{
+  "name": "Conextsol Portal",
+  "description": "Internal Client & Project Management Portal for Conextsol agency with interactive onboarding wizard and automated alert systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
