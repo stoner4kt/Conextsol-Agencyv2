@@ -1,4 +1,4 @@
-import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert } from './types';
+import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount } from './types';
 
 // System date anchored at July 15, 2026
 export const CURRENT_DATE_STR = '2026-07-15';
@@ -185,6 +185,86 @@ export const INITIAL_ALERTS: WebhookAlert[] = [
   }
 ];
 
+export const INITIAL_AI_TOOL_ACCOUNTS: AIToolAccount[] = [
+  {
+    id: 'ai-acc-001',
+    account_email: 'ai.dev01@conextsol.com',
+    service_name: 'Replit',
+    reset_date: '2026-07-28',
+    status: 'Limited',
+    notes: 'Hit monthly workspace compute token limit during batch refactoring. Resets 28th.',
+    last_checked: '2026-07-15',
+    created_at: '2026-07-01T08:00:00Z',
+    updated_at: '2026-07-15T09:00:00Z'
+  },
+  {
+    id: 'ai-acc-002',
+    account_email: 'ai.dev01@conextsol.com',
+    service_name: 'Claude',
+    reset_date: '2026-07-18',
+    status: 'Reset Soon',
+    notes: '5-hour rate window heavy usage on Sonnet 3.5. Resets in 3 days.',
+    last_checked: '2026-07-15',
+    created_at: '2026-07-01T08:00:00Z',
+    updated_at: '2026-07-15T10:30:00Z'
+  },
+  {
+    id: 'ai-acc-003',
+    account_email: 'ai.dev01@conextsol.com',
+    service_name: 'Codex',
+    reset_date: '2026-08-01',
+    status: 'Usable',
+    notes: 'Full API token allowance intact. Primary backend generation seat.',
+    last_checked: '2026-07-14',
+    created_at: '2026-07-01T08:00:00Z',
+    updated_at: '2026-07-14T11:00:00Z'
+  },
+  {
+    id: 'ai-acc-004',
+    account_email: 'ai.agent02@conextsol.com',
+    service_name: 'Replit',
+    reset_date: '2026-08-05',
+    status: 'Usable',
+    notes: 'Pro Tier active. Used for frontend staging deployments.',
+    last_checked: '2026-07-15',
+    created_at: '2026-07-05T09:00:00Z',
+    updated_at: '2026-07-15T12:00:00Z'
+  },
+  {
+    id: 'ai-acc-005',
+    account_email: 'ai.agent02@conextsol.com',
+    service_name: 'Claude',
+    reset_date: '2026-07-17',
+    status: 'Limited',
+    notes: 'Hit high-tier token quota during code generation. Resets in 2 days.',
+    last_checked: '2026-07-15',
+    created_at: '2026-07-05T09:00:00Z',
+    updated_at: '2026-07-15T14:20:00Z'
+  },
+  {
+    id: 'ai-acc-006',
+    account_email: 'ai.research@conextsol.com',
+    service_name: 'Codex',
+    reset_date: '2026-08-12',
+    status: 'Usable',
+    notes: 'OpenAI Team seats. Unthrottled rate tier.',
+    last_checked: '2026-07-12',
+    created_at: '2026-07-08T10:00:00Z',
+    updated_at: '2026-07-12T16:00:00Z'
+  },
+  {
+    id: 'ai-acc-007',
+    account_email: 'ai.research@conextsol.com',
+    service_name: 'Other',
+    reset_date: '2026-07-21',
+    status: 'Unknown',
+    notes: 'Cursor Pro seat credit pending billing verification.',
+    last_checked: '2026-07-10',
+    created_at: '2026-07-08T10:00:00Z',
+    updated_at: '2026-07-10T11:00:00Z'
+  }
+];
+
 export function getInitialState(): AppState {
   return {
     clients: INITIAL_CLIENTS,
@@ -192,6 +272,7 @@ export function getInitialState(): AppState {
     retainers: INITIAL_RETAINERS,
     documents: INITIAL_DOCUMENTS,
     alertsLog: INITIAL_ALERTS,
+    aiToolAccounts: INITIAL_AI_TOOL_ACCOUNTS,
     isAdmin: true,
     userEmail: 'admin@conextsol.com',
   };
@@ -204,6 +285,7 @@ export function saveState(state: AppState) {
     localStorage.setItem('conextsol_retainers', JSON.stringify(state.retainers));
     localStorage.setItem('conextsol_documents', JSON.stringify(state.documents));
     localStorage.setItem('conextsol_alerts_log', JSON.stringify(state.alertsLog));
+    localStorage.setItem('conextsol_ai_tool_accounts', JSON.stringify(state.aiToolAccounts));
   } catch (err) {
     console.warn('Unable to persist state to LocalStorage:', err);
   }

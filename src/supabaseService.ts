@@ -1,11 +1,12 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-import { Client, Project, Retainer, DocumentAndNote, WebhookAlert } from './types';
+import { Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount } from './types';
 import { 
   INITIAL_CLIENTS, 
   INITIAL_PROJECTS, 
   INITIAL_RETAINERS, 
   INITIAL_DOCUMENTS, 
-  INITIAL_ALERTS 
+  INITIAL_ALERTS,
+  INITIAL_AI_TOOL_ACCOUNTS
 } from './mockData';
 
 const CLIENTS_KEY = 'conextsol_clients';
@@ -13,6 +14,7 @@ const PROJECTS_KEY = 'conextsol_projects';
 const RETAINERS_KEY = 'conextsol_retainers';
 const DOCS_KEY = 'conextsol_documents';
 const ALERTS_STORAGE_KEY = 'conextsol_alerts_log';
+const AI_ACCOUNTS_KEY = 'conextsol_ai_tool_accounts';
 
 // Helper for local storage reading with default initial dataset
 function getLocalCollection<T>(key: string, initialDefault: T[]): T[] {
@@ -354,6 +356,78 @@ export const supabaseService = {
     localStorage.removeItem(ALERTS_STORAGE_KEY);
   },
 
+  // AI TOOL ACCOUNTS CRUD
+  async getAIToolAccounts(): Promise<AIToolAccount[]> {
+    if (!isSupabaseConfigured || !supabase) {
+      return getLocalCollection<AIToolAccount>(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
+    }
+    try {
+      const { data, error } = await supabase
+        .from('ai_tool_accounts')
+        .select('*')
+        .order('account_email', { ascending: true });
+      
+      if (error) throw error;
+      return data || [];
+    } catch (err) {
+      console.warn('Supabase fetch failed for AI accounts, falling back to LocalStorage:', err);
+      return getLocalCollection<AIToolAccount>(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
+    }
+  },
+
+  async saveAIToolAccount(account: AIToolAccount): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      const current = getLocalCollection<AIToolAccount>(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
+      const exists = current.some(a => a.id === account.id);
+      const updated = exists ? current.map(a => a.id === account.id ? account : a) : [...current, account];
+      saveLocalCollection(AI_ACCOUNTS_KEY, updated);
+      return;
+    }
+    try {
+      const { error } = await supabase
+        .from('ai_tool_accounts')
+        .upsert({
+          id: account.id,
+          account_email: account.account_email,
+          service_name: account.service_name,
+          reset_date: account.reset_date,
+          status: account.status,
+          notes: account.notes,
+          last_checked: account.last_checked,
+          created_at: account.created_at || new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+      
+      if (error) throw error;
+    } catch (err) {
+      console.warn('Supabase save failed for AI account, saving to LocalStorage:', err);
+      const current = getLocalCollection<AIToolAccount>(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
+      const exists = current.some(a => a.id === account.id);
+      const updated = exists ? current.map(a => a.id === account.id ? account : a) : [...current, account];
+      saveLocalCollection(AI_ACCOUNTS_KEY, updated);
+    }
+  },
+
+  async deleteAIToolAccount(id: string): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      const current = getLocalCollection<AIToolAccount>(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
+      saveLocalCollection(AI_ACCOUNTS_KEY, current.filter(a => a.id !== id));
+      return;
+    }
+    try {
+      const { error } = await supabase
+        .from('ai_tool_accounts')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+    } catch (err) {
+      console.warn('Supabase delete failed for AI account, removing from LocalStorage:', err);
+      const current = getLocalCollection<AIToolAccount>(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
+      saveLocalCollection(AI_ACCOUNTS_KEY, current.filter(a => a.id !== id));
+    }
+  },
+
   // SEED & WIPE
   async seedDemoData(): Promise<void> {
     saveLocalCollection(CLIENTS_KEY, INITIAL_CLIENTS);
@@ -361,6 +435,7 @@ export const supabaseService = {
     saveLocalCollection(RETAINERS_KEY, INITIAL_RETAINERS);
     saveLocalCollection(DOCS_KEY, INITIAL_DOCUMENTS);
     saveLocalCollection(ALERTS_STORAGE_KEY, INITIAL_ALERTS);
+    saveLocalCollection(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
   },
 
   async clearAllData(): Promise<void> {
@@ -369,6 +444,7 @@ export const supabaseService = {
     localStorage.removeItem(RETAINERS_KEY);
     localStorage.removeItem(DOCS_KEY);
     localStorage.removeItem(ALERTS_STORAGE_KEY);
+    localStorage.removeItem(AI_ACCOUNTS_KEY);
   }
 };
 

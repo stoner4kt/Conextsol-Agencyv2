@@ -195,3 +195,52 @@ INSERT INTO retainers (id, client_id, service_type, billing_amount, billing_cycl
 -- Insert sample documents
 INSERT INTO documents_and_notes (id, project_id, title, content, file_references) VALUES
 ('d1111111-1111-1111-1111-111111111111', 'p1111111-1111-1111-1111-111111111111', 'Acme Stripe Webhook Key Rotation Guide', '### Stripe Integration Production Setup\n\nThis document outlines the webhook signing keys rotation for **Acme Corp Solutions**.\n\n#### 1. Endpoint Configuration\n- **Production URL:** https://b2b.acmesolutions.com/api/webhooks/stripe\n\n#### 2. Environment Variables Required\n```env\nSTRIPE_SECRET_KEY=sk_live_...\nSTRIPE_WEBHOOK_SECRET=whsec_...\n```', '{"/storage/acme_stripe_spec.pdf", "https://stripe.com/docs/api"}');
+
+
+-- ====================================================================
+-- 5. NEW FEATURE MIGRATION: AI TOOL ACCOUNT LIMITS TRACKER
+-- ====================================================================
+
+CREATE TABLE IF NOT EXISTS ai_tool_accounts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    account_email TEXT NOT NULL,
+    service_name TEXT NOT NULL CHECK (service_name IN ('Replit', 'Claude', 'Codex', 'Other')),
+    reset_date DATE NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Usable' CHECK (status IN ('Limited', 'Usable', 'Reset Soon', 'Unknown')),
+    notes TEXT,
+    last_checked DATE NOT NULL DEFAULT CURRENT_DATE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Performance & Lookup Indexes
+CREATE INDEX IF NOT EXISTS idx_ai_tool_accounts_email ON ai_tool_accounts(account_email);
+CREATE INDEX IF NOT EXISTS idx_ai_tool_accounts_service ON ai_tool_accounts(service_name);
+CREATE INDEX IF NOT EXISTS idx_ai_tool_accounts_status ON ai_tool_accounts(status);
+CREATE INDEX IF NOT EXISTS idx_ai_tool_accounts_reset_date ON ai_tool_accounts(reset_date);
+
+-- Enable RLS
+ALTER TABLE ai_tool_accounts ENABLE ROW LEVEL SECURITY;
+
+-- Admin Policy (Admins have full read/write access)
+CREATE POLICY "Admins have full access to ai_tool_accounts" 
+ON ai_tool_accounts 
+FOR ALL 
+TO authenticated 
+USING (auth.jwt() ->> 'email' LIKE '%@conextsol.com' OR auth.jwt() ->> 'email' = 'reeqieric41@gmail.com')
+WITH CHECK (auth.jwt() ->> 'email' LIKE '%@conextsol.com' OR auth.jwt() ->> 'email' = 'reeqieric41@gmail.com');
+
+-- Auto-update updated_at trigger
+CREATE TRIGGER update_ai_tool_accounts_modtime 
+BEFORE UPDATE ON ai_tool_accounts 
+FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+
+-- Seed Data for AI Tool Accounts
+INSERT INTO ai_tool_accounts (id, account_email, service_name, reset_date, status, notes, last_checked) VALUES
+('a1111111-1111-1111-1111-111111111111', 'ai.dev01@conextsol.com', 'Replit', '2026-07-28', 'Limited', 'Hit monthly workspace compute token limit during batch refactoring. Resets 28th.', '2026-07-15'),
+('a2222222-2222-2222-2222-222222222222', 'ai.dev01@conextsol.com', 'Claude', '2026-07-18', 'Reset Soon', '5-hour rate window heavy usage on Sonnet 3.5. Resets in 3 days.', '2026-07-15'),
+('a3333333-3333-3333-3333-333333333333', 'ai.dev01@conextsol.com', 'Codex', '2026-08-01', 'Usable', 'Full API token allowance intact. Primary backend generation seat.', '2026-07-14'),
+('a4444444-4444-4444-4444-444444444444', 'ai.agent02@conextsol.com', 'Replit', '2026-08-05', 'Usable', 'Pro Tier active. Used for frontend staging deployments.', '2026-07-15'),
+('a5555555-5555-5555-5555-555555555555', 'ai.agent02@conextsol.com', 'Claude', '2026-07-17', 'Limited', 'Hit high-tier token quota during code generation. Resets in 2 days.', '2026-07-15'),
+('a6666666-6666-6666-6666-666666666666', 'ai.research@conextsol.com', 'Codex', '2026-08-12', 'Usable', 'OpenAI Team seats. Unthrottled rate tier.', '2026-07-12')
+ON CONFLICT (id) DO NOTHING;

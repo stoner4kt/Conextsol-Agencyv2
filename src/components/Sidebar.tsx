@@ -14,7 +14,8 @@ import {
   Layers,
   CreditCard,
   BellRing,
-  PieChart
+  PieChart,
+  Zap
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -45,6 +46,7 @@ export default function Sidebar({
     { id: 'projects_dash', label: 'Projects Dashboard', icon: Layers },
     { id: 'retainers_dash', label: 'Retainers Dashboard', icon: CreditCard },
     { id: 'documents_dash', label: 'Specifications Docs', icon: FileText },
+    { id: 'ai_tools_tracker', label: 'AI Tool Limits', icon: Zap },
     { id: 'alerts_dash', label: 'Dispatched Webhooks', icon: BellRing },
     { id: 'wizard', label: 'Onboarding Pipeline', icon: UserCheck },
     { id: 'dev_center', label: 'Dev & Deployment Center', icon: Terminal },

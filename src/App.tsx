@@ -13,7 +13,7 @@ import {
   ShieldAlert,
   Menu
 } from 'lucide-react';
-import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert } from './types';
+import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount } from './types';
 import { 
   getInitialState, 
   CURRENT_DATE_STR
@@ -28,6 +28,7 @@ import ProjectsDashboard from './components/ProjectsDashboard';
 import RetainersDashboard from './components/RetainersDashboard';
 import DocumentsDashboard from './components/DocumentsDashboard';
 import AlertsDashboard from './components/AlertsDashboard';
+import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
 import DevCenter from './components/DevCenter';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
@@ -89,12 +90,13 @@ export default function App() {
 
         // Only fetch data if we have an active session or are logged in
         if (hasActiveSession || isLoggedIn) {
-          const [clients, projects, retainers, documents, alertsLog] = await Promise.all([
+          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts] = await Promise.all([
             supabaseService.getClients(),
             supabaseService.getProjects(),
             supabaseService.getRetainers(),
             supabaseService.getDocuments(),
-            supabaseService.getAlertsLog()
+            supabaseService.getAlertsLog(),
+            supabaseService.getAIToolAccounts()
           ]);
           
           setState(prev => ({
@@ -103,7 +105,8 @@ export default function App() {
             projects,
             retainers,
             documents,
-            alertsLog
+            alertsLog,
+            aiToolAccounts
           }));
         } else {
           // Clear cached state if signed out
@@ -113,7 +116,8 @@ export default function App() {
             projects: [],
             retainers: [],
             documents: [],
-            alertsLog: []
+            alertsLog: [],
+            aiToolAccounts: []
           }));
         }
       } catch (err) {
@@ -303,6 +307,29 @@ export default function App() {
       documents: prev.documents.filter(d => d.id !== id)
     }));
     await supabaseService.deleteDocument(id);
+  };
+
+  // AI Tool Accounts Handlers
+  const handleSaveAIToolAccount = async (account: AIToolAccount) => {
+    setState(prev => {
+      const exists = prev.aiToolAccounts.some(a => a.id === account.id);
+      let updated;
+      if (exists) {
+        updated = prev.aiToolAccounts.map(a => a.id === account.id ? account : a);
+      } else {
+        updated = [account, ...prev.aiToolAccounts];
+      }
+      return { ...prev, aiToolAccounts: updated };
+    });
+    await supabaseService.saveAIToolAccount(account);
+  };
+
+  const handleDeleteAIToolAccount = async (id: string) => {
+    setState(prev => ({
+      ...prev,
+      aiToolAccounts: prev.aiToolAccounts.filter(a => a.id !== id)
+    }));
+    await supabaseService.deleteAIToolAccount(id);
   };
 
   // Clear Alerts Logs
@@ -538,12 +565,13 @@ export default function App() {
   const handleSeedDemoData = async () => {
     setIsLoading(true);
     await supabaseService.seedDemoData();
-    const [clients, projects, retainers, documents, alertsLog] = await Promise.all([
+    const [clients, projects, retainers, documents, alertsLog, aiToolAccounts] = await Promise.all([
       supabaseService.getClients(),
       supabaseService.getProjects(),
       supabaseService.getRetainers(),
       supabaseService.getDocuments(),
-      supabaseService.getAlertsLog()
+      supabaseService.getAlertsLog(),
+      supabaseService.getAIToolAccounts()
     ]);
     setState(prev => ({
       ...prev,
@@ -551,7 +579,8 @@ export default function App() {
       projects,
       retainers,
       documents,
-      alertsLog
+      alertsLog,
+      aiToolAccounts
     }));
     setIsLoading(false);
   };
@@ -565,7 +594,8 @@ export default function App() {
       projects: [],
       retainers: [],
       documents: [],
-      alertsLog: []
+      alertsLog: [],
+      aiToolAccounts: []
     }));
     setIsLoading(false);
   };
@@ -686,6 +716,7 @@ export default function App() {
       case 'projects_dash': return 'Assigned Development Projects';
       case 'retainers_dash': return 'Active Retainer Engagements';
       case 'documents_dash': return 'System Specifications Sheets';
+      case 'ai_tools_tracker': return 'AI Tool Account Limits Tracker';
       case 'alerts_dash': return 'Dispatched Webhooks & Alerts';
       case 'wizard': return 'Linked Client Pipeline';
       case 'dev_center': return 'Dev & Deployment Center';
@@ -865,6 +896,15 @@ export default function App() {
                   state={state}
                   onSaveDocument={handleSaveDocumentSingle}
                   onDeleteDocument={handleDeleteDocument}
+                  isAdmin={state.isAdmin}
+                />
+              )}
+
+              {currentTab === 'ai_tools_tracker' && (
+                <AIToolTrackerDashboard 
+                  state={state}
+                  onSaveAccount={handleSaveAIToolAccount}
+                  onDeleteAccount={handleDeleteAIToolAccount}
                   isAdmin={state.isAdmin}
                 />
               )}

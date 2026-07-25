@@ -62,12 +62,25 @@ export interface WebhookAlert {
   status: 'sent' | 'failed';
 }
 
+export interface AIToolAccount {
+  id: string; // UUID
+  account_email: string; // Google account email used for AI tools
+  service_name: 'Replit' | 'Claude' | 'Codex' | 'Other' | string;
+  reset_date: string; // Date string (YYYY-MM-DD)
+  status: 'Limited' | 'Usable' | 'Reset Soon' | 'Unknown';
+  notes: string;
+  last_checked: string; // Date string (YYYY-MM-DD)
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface AppState {
   clients: Client[];
   projects: Project[];
   retainers: Retainer[];
   documents: DocumentAndNote[];
   alertsLog: WebhookAlert[];
+  aiToolAccounts: AIToolAccount[];
   isAdmin: boolean;
   userEmail: string | null;
 }
