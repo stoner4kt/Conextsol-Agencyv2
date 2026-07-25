@@ -6,22 +6,28 @@
   --font-display: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   
-  --color-brand-purple-950: #0d061a;
-  --color-brand-purple-900: #1a0b36;
-  --color-brand-purple-800: #291252;
-  --color-brand-purple-700: #3c1a75;
-  --color-brand-purple-600: #5826ab;
-  --color-brand-purple-500: #7c3aed;
-  --color-brand-purple-400: #a78bfa;
-  --color-brand-green-500: #10b981;
-  --color-brand-green-400: #34d399;
-  --color-brand-green-300: #6ee7b7;
-  --color-brand-green-200: #a7f3d0;
-  --color-brand-green-100: #d1fae5;
-  --color-brand-green-50: #ecfdf5;
+  --color-brand-purple-950: #0a0a0a;
+  --color-brand-purple-900: #121212;
+  --color-brand-purple-800: #1e1e1e;
+  --color-brand-purple-700: #2a2a2a;
+  --color-brand-purple-600: #404040;
+  --color-brand-purple-500: #737373;
+  --color-brand-purple-400: #a3a3a3;
+  --color-brand-green-500: #ffffff;
+  --color-brand-green-400: #e5e5e5;
+  --color-brand-green-300: #d4d4d4;
+  --color-brand-green-200: #a3a3a3;
+  --color-brand-green-100: #404040;
+  --color-brand-green-50: #171717;
 }
 
-/* Custom scrollbar styling for a cleaner look */
+body {
+  background-color: #09090b;
+  color: #f5f5f5;
+  font-family: var(--font-sans);
+}
+
+/* Custom scrollbar styling for a monochromatic look */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -30,10 +36,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 58, 237, 0.4);
+  background: rgba(255, 255, 255, 0.3);
 }
+
 

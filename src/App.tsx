@@ -573,30 +573,30 @@ export default function App() {
   // Render Login Frame if not authenticated
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-[#0A0514] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
-        {/* Abstract decorative purplish ambient blobs */}
-        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-[#4c1d95]/25 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-[#064e3b]/25 rounded-full blur-[120px]" />
+      <div className="min-h-screen bg-black flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans text-neutral-200">
+        {/* Subtle monochrome ambient light */}
+        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-neutral-800/30 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-neutral-900/40 rounded-full blur-[120px]" />
 
         <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center space-y-3">
-          <div className="inline-flex h-12 w-12 rounded-2xl bg-gradient-to-tr from-[#581c87] to-emerald-400 p-0.5 shadow-lg shadow-purple-950/40">
-            <div className="h-full w-full bg-[#140C24] rounded-[14px] flex items-center justify-center font-display font-black text-emerald-400 text-xl tracking-tight">
+          <div className="inline-flex h-12 w-12 rounded-2xl bg-white p-0.5 shadow-xl shadow-white/5">
+            <div className="h-full w-full bg-black rounded-[14px] flex items-center justify-center font-display font-black text-white text-xl tracking-tight">
               CX
             </div>
           </div>
           <h2 className="text-2xl md:text-3xl font-display font-extrabold tracking-tight text-white">
             Conextsol Agency Portal
           </h2>
-          <p className="text-xs text-slate-400 max-w-xs mx-auto">
+          <p className="text-xs text-neutral-400 max-w-xs mx-auto">
             Secure client, project, retainer management, and automated notifications ledger.
           </p>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-          <div className="bg-[#1B122B] border border-purple-900/30 py-8 px-4 shadow-2xl rounded-2xl sm:px-10 space-y-6">
-            <div className="border-b border-purple-900/20 pb-3 flex items-center justify-between">
+          <div className="bg-neutral-900 border border-neutral-800 py-8 px-4 shadow-2xl rounded-2xl sm:px-10 space-y-6">
+            <div className="border-b border-neutral-800 pb-3 flex items-center justify-between">
               <div>
-                <span className={`text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded uppercase ${isSupabaseConfigured ? 'bg-purple-900/40 text-emerald-400' : 'bg-emerald-950 text-emerald-400 border border-emerald-800/40'}`}>
+                <span className={`text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded uppercase ${isSupabaseConfigured ? 'bg-neutral-800 text-white border border-neutral-700' : 'bg-neutral-800 text-neutral-300 border border-neutral-700'}`}>
                   {isSupabaseConfigured ? 'Supabase Auth' : 'Local Sandbox Mode'}
                 </span>
                 <h3 className="text-sm font-semibold text-white mt-1.5">Sign in to Portal</h3>
@@ -604,39 +604,39 @@ export default function App() {
             </div>
 
             {authError && (
-              <div className="p-3 bg-red-950/40 border border-red-900/50 text-red-300 text-xs rounded-xl">
+              <div className="p-3 bg-neutral-950 border border-neutral-700 text-neutral-200 text-xs rounded-xl">
                 {authError}
               </div>
             )}
 
             <form className="space-y-4" onSubmit={handleLogin}>
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Email Address</label>
+                <label className="block text-xs font-semibold text-neutral-300 mb-1.5">Email Address</label>
                 <div className="relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-400">
                     <Mail size={14} />
                   </div>
                   <input
                     type="email"
                     value={loginEmail}
                     onChange={e => setLoginEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 bg-[#0F081C] border border-purple-900/40 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors"
+                    className="w-full pl-9 pr-3 py-2.5 bg-black border border-neutral-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
                     placeholder="e.g. admin@conextsol.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Secret Password</label>
+                <label className="block text-xs font-semibold text-neutral-300 mb-1.5">Secret Password</label>
                 <div className="relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-400">
                     <Lock size={14} />
                   </div>
                   <input
                     type="password"
                     value={loginPassword}
                     onChange={e => setLoginPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 bg-[#0F081C] border border-purple-900/40 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors"
+                    className="w-full pl-9 pr-3 py-2.5 bg-black border border-neutral-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
                     placeholder="••••••••"
                   />
                 </div>
@@ -645,27 +645,27 @@ export default function App() {
               <button
                 type="submit"
                 id="login-submit-btn"
-                className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#0F081C] font-sans text-xs font-extrabold rounded-xl shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all cursor-pointer text-center"
+                className="w-full py-2.5 bg-white hover:bg-neutral-200 text-black font-sans text-xs font-extrabold rounded-xl shadow-lg transition-all cursor-pointer text-center"
               >
                 Sign In & Synchronize Portal
               </button>
 
-              <div className="pt-2 border-t border-purple-900/20 flex flex-col space-y-2">
-                <p className="text-[10px] text-gray-400 text-center font-mono">
+              <div className="pt-2 border-t border-neutral-800 flex flex-col space-y-2">
+                <p className="text-[10px] text-neutral-400 text-center font-mono">
                   Quick Access Demo Sign In:
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => handleDemoLogin(true)}
-                    className="py-2 bg-purple-900/40 hover:bg-purple-900/60 border border-purple-700/40 text-emerald-400 font-mono text-[11px] font-bold rounded-xl transition-all cursor-pointer text-center"
+                    className="py-2 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-mono text-[11px] font-bold rounded-xl transition-all cursor-pointer text-center"
                   >
                     Admin Demo
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDemoLogin(false)}
-                    className="py-2 bg-purple-900/20 hover:bg-purple-900/40 border border-purple-700/30 text-gray-300 font-mono text-[11px] font-medium rounded-xl transition-all cursor-pointer text-center"
+                    className="py-2 bg-neutral-950 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 font-mono text-[11px] font-medium rounded-xl transition-all cursor-pointer text-center"
                   >
                     Client Guest
                   </button>
@@ -696,9 +696,9 @@ export default function App() {
   // Render Loader if DB is synchronizing
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0A0514] flex flex-col items-center justify-center font-sans space-y-4">
-        <div className="h-10 w-10 border-4 border-emerald-500/25 border-t-emerald-500 rounded-full animate-spin" />
-        <p className="text-xs text-gray-400 font-mono font-bold uppercase tracking-widest animate-pulse">
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center font-sans space-y-4">
+        <div className="h-10 w-10 border-4 border-neutral-800 border-t-white rounded-full animate-spin" />
+        <p className="text-xs text-neutral-400 font-mono font-bold uppercase tracking-widest animate-pulse">
           Synchronizing Conextsol Database...
         </p>
       </div>
@@ -706,7 +706,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0514] flex overflow-hidden font-sans text-gray-300">
+    <div className="min-h-screen bg-black flex overflow-hidden font-sans text-neutral-300">
       
       {/* Brand Sidebar Left Frame */}
       <Sidebar 
@@ -725,16 +725,16 @@ export default function App() {
       />
 
       {/* Main content viewport */}
-      <main className="flex-1 overflow-y-auto lg:pl-64 min-h-screen flex flex-col justify-between">
+      <main className="flex-1 overflow-y-auto lg:pl-64 min-h-screen flex flex-col justify-between bg-black">
         
         {/* Dynamic Nav Header Bar */}
-        <header className="bg-[#0F081C] border-b border-purple-900/30 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+        <header className="bg-neutral-900 border-b border-neutral-800 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
           <div className="flex items-center space-x-3">
             {/* Hamburger button on mobile */}
             <button
               id="mobile-menu-toggle"
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-1.5 hover:bg-white/5 rounded-lg text-emerald-400 transition-colors mr-1 cursor-pointer"
+              className="lg:hidden p-1.5 hover:bg-neutral-800 rounded-lg text-white transition-colors mr-1 cursor-pointer"
               aria-label="Open Navigation Menu"
             >
               <Menu size={22} />
@@ -743,7 +743,7 @@ export default function App() {
             <div>
               <h1 className="font-display font-extrabold tracking-tight text-white text-base md:text-lg flex items-center gap-2">
                 {/* Micro branding on mobile header */}
-                <span className="lg:hidden text-xs bg-purple-900/40 border border-purple-800/30 text-emerald-400 font-mono px-1.5 py-0.5 rounded uppercase font-bold tracking-widest shrink-0">
+                <span className="lg:hidden text-xs bg-neutral-800 border border-neutral-700 text-white font-mono px-1.5 py-0.5 rounded uppercase font-bold tracking-widest shrink-0">
                   Conextsol
                 </span>
                 <span className="truncate">
@@ -755,7 +755,7 @@ export default function App() {
                   }
                 </span>
               </h1>
-              <p className="text-[10px] text-gray-400 font-mono font-semibold tracking-wider uppercase mt-0.5">
+              <p className="text-[10px] text-neutral-400 font-mono font-semibold tracking-wider uppercase mt-0.5">
                 Conextsol Backoffice • Active Context
               </p>
             </div>
@@ -764,7 +764,7 @@ export default function App() {
           <button
             id="signout-btn"
             onClick={handleSignOut}
-            className="flex items-center space-x-1 text-gray-400 hover:text-red-400 font-sans text-xs transition-colors font-semibold cursor-pointer shrink-0 bg-white/5 lg:bg-transparent px-3 py-1.5 lg:p-0 rounded-lg lg:rounded-none border border-purple-900/20 lg:border-none"
+            className="flex items-center space-x-1 text-neutral-400 hover:text-white font-sans text-xs transition-colors font-semibold cursor-pointer shrink-0 bg-neutral-800 lg:bg-transparent px-3 py-1.5 lg:p-0 rounded-lg lg:rounded-none border border-neutral-700 lg:border-none"
           >
             <LogOut size={14} />
             <span className="hidden sm:inline">Sign Out</span>
@@ -892,9 +892,9 @@ export default function App() {
         </div>
 
         {/* Footer Credit & Status Line */}
-        <footer className="bg-[#0F081C]/40 border-t border-purple-900/20 py-3.5 px-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 gap-2 shrink-0">
+        <footer className="bg-neutral-950 border-t border-neutral-800 py-3.5 px-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-400 gap-2 shrink-0">
           <div className="flex items-center space-x-2">
-            <span className={`h-1.5 w-1.5 rounded-full inline-block animate-pulse ${isSupabaseConfigured ? 'bg-emerald-400' : 'bg-purple-400'}`} />
+            <span className="h-1.5 w-1.5 rounded-full inline-block bg-white animate-pulse" />
             <span className="font-mono">
               {isSupabaseConfigured 
                 ? 'Production Cloud synchronized with live Supabase database' 
@@ -902,7 +902,7 @@ export default function App() {
             </span>
           </div>
           <div>
-            <span className="font-semibold text-gray-300">Conextsol Internal Backoffice</span> v1.4.0
+            <span className="font-semibold text-neutral-200">Conextsol Internal Backoffice</span> v1.4.0
           </div>
         </footer>
       </main>

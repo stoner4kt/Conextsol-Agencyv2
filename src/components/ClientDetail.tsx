@@ -98,16 +98,16 @@ export default function ClientDetail({
       <button 
         id="client-detail-back"
         onClick={onBack}
-        className="flex items-center space-x-1.5 text-xs font-semibold text-gray-400 hover:text-emerald-400 transition-colors cursor-pointer"
+        className="flex items-center space-x-1.5 text-xs font-semibold text-neutral-400 hover:text-white transition-colors cursor-pointer"
       >
         <ArrowLeft size={14} />
         <span>Back to Accounts Registry</span>
       </button>
 
       {/* Profile Header Cards */}
-      <div className="bg-[#1B122B] rounded-xl border border-purple-900/20 p-6 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center space-x-4">
-          <div className="h-14 w-14 rounded-xl bg-gradient-to-tr from-[#581c87] to-purple-900 text-emerald-400 flex items-center justify-center font-display font-bold text-2xl shadow-inner shrink-0 border border-purple-900/30">
+          <div className="h-14 w-14 rounded-xl bg-neutral-800 text-white flex items-center justify-center font-display font-bold text-2xl shadow-inner shrink-0 border border-neutral-700">
             {client.company_name.charAt(0)}
           </div>
           <div className="space-y-1">
@@ -117,14 +117,14 @@ export default function ClientDetail({
               </h2>
               <span className={`
                 px-2.5 py-0.5 rounded-full font-mono text-[9px] uppercase font-bold border
-                ${client.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : ''}
-                ${client.status === 'paused' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : ''}
-                ${client.status === 'inactive' ? 'bg-white/5 text-gray-400 border-purple-900/20' : ''}
+                ${client.status === 'active' ? 'bg-neutral-800 text-white border-neutral-700' : ''}
+                ${client.status === 'paused' ? 'bg-neutral-800 text-neutral-300 border-neutral-700' : ''}
+                ${client.status === 'inactive' ? 'bg-black text-neutral-500 border-neutral-800' : ''}
               `}>
                 {client.status}
               </span>
             </div>
-            <p className="text-xs text-gray-400 flex items-center space-x-1">
+            <p className="text-xs text-neutral-400 flex items-center space-x-1">
               <span>Primary contact:</span>
               <strong className="text-white">{client.primary_contact_name}</strong>
             </p>
@@ -132,16 +132,16 @@ export default function ClientDetail({
         </div>
 
         {/* Contact info block */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-gray-300 font-sans border-t md:border-t-0 md:border-l border-purple-900/20 pt-4 md:pt-0 md:pl-6 max-w-lg shrink-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-neutral-300 font-sans border-t md:border-t-0 md:border-l border-neutral-800 pt-4 md:pt-0 md:pl-6 max-w-lg shrink-0">
           <div className="flex items-center space-x-2">
-            <Mail size={14} className="text-gray-400" />
-            <a href={`mailto:${client.email}`} className="hover:underline text-emerald-400 font-semibold">{client.email}</a>
+            <Mail size={14} className="text-neutral-400" />
+            <a href={`mailto:${client.email}`} className="hover:underline text-white font-semibold">{client.email}</a>
           </div>
           <div className="flex items-center space-x-2">
-            <Phone size={14} className="text-gray-400" />
+            <Phone size={14} className="text-neutral-400" />
             <a href={`tel:${client.phone}`} className="hover:underline">{client.phone || 'No phone recorded'}</a>
           </div>
-          <div className="flex items-center space-x-2 sm:col-span-2 text-gray-500 font-mono text-[10px]">
+          <div className="flex items-center space-x-2 sm:col-span-2 text-neutral-500 font-mono text-[10px]">
             <Calendar size={13} />
             <span>Profile created {new Date(client.created_at).toLocaleDateString()}</span>
           </div>
@@ -152,15 +152,15 @@ export default function ClientDetail({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* PROJECTS SECTION */}
-        <div className="bg-[#1B122B] rounded-xl border border-purple-900/20 p-6 shadow-lg space-y-4">
-          <div className="flex items-center justify-between border-b border-purple-900/20 pb-3">
+        <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg space-y-4">
+          <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
             <div>
               <h3 className="font-display font-bold text-white text-sm md:text-base">
                 Client Fixed Projects
               </h3>
-              <p className="text-xs text-gray-400 mt-0.5 font-sans">Projects explicitly tied to this company profile</p>
+              <p className="text-xs text-neutral-400 mt-0.5 font-sans">Projects explicitly tied to this company profile</p>
             </div>
-            <span className="text-xs font-mono bg-[#0F081C] text-gray-400 border border-purple-900/30 font-bold px-2 py-0.5 rounded">
+            <span className="text-xs font-mono bg-black text-neutral-400 border border-neutral-800 font-bold px-2 py-0.5 rounded">
               {clientProjects.length} projects
             </span>
           </div>
@@ -170,28 +170,28 @@ export default function ClientDetail({
               <div 
                 key={project.id} 
                 onClick={() => onSelectProject(project.id)}
-                className="border border-purple-900/10 bg-[#0F081C] hover:bg-purple-900/10 p-4 rounded-xl cursor-pointer transition-all space-y-2 group"
+                className="border border-neutral-800 bg-black hover:bg-neutral-800/60 p-4 rounded-xl cursor-pointer transition-all space-y-2 group"
               >
                 <div className="flex justify-between items-start gap-2">
-                  <h4 className="font-display font-bold text-white text-sm group-hover:text-emerald-400 transition-colors">
+                  <h4 className="font-display font-bold text-white text-sm group-hover:text-neutral-300 transition-colors">
                     {project.project_name}
                   </h4>
                   <span className="font-mono text-xs font-bold text-white">
                     ${project.invoiced_amount.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400 line-clamp-2">
+                <p className="text-xs text-neutral-400 line-clamp-2">
                   {project.short_note || 'No operational summary.'}
                 </p>
-                <div className="flex items-center justify-between pt-1 border-t border-purple-900/20 text-[10px] text-gray-500 font-mono">
+                <div className="flex items-center justify-between pt-1 border-t border-neutral-800 text-[10px] text-neutral-500 font-mono">
                   <span>Target end: {project.end_date}</span>
-                  <span className="text-emerald-400 group-hover:text-emerald-300 font-bold">View details & documents →</span>
+                  <span className="text-white group-hover:text-neutral-300 font-bold">View details & documents →</span>
                 </div>
               </div>
             ))}
 
             {clientProjects.length === 0 && (
-              <div className="text-center py-8 text-xs text-gray-500 font-sans">
+              <div className="text-center py-8 text-xs text-neutral-500 font-sans">
                 No active fixed-price projects. Use Onboarding Wizard to link projects.
               </div>
             )}
@@ -199,7 +199,7 @@ export default function ClientDetail({
 
           {/* Seed Doc Modal Form (Admin Restricted conceptually but allowed in dashboard UI) */}
           {clientProjects.length > 0 && state.isAdmin && (
-            <div className="pt-4 border-t border-purple-900/20">
+            <div className="pt-4 border-t border-neutral-800">
               {!showAddDoc ? (
                 <button
                   id="toggle-add-doc"
@@ -207,20 +207,20 @@ export default function ClientDetail({
                     setSelectedProjectForDoc(clientProjects[0].id);
                     setShowAddDoc(true);
                   }}
-                  className="w-full py-2.5 border border-dashed border-purple-900/40 hover:border-purple-900/70 bg-[#0F081C] rounded-xl text-xs font-semibold text-gray-400 hover:text-white transition-all cursor-pointer text-center"
+                  className="w-full py-2.5 border border-dashed border-neutral-700 hover:border-neutral-500 bg-black rounded-xl text-xs font-semibold text-neutral-400 hover:text-white transition-all cursor-pointer text-center"
                 >
                   + Add Documentation (Admin Only)
                 </button>
               ) : (
-                <form onSubmit={handleDocSubmit} className="bg-[#0F081C] p-4 rounded-xl border border-purple-900/30 space-y-3.5">
+                <form onSubmit={handleDocSubmit} className="bg-black p-4 rounded-xl border border-neutral-800 space-y-3.5">
                   <h4 className="font-display font-bold text-white text-xs">Add Documentation / Note</h4>
                   
                   <div>
-                    <label className="block text-[10px] font-semibold text-gray-400 mb-1">Target Project</label>
+                    <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Target Project</label>
                     <select
                       value={selectedProjectForDoc}
                       onChange={e => setSelectedProjectForDoc(e.target.value)}
-                      className="w-full px-3 py-1.5 bg-[#1B122B] border border-purple-900/40 rounded text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                      className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20"
                     >
                       {clientProjects.map(p => (
                         <option key={p.id} value={p.id}>{p.project_name}</option>
@@ -229,37 +229,37 @@ export default function ClientDetail({
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-semibold text-gray-400 mb-1">Document Title</label>
+                    <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Document Title</label>
                     <input 
                       type="text"
                       placeholder="e.g. Deployment credentials specification"
                       value={docForm.title}
                       onChange={e => setDocForm({ ...docForm, title: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-[#1B122B] border border-purple-900/40 rounded text-xs text-white focus:outline-none focus:border-emerald-500"
+                      className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded text-xs text-white focus:outline-none focus:border-neutral-500"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-semibold text-gray-400 mb-1">Markdown Content</label>
+                    <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Markdown Content</label>
                     <textarea 
                       rows={3}
                       placeholder="Markdown notes or key credentials list..."
                       value={docForm.content}
                       onChange={e => setDocForm({ ...docForm, content: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-[#1B122B] border border-purple-900/40 rounded text-xs text-white font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                      className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded text-xs text-white font-mono focus:outline-none focus:ring-2 focus:ring-white/20"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-semibold text-gray-400 mb-1">File links / PDF references (comma separated)</label>
+                    <label className="block text-[10px] font-semibold text-neutral-400 mb-1">File links / PDF references (comma separated)</label>
                     <input 
                       type="text"
                       placeholder="/storage/credentials.pdf"
                       value={docForm.fileReferences}
                       onChange={e => setDocForm({ ...docForm, fileReferences: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-[#1B122B] border border-purple-900/40 rounded text-xs text-white focus:outline-none"
+                      className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded text-xs text-white focus:outline-none"
                     />
                   </div>
 
@@ -267,13 +267,13 @@ export default function ClientDetail({
                     <button 
                       type="button" 
                       onClick={() => setShowAddDoc(false)}
-                      className="px-2.5 py-1 text-gray-400 hover:text-white"
+                      className="px-2.5 py-1 text-neutral-400 hover:text-white"
                     >
                       Cancel
                     </button>
                     <button 
                       type="submit" 
-                      className="px-3.5 py-1.5 bg-emerald-500 text-[#0F081C] font-extrabold rounded-lg hover:bg-emerald-600"
+                      className="px-3.5 py-1.5 bg-white text-black font-extrabold rounded-lg hover:bg-neutral-200"
                     >
                       Publish Specs
                     </button>
@@ -285,15 +285,15 @@ export default function ClientDetail({
         </div>
 
         {/* RETAINERS SECTION */}
-        <div className="bg-[#1B122B] rounded-xl border border-purple-900/20 p-6 shadow-lg space-y-4">
-          <div className="flex items-center justify-between border-b border-purple-900/20 pb-3">
+        <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg space-y-4">
+          <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
             <div>
               <h3 className="font-display font-bold text-white text-sm md:text-base">
                 Client Retainers Registry
               </h3>
-              <p className="text-xs text-gray-400 mt-0.5 font-sans">Recurring billing and flat-rate support streams</p>
+              <p className="text-xs text-neutral-400 mt-0.5 font-sans">Recurring billing and flat-rate support streams</p>
             </div>
-            <span className="text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold px-2 py-0.5 rounded">
+            <span className="text-xs font-mono bg-black text-white border border-neutral-800 font-bold px-2 py-0.5 rounded">
               {clientRetainers.length} retainers
             </span>
           </div>
@@ -305,14 +305,14 @@ export default function ClientDetail({
                 className={`
                   border p-4 rounded-xl space-y-2.5 transition-all
                   ${retainer.is_active 
-                    ? 'border-emerald-500/20 bg-emerald-500/5' 
-                    : 'border-purple-900/10 bg-white/5 opacity-60'
+                    ? 'border-neutral-700 bg-black' 
+                    : 'border-neutral-800 bg-black/40 opacity-60'
                   }
                 `}
               >
                 <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
-                    <span className="text-[9px] bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono font-bold uppercase px-1.5 py-0.2 rounded">
+                    <span className="text-[9px] bg-neutral-800 border border-neutral-700 text-neutral-200 font-mono font-bold uppercase px-1.5 py-0.2 rounded">
                       {retainer.service_type}
                     </span>
                     <h4 className="font-display font-bold text-white text-xs md:text-sm capitalize mt-1">
@@ -320,16 +320,16 @@ export default function ClientDetail({
                     </h4>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] text-gray-400 font-semibold font-mono">Amount due</p>
+                    <p className="text-[10px] text-neutral-400 font-semibold font-mono">Amount due</p>
                     <p className="font-display font-extrabold text-white text-sm md:text-base">
-                      ${retainer.billing_amount.toLocaleString()} <span className="text-[10px] text-gray-400 font-normal">/mo</span>
+                      ${retainer.billing_amount.toLocaleString()} <span className="text-[10px] text-neutral-400 font-normal">/mo</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-purple-900/20 text-[10px] font-mono text-gray-400">
+                <div className="flex items-center justify-between pt-2 border-t border-neutral-800 text-[10px] font-mono text-neutral-400">
                   <span className="flex items-center space-x-1">
-                    <span className={`h-2 w-2 rounded-full ${retainer.is_active ? 'bg-emerald-400' : 'bg-gray-500'}`} />
+                    <span className={`h-2 w-2 rounded-full ${retainer.is_active ? 'bg-white' : 'bg-neutral-600'}`} />
                     <span>{retainer.is_active ? 'Active contract' : 'Paused contract'}</span>
                   </span>
                   <span>Billed on Day {retainer.billing_cycle_day}</span>
@@ -338,7 +338,7 @@ export default function ClientDetail({
             ))}
 
             {clientRetainers.length === 0 && (
-              <div className="text-center py-8 text-xs text-gray-500 font-sans">
+              <div className="text-center py-8 text-xs text-neutral-500 font-sans">
                 No active recurring retainers configured. Setup contract below.
               </div>
             )}
@@ -346,27 +346,27 @@ export default function ClientDetail({
 
           {/* Add Retainer form (Conceptual Database INSERT) */}
           {state.isAdmin && (
-            <div className="pt-4 border-t border-purple-900/20">
+            <div className="pt-4 border-t border-neutral-800">
               {!showAddRetainer ? (
                 <button
                   id="toggle-add-retainer"
                   onClick={() => setShowAddRetainer(true)}
-                  className="w-full py-2.5 bg-[#0F081C] hover:bg-white/5 text-emerald-400 text-xs font-bold rounded-xl transition-all cursor-pointer text-center flex items-center justify-center space-x-1.5 border border-purple-900/30"
+                  className="w-full py-2.5 bg-black hover:bg-neutral-800 text-white text-xs font-bold rounded-xl transition-all cursor-pointer text-center flex items-center justify-center space-x-1.5 border border-neutral-800"
                 >
                   <Plus size={14} />
                   <span>Configure New Retainer (Admin)</span>
                 </button>
               ) : (
-                <form onSubmit={handleRetainerSubmit} className="bg-[#0F081C] p-4 rounded-xl border border-purple-900/30 space-y-3">
+                <form onSubmit={handleRetainerSubmit} className="bg-black p-4 rounded-xl border border-neutral-800 space-y-3">
                   <h4 className="font-display font-bold text-white text-xs">Configure Retainer Model</h4>
                   
                   <div className="grid grid-cols-2 gap-3">
                     <div className="col-span-2">
-                      <label className="block text-[10px] font-semibold text-gray-400 mb-1">Service Category</label>
+                      <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Service Category</label>
                       <select
                         value={retainerForm.serviceType}
                         onChange={e => setRetainerForm({ ...retainerForm, serviceType: e.target.value })}
-                        className="w-full px-3 py-1.5 bg-[#1B122B] border border-purple-900/40 rounded text-xs text-white focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded text-xs text-white focus:outline-none"
                       >
                         <option value="web maintenance">Web Maintenance & Support</option>
                         <option value="web hosting">Web Cloud Hosting</option>
@@ -376,19 +376,19 @@ export default function ClientDetail({
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-semibold text-gray-400 mb-1">Monthly Billing ($)</label>
+                      <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Monthly Billing ($)</label>
                       <input 
                         type="number"
                         placeholder="e.g. 1500"
                         value={retainerForm.billingAmount}
                         onChange={e => setRetainerForm({ ...retainerForm, billingAmount: Number(e.target.value) })}
-                        className="w-full px-3 py-1.5 bg-[#1B122B] border border-purple-900/40 rounded text-xs text-white focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded text-xs text-white focus:outline-none"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-semibold text-gray-400 mb-1">Cycle Day (1-31)</label>
+                      <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Cycle Day (1-31)</label>
                       <input 
                         type="number"
                         min={1}
@@ -396,23 +396,23 @@ export default function ClientDetail({
                         placeholder="1"
                         value={retainerForm.billingCycleDay}
                         onChange={e => setRetainerForm({ ...retainerForm, billingCycleDay: Number(e.target.value) })}
-                        className="w-full px-3 py-1.5 bg-[#1B122B] border border-purple-900/40 rounded text-xs text-white focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded text-xs text-white focus:outline-none"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-2 text-[11px] pt-2 border-t border-purple-900/20">
+                  <div className="flex items-center justify-end space-x-2 text-[11px] pt-2 border-t border-neutral-800">
                     <button 
                       type="button" 
                       onClick={() => setShowAddRetainer(false)}
-                      className="px-2.5 py-1 text-gray-400 hover:text-white"
+                      className="px-2.5 py-1 text-neutral-400 hover:text-white"
                     >
                       Cancel
                     </button>
                     <button 
                       type="submit" 
-                      className="px-3.5 py-1.5 bg-emerald-500 text-[#0F081C] font-extrabold rounded-lg hover:bg-emerald-600"
+                      className="px-3.5 py-1.5 bg-white text-black font-extrabold rounded-lg hover:bg-neutral-200"
                     >
                       Save Retainer Model
                     </button>

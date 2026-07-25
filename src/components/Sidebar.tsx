@@ -64,19 +64,19 @@ export default function Sidebar({
     <>
       {/* Sidebar Container */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-[#140C24] text-gray-100 flex flex-col justify-between
-        transform lg:transform-none lg:opacity-100 transition-all duration-300 border-r border-purple-900/30
+        fixed inset-y-0 left-0 z-50 w-64 bg-neutral-900 text-neutral-100 flex flex-col justify-between
+        transform lg:transform-none lg:opacity-100 transition-all duration-300 border-r border-neutral-800
         ${mobileOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Brand Header */}
-        <div className="p-6 border-b border-purple-900/30 flex items-center justify-between lg:block">
+        <div className="p-6 border-b border-neutral-800 flex items-center justify-between lg:block">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-black font-black shrink-0 shadow-lg shadow-emerald-500/10">
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-black font-black shrink-0 shadow-lg shadow-white/10">
               CX
             </div>
             <div>
               <h1 className="font-display font-bold tracking-tight text-white text-base">Conextsol</h1>
-              <p className="text-[9px] text-emerald-400 font-mono font-semibold tracking-widest uppercase">
+              <p className="text-[9px] text-neutral-400 font-mono font-semibold tracking-widest uppercase">
                 Agency Backoffice
               </p>
             </div>
@@ -84,7 +84,7 @@ export default function Sidebar({
           {/* Close button on mobile inside the drawer */}
           <button 
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden p-1.5 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white transition-colors"
+            className="lg:hidden p-1.5 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-white transition-colors"
             aria-label="Close Navigation Menu"
           >
             <X size={18} />
@@ -93,7 +93,7 @@ export default function Sidebar({
 
         {/* Navigation Items */}
         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          <p className="text-[10px] font-mono uppercase text-purple-400 tracking-widest font-semibold px-2 mb-3">
+          <p className="text-[10px] font-mono uppercase text-neutral-400 tracking-widest font-semibold px-2 mb-3">
             Workspace
           </p>
           {navItems.map((item) => {
@@ -110,46 +110,46 @@ export default function Sidebar({
                 className={`
                   w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-150 group cursor-pointer
                   ${isActive 
-                    ? 'bg-purple-600/20 border-l-4 border-emerald-500 text-emerald-400 rounded-r-md' 
-                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                    ? 'bg-neutral-800 border-l-4 border-white text-white rounded-r-md font-bold' 
+                    : 'text-neutral-400 hover:bg-neutral-800/60 hover:text-white'
                   }
                 `}
               >
-                <Icon size={18} className={`transition-colors duration-150 ${isActive ? 'text-emerald-400' : 'text-gray-400 group-hover:text-slate-100'}`} />
+                <Icon size={18} className={`transition-colors duration-150 ${isActive ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-200'}`} />
                 <span>{item.label}</span>
               </button>
             );
           })}
 
           {/* Access Control Information Widget */}
-          <div className="mt-8 pt-6 border-t border-purple-900/30">
-            <p className="text-[10px] font-mono uppercase text-purple-400 tracking-widest font-semibold px-2 mb-3">
+          <div className="mt-8 pt-6 border-t border-neutral-800">
+            <p className="text-[10px] font-mono uppercase text-neutral-400 tracking-widest font-semibold px-2 mb-3">
               Security context
             </p>
-            <div className="bg-[#1B122B]/60 border border-purple-900/20 rounded-xl p-4 text-xs space-y-2.5">
-              <div className="flex items-center justify-between text-gray-300">
-                <span className="flex items-center space-x-1.5 font-medium text-gray-400">
-                  <User size={13} className="text-purple-400" />
+            <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-4 text-xs space-y-2.5">
+              <div className="flex items-center justify-between text-neutral-300">
+                <span className="flex items-center space-x-1.5 font-medium text-neutral-400">
+                  <User size={13} className="text-neutral-400" />
                   <span>Account:</span>
                 </span>
-                <span className="font-mono text-[10px] font-semibold text-emerald-400 truncate max-w-[110px]" title={userEmail || ''}>
+                <span className="font-mono text-[10px] font-semibold text-white truncate max-w-[110px]" title={userEmail || ''}>
                   {userEmail?.split('@')[0]}
                 </span>
               </div>
               
-              <div className="flex items-center justify-between text-gray-300">
-                <span className="flex items-center space-x-1.5 font-medium text-gray-400">
-                  <ShieldCheck size={13} className="text-purple-400" />
+              <div className="flex items-center justify-between text-neutral-300">
+                <span className="flex items-center space-x-1.5 font-medium text-neutral-400">
+                  <ShieldCheck size={13} className="text-neutral-400" />
                   <span>Role:</span>
                 </span>
-                <span className={`px-1.5 py-0.2 rounded font-mono text-[9px] uppercase font-bold ${isAdmin ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'}`}>
+                <span className={`px-1.5 py-0.2 rounded font-mono text-[9px] uppercase font-bold ${isAdmin ? 'bg-white/10 text-white border border-neutral-700' : 'bg-neutral-800 text-neutral-400 border border-neutral-700'}`}>
                   {isAdmin ? 'Admin' : 'Client Guest'}
                 </span>
               </div>
 
               {!isAdmin && (
-                <div className="text-[10px] text-amber-300 leading-normal flex items-start space-x-1 mt-1 font-sans">
-                  <AlertCircle size={10} className="shrink-0 mt-0.5 text-amber-400" />
+                <div className="text-[10px] text-neutral-400 leading-normal flex items-start space-x-1 mt-1 font-sans">
+                  <AlertCircle size={10} className="shrink-0 mt-0.5 text-neutral-400" />
                   <span>Docs read-only, billing details hidden.</span>
                 </div>
               )}
@@ -158,18 +158,18 @@ export default function Sidebar({
         </nav>
 
         {/* User Context Controls (Role Toggle Switcher) */}
-        <div className="p-4 border-t border-purple-900/30 bg-[#140C24]/95 sticky bottom-0">
+        <div className="p-4 border-t border-neutral-800 bg-neutral-900/95 sticky bottom-0">
           <button
             id="role-toggle-btn"
             onClick={toggleAdmin}
-            className="w-full flex items-center justify-between bg-[#1B122B] hover:bg-white/5 border border-purple-900/20 rounded-xl p-3 text-xs text-gray-200 transition-colors cursor-pointer group"
+            className="w-full flex items-center justify-between bg-neutral-950 hover:bg-neutral-800 border border-neutral-800 rounded-xl p-3 text-xs text-neutral-200 transition-colors cursor-pointer group"
           >
             <div className="text-left">
-              <p className="font-semibold text-[11px] group-hover:text-emerald-400 transition-colors">Simulation Role</p>
-              <p className="text-[9px] text-gray-400 font-mono">Toggle to test RLS</p>
+              <p className="font-semibold text-[11px] group-hover:text-white transition-colors">Simulation Role</p>
+              <p className="text-[9px] text-neutral-400 font-mono">Toggle to test RLS</p>
             </div>
-            <div className="relative inline-flex items-center h-5 rounded-full w-9 transition-colors bg-purple-950">
-              <span className={`inline-block w-3.5 h-3.5 transform rounded-full bg-emerald-400 transition-transform ${isAdmin ? 'translate-x-4.5' : 'translate-x-1'}`} />
+            <div className="relative inline-flex items-center h-5 rounded-full w-9 transition-colors bg-neutral-800">
+              <span className={`inline-block w-3.5 h-3.5 transform rounded-full bg-white transition-transform ${isAdmin ? 'translate-x-4.5' : 'translate-x-1'}`} />
             </div>
           </button>
         </div>

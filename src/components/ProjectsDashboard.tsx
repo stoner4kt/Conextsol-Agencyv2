@@ -185,40 +185,40 @@ export default function ProjectsDashboard({
     <div className="space-y-6">
       {/* 1. Header Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-[#1B122B] border border-purple-900/20 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-gray-400 font-mono font-semibold tracking-wide uppercase">Active Projects</p>
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-neutral-400 font-mono font-semibold tracking-wide uppercase">Active Projects</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{projectCount}</h4>
-            <span className="text-[10px] text-purple-400 font-mono">projects table</span>
+            <span className="text-[10px] text-neutral-400 font-mono">projects table</span>
           </div>
         </div>
-        <div className="bg-[#1B122B] border border-emerald-500/10 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-emerald-400 font-mono font-semibold tracking-wide uppercase">Total Flat Value</p>
+        <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-white font-mono font-semibold tracking-wide uppercase">Total Flat Value</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-emerald-400">${totalVolume.toLocaleString()}</h4>
-            <span className="text-[9px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.2 rounded font-mono font-bold">TOTAL REVENUE</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">${totalVolume.toLocaleString()}</h4>
+            <span className="text-[9px] bg-white/10 text-white px-1.5 py-0.2 rounded font-mono font-bold">TOTAL REVENUE</span>
           </div>
         </div>
-        <div className="bg-[#1B122B] border border-purple-900/20 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-gray-400 font-mono font-semibold tracking-wide uppercase">Average Flat Rate</p>
+        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-neutral-400 font-mono font-semibold tracking-wide uppercase">Average Flat Rate</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">${averageVolume.toLocaleString()}</h4>
-            <span className="text-[10px] text-purple-400 font-mono">per solution</span>
+            <span className="text-[10px] text-neutral-400 font-mono">per solution</span>
           </div>
         </div>
-        <div className="bg-[#1B122B] border border-red-500/10 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-red-400 font-mono font-semibold tracking-wide uppercase">Urgent Deadlines</p>
+        <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-neutral-300 font-mono font-semibold tracking-wide uppercase">Urgent Deadlines</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className={`text-xl md:text-2xl font-display font-extrabold ${urgentDeadlineCount > 0 ? 'text-red-400' : 'text-gray-400'}`}>{urgentDeadlineCount}</h4>
-            <span className="text-[9px] bg-red-500/10 text-red-400 px-1.5 py-0.2 rounded font-mono font-bold">2 DAYS AWAY</span>
+            <h4 className={`text-xl md:text-2xl font-display font-extrabold ${urgentDeadlineCount > 0 ? 'text-white' : 'text-neutral-400'}`}>{urgentDeadlineCount}</h4>
+            <span className="text-[9px] bg-neutral-800 text-neutral-200 px-1.5 py-0.2 rounded font-mono font-bold">2 DAYS AWAY</span>
           </div>
         </div>
       </div>
 
       {/* 2. Toolbar & Filtering */}
-      <div className="bg-[#1B122B] rounded-xl border border-purple-900/20 p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex-1 relative w-full">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-400">
             <Search size={15} />
           </span>
           <input
@@ -226,7 +226,7 @@ export default function ProjectsDashboard({
             placeholder="Search projects by name, services, tech keywords..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-[#0F081C] border border-purple-900/40 rounded-xl text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors"
+            className="w-full pl-9 pr-4 py-2.5 bg-black border border-neutral-800 rounded-xl text-xs md:text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
           />
         </div>
 
@@ -234,7 +234,7 @@ export default function ProjectsDashboard({
           <select
             value={filterClient}
             onChange={e => setFilterClient(e.target.value)}
-            className="px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-xl text-xs font-semibold text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 max-w-[200px]"
+            className="px-3 py-2 bg-black border border-neutral-800 rounded-xl text-xs font-semibold text-neutral-300 focus:outline-none focus:ring-2 focus:ring-white/20 max-w-[200px]"
           >
             <option value="all">All Clients</option>
             {state.clients.map(c => (
@@ -254,7 +254,7 @@ export default function ProjectsDashboard({
                 }
                 setIsAdding(!isAdding);
               }}
-              className="flex items-center space-x-1.5 px-4.5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#0F081C] font-sans text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer"
+              className="flex items-center space-x-1.5 px-4.5 py-2.5 bg-white hover:bg-neutral-200 text-black font-sans text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer"
             >
               {isAdding ? <X size={13} /> : <Plus size={13} />}
               <span>{isAdding ? 'Cancel' : 'Add Project'}</span>
@@ -265,33 +265,33 @@ export default function ProjectsDashboard({
 
       {/* 3. Collapsible Add Form */}
       {isAdding && (
-        <form onSubmit={handleAddSubmit} className="bg-[#1B122B] border border-purple-500/20 p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn">
-          <div className="border-b border-purple-900/20 pb-3">
+        <form onSubmit={handleAddSubmit} className="bg-neutral-900 border border-neutral-800 p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn">
+          <div className="border-b border-neutral-800 pb-3">
             <h3 className="font-display font-bold text-white text-xs md:text-sm flex items-center space-x-1.5">
-              <Briefcase size={15} className="text-purple-400" />
+              <Briefcase size={15} className="text-white" />
               <span>Register New Client Project</span>
             </h3>
-            <p className="text-[10px] text-gray-400 mt-0.5 font-sans">
+            <p className="text-[10px] text-neutral-400 mt-0.5 font-sans">
               Inserts a new project into the PostgreSQL table connected with an active client.
             </p>
           </div>
 
           {addError && (
-            <p className="text-xs text-red-400 bg-red-950/20 border border-red-900/30 p-2.5 rounded-lg font-mono">
+            <p className="text-xs text-neutral-200 bg-neutral-950 border border-neutral-700 p-2.5 rounded-lg font-mono">
               ⚠️ {addError}
             </p>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div>
-  <label className="block text-[10px] font-semibold text-gray-400 mb-1">
-    Select Client * <span className="text-purple-500 font-mono">({state.clients.length} registered)</span>
+  <label className="block text-[10px] font-semibold text-neutral-400 mb-1">
+    Select Client * <span className="text-neutral-300 font-mono">({state.clients.length} registered)</span>
   </label>
   <select
     required
     value={newForm.client_id}
     onChange={e => setNewForm({ ...newForm, client_id: e.target.value })}
-    className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer appearance-auto"
+    className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white focus:outline-none focus:border-neutral-500 cursor-pointer appearance-auto"
   >
     <option value="" disabled>-- Choose Client --</option>
     {state.clients
@@ -304,124 +304,124 @@ export default function ProjectsDashboard({
 </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">Project Name *</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Project Name *</label>
               <input
                 type="text"
                 placeholder="e.g. Acme Mobile App"
                 required
                 value={newForm.project_name}
                 onChange={e => setNewForm({ ...newForm, project_name: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">Flat Rate Invoiced * ($)</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Flat Rate Invoiced * ($)</label>
               <input
                 type="number"
                 placeholder="e.g. 15000"
                 required
                 value={newForm.invoiced_amount}
                 onChange={e => setNewForm({ ...newForm, invoiced_amount: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">Start Date *</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Start Date *</label>
               <input
                 type="date"
                 required
                 value={newForm.start_date}
                 onChange={e => setNewForm({ ...newForm, start_date: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white focus:outline-none focus:border-neutral-500"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">End Date / Deadline *</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">End Date / Deadline *</label>
               <input
                 type="date"
                 required
                 value={newForm.end_date}
                 onChange={e => setNewForm({ ...newForm, end_date: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white focus:outline-none focus:border-neutral-500"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">Staging Preview URL</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Staging Preview URL</label>
               <input
                 type="url"
                 placeholder="https://staging.acme.com"
                 value={newForm.staging_url}
                 onChange={e => setNewForm({ ...newForm, staging_url: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white focus:outline-none focus:border-neutral-500"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">GitHub Repo URL</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">GitHub Repo URL</label>
               <input
                 type="url"
                 placeholder="https://github.com/..."
                 value={newForm.github_url}
                 onChange={e => setNewForm({ ...newForm, github_url: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white focus:outline-none focus:border-emerald-500"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white focus:outline-none focus:border-neutral-500"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">Production URL</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Production URL</label>
               <input
                 type="url"
                 placeholder="https://acme.com"
                 value={newForm.production_url}
                 onChange={e => setNewForm({ ...newForm, production_url: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white focus:outline-none"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white focus:outline-none"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">Services Listed (Comma-separated)</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Services Listed (Comma-separated)</label>
               <input
                 type="text"
                 placeholder="React, Next.js, Stripe, SEO"
                 value={newForm.services_input}
                 onChange={e => setNewForm({ ...newForm, services_input: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white placeholder-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-gray-400 mb-1">Alert Contact Emails (Comma-separated)</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Alert Contact Emails (Comma-separated)</label>
               <input
                 type="text"
                 placeholder="sarah.j@acmecorp.com, admin@conextsol.com"
                 value={newForm.emails_input}
                 onChange={e => setNewForm({ ...newForm, emails_input: e.target.value })}
-                className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white placeholder-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-semibold text-gray-400 mb-1">Detailed Description / Short Notes</label>
+            <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Detailed Description / Short Notes</label>
             <textarea
               placeholder="Provide context, integration keys, staging notes, and next priorities..."
               rows={3}
               value={newForm.short_note}
               onChange={e => setNewForm({ ...newForm, short_note: e.target.value })}
-              className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white placeholder-gray-600 focus:outline-none"
+              className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none"
             />
           </div>
 
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="flex items-center space-x-1 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#0F081C] font-sans text-xs font-extrabold rounded-lg shadow-md cursor-pointer"
+              className="flex items-center space-x-1 px-5 py-2.5 bg-white hover:bg-neutral-200 text-black font-sans text-xs font-extrabold rounded-lg shadow-md cursor-pointer"
             >
               <Check size={14} />
               <span>Deploy Project Registry</span>
@@ -440,10 +440,10 @@ export default function ProjectsDashboard({
             <div 
               key={project.id}
               className={`
-                bg-[#1B122B] border rounded-xl p-5 shadow-lg transition-all space-y-4
+                bg-neutral-900 border rounded-xl p-5 shadow-lg transition-all space-y-4
                 ${isEndingInTwoDays 
-                  ? 'border-red-500/40 bg-red-950/5 ring-1 ring-red-500/20' 
-                  : 'border-purple-900/20 hover:border-purple-900/40'
+                  ? 'border-neutral-700 bg-neutral-900 ring-1 ring-neutral-600' 
+                  : 'border-neutral-800 hover:border-neutral-700'
                 }
               `}
             >
@@ -453,12 +453,12 @@ export default function ProjectsDashboard({
                   <div className="flex items-center space-x-2 flex-wrap gap-y-1">
                     <span 
                       onClick={() => onSelectClient(project.client_id)}
-                      className="text-[10px] font-mono text-emerald-400 font-bold tracking-widest uppercase hover:underline cursor-pointer"
+                      className="text-[10px] font-mono text-white font-bold tracking-widest uppercase hover:underline cursor-pointer"
                     >
                       {getClientName(project.client_id)}
                     </span>
                     {isEndingInTwoDays && (
-                      <span className="text-[8px] bg-red-500/20 border border-red-500/30 text-red-300 font-mono font-bold uppercase px-1.5 py-0.2 rounded flex items-center space-x-0.5">
+                      <span className="text-[8px] bg-neutral-800 border border-neutral-700 text-white font-mono font-bold uppercase px-1.5 py-0.2 rounded flex items-center space-x-0.5">
                         <ShieldAlert size={8} />
                         <span>DEADLINE EXPIRED IN 2 DAYS</span>
                       </span>
@@ -470,7 +470,7 @@ export default function ProjectsDashboard({
                       type="text"
                       value={editForm.project_name || ''}
                       onChange={e => setEditForm({ ...editForm, project_name: e.target.value })}
-                      className="px-3 py-1.5 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white font-bold w-full block mt-1"
+                      className="px-3 py-1.5 bg-black border border-neutral-800 rounded text-xs text-white font-bold w-full block mt-1"
                     />
                   ) : (
                     <h3 className="font-display font-bold text-white text-base">
@@ -480,13 +480,13 @@ export default function ProjectsDashboard({
                 </div>
 
                 <div className="md:text-right shrink-0">
-                  <span className="text-[10px] font-mono font-bold text-gray-500 uppercase block">Flat Rate Fee</span>
+                  <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase block">Flat Rate Fee</span>
                   {isEditing ? (
                     <input
                       type="number"
                       value={editForm.invoiced_amount || ''}
                       onChange={e => setEditForm({ ...editForm, invoiced_amount: e.target.value })}
-                      className="px-2 py-1 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white max-w-[100px] text-right font-mono font-bold mt-0.5"
+                      className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white max-w-[100px] text-right font-mono font-bold mt-0.5"
                     />
                   ) : (
                     <span className="font-display font-black text-white text-lg tracking-tight">
@@ -498,41 +498,41 @@ export default function ProjectsDashboard({
 
               {/* Editable Fields (Date & URLs) */}
               {isEditing ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-[#0F081C]/40 p-4 rounded-lg border border-purple-900/20">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-black p-4 rounded-lg border border-neutral-800">
                   <div>
-                    <label className="block text-[9px] font-mono text-purple-400 uppercase font-bold mb-1">Start Date</label>
+                    <label className="block text-[9px] font-mono text-neutral-400 uppercase font-bold mb-1">Start Date</label>
                     <input
                       type="date"
                       value={editForm.start_date || ''}
                       onChange={e => setEditForm({ ...editForm, start_date: e.target.value })}
-                      className="px-2 py-1 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white w-full"
+                      className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full"
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-mono text-purple-400 uppercase font-bold mb-1">End Date</label>
+                    <label className="block text-[9px] font-mono text-neutral-400 uppercase font-bold mb-1">End Date</label>
                     <input
                       type="date"
                       value={editForm.end_date || ''}
                       onChange={e => setEditForm({ ...editForm, end_date: e.target.value })}
-                      className="px-2 py-1 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white w-full"
+                      className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full"
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-mono text-purple-400 uppercase font-bold mb-1">Staging Link</label>
+                    <label className="block text-[9px] font-mono text-neutral-400 uppercase font-bold mb-1">Staging Link</label>
                     <input
                       type="url"
                       value={editForm.staging_url || ''}
                       onChange={e => setEditForm({ ...editForm, staging_url: e.target.value })}
-                      className="px-2 py-1 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white w-full"
+                      className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full"
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] font-mono text-purple-400 uppercase font-bold mb-1">Github Link</label>
+                    <label className="block text-[9px] font-mono text-neutral-400 uppercase font-bold mb-1">Github Link</label>
                     <input
                       type="url"
                       value={editForm.github_url || ''}
                       onChange={e => setEditForm({ ...editForm, github_url: e.target.value })}
-                      className="px-2 py-1 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white w-full"
+                      className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full"
                     />
                   </div>
                 </div>
@@ -543,11 +543,11 @@ export default function ProjectsDashboard({
                 <textarea
                   value={editForm.short_note || ''}
                   onChange={e => setEditForm({ ...editForm, short_note: e.target.value })}
-                  className="w-full px-3 py-2 bg-[#0F081C] border border-purple-900/40 rounded-lg text-xs text-white"
+                  className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white"
                   placeholder="Notes..."
                 />
               ) : (
-                <p className="text-xs text-gray-300 leading-relaxed font-sans bg-[#130B21] border border-purple-900/10 p-3 rounded-xl">
+                <p className="text-xs text-neutral-300 leading-relaxed font-sans bg-black border border-neutral-800 p-3 rounded-xl">
                   {project.short_note || 'No descriptive notes logged for this scope.'}
                 </p>
               )}
@@ -555,23 +555,23 @@ export default function ProjectsDashboard({
               {/* Tags Section */}
               <div className="space-y-2">
                 {isEditing ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-[#0F081C]/40 p-4 rounded-lg border border-purple-900/20">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-black p-4 rounded-lg border border-neutral-800">
                     <div>
-                      <label className="block text-[9px] font-mono text-purple-400 uppercase font-bold mb-1">Services Listed (comma-separated)</label>
+                      <label className="block text-[9px] font-mono text-neutral-400 uppercase font-bold mb-1">Services Listed (comma-separated)</label>
                       <input
                         type="text"
                         value={editServices}
                         onChange={e => setEditServices(e.target.value)}
-                        className="px-2 py-1 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white w-full"
+                        className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full"
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] font-mono text-purple-400 uppercase font-bold mb-1">Alert Emails (comma-separated)</label>
+                      <label className="block text-[9px] font-mono text-neutral-400 uppercase font-bold mb-1">Alert Emails (comma-separated)</label>
                       <input
                         type="text"
                         value={editEmails}
                         onChange={e => setEditEmails(e.target.value)}
-                        className="px-2 py-1 bg-[#0F081C] border border-purple-900/40 rounded text-xs text-white w-full"
+                        className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full"
                       />
                     </div>
                   </div>
@@ -580,9 +580,9 @@ export default function ProjectsDashboard({
                     {/* Services */}
                     {project.services_listed.length > 0 && (
                       <div className="flex flex-wrap items-center gap-1.5 flex-1">
-                        <Tag size={11} className="text-purple-400" />
+                        <Tag size={11} className="text-neutral-400" />
                         {project.services_listed.map((service, idx) => (
-                          <span key={idx} className="text-[10px] bg-purple-500/10 border border-purple-500/20 text-purple-300 font-bold px-2 py-0.5 rounded">
+                          <span key={idx} className="text-[10px] bg-neutral-800 border border-neutral-700 text-neutral-200 font-bold px-2 py-0.5 rounded">
                             {service}
                           </span>
                         ))}
@@ -592,9 +592,9 @@ export default function ProjectsDashboard({
                     {/* Recipient Emails */}
                     {project.associated_emails.length > 0 && (
                       <div className="flex flex-wrap items-center gap-1.5 shrink-0 justify-end">
-                        <Mail size={11} className="text-emerald-400" />
+                        <Mail size={11} className="text-white" />
                         {project.associated_emails.map((mail, idx) => (
-                          <span key={idx} className="text-[10px] font-mono text-gray-400 bg-[#0F081C] border border-purple-900/20 px-2 py-0.5 rounded truncate max-w-[150px]">
+                          <span key={idx} className="text-[10px] font-mono text-neutral-400 bg-black border border-neutral-800 px-2 py-0.5 rounded truncate max-w-[150px]">
                             {mail}
                           </span>
                         ))}
@@ -605,16 +605,16 @@ export default function ProjectsDashboard({
               </div>
 
               {/* Bottom Metadata Bar & Actions */}
-              <div className="pt-3 border-t border-purple-900/20 flex flex-wrap items-center justify-between text-[11px] text-gray-400 gap-3">
+              <div className="pt-3 border-t border-neutral-800 flex flex-wrap items-center justify-between text-[11px] text-neutral-400 gap-3">
                 <div className="flex items-center space-x-3 flex-wrap">
                   {project.staging_url && (
                     <a 
                       href={project.staging_url} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="flex items-center space-x-1.5 hover:text-emerald-400 transition-colors font-mono font-bold"
+                      className="flex items-center space-x-1.5 hover:text-white transition-colors font-mono font-bold"
                     >
-                      <Globe size={12} className="text-gray-500" />
+                      <Globe size={12} className="text-neutral-500" />
                       <span>Staging Host</span>
                     </a>
                   )}
@@ -623,9 +623,9 @@ export default function ProjectsDashboard({
                       href={project.github_url} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="flex items-center space-x-1.5 hover:text-emerald-400 transition-colors font-mono font-bold"
+                      className="flex items-center space-x-1.5 hover:text-white transition-colors font-mono font-bold"
                     >
-                      <Github size={12} className="text-gray-500" />
+                      <Github size={12} className="text-neutral-500" />
                       <span>Repository</span>
                     </a>
                   )}
@@ -634,16 +634,16 @@ export default function ProjectsDashboard({
                       href={project.production_url} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="flex items-center space-x-1.5 hover:text-emerald-400 transition-colors font-mono font-bold"
+                      className="flex items-center space-x-1.5 hover:text-white transition-colors font-mono font-bold"
                     >
-                      <Globe size={12} className="text-emerald-500" />
+                      <Globe size={12} className="text-white" />
                       <span>Live App</span>
                     </a>
                   )}
                 </div>
 
                 <div className="flex items-center space-x-3 ml-auto">
-                  <div className="flex items-center space-x-1 font-mono text-[10px] text-gray-500">
+                  <div className="flex items-center space-x-1 font-mono text-[10px] text-neutral-500">
                     <Calendar size={11} />
                     <span>{project.start_date} to {project.end_date}</span>
                   </div>
@@ -653,14 +653,14 @@ export default function ProjectsDashboard({
                     <div className="flex items-center space-x-1">
                       <button
                         onClick={handleSaveEdit}
-                        className="p-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors cursor-pointer"
+                        className="p-1.5 bg-neutral-800 border border-neutral-700 text-white rounded-lg hover:bg-neutral-700 transition-colors cursor-pointer"
                         title="Save Project"
                       >
                         <Save size={12} />
                       </button>
                       <button
                         onClick={() => setEditingId(null)}
-                        className="p-1.5 bg-white/5 border border-purple-900/20 text-gray-400 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+                        className="p-1.5 bg-black border border-neutral-800 text-neutral-400 rounded-lg hover:bg-neutral-800 transition-colors cursor-pointer"
                         title="Cancel"
                       >
                         <X size={12} />
@@ -671,7 +671,7 @@ export default function ProjectsDashboard({
                       {isAdmin && (
                         <button
                           onClick={() => handleStartEdit(project)}
-                          className="p-1 hover:bg-white/5 rounded-lg text-purple-400 hover:text-white transition-colors cursor-pointer"
+                          className="p-1 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-white transition-colors cursor-pointer"
                           title="Edit project specifications"
                         >
                           <Edit2 size={12} />
@@ -684,7 +684,7 @@ export default function ProjectsDashboard({
                               onDeleteProject(project.id);
                             }
                           }}
-                          className="p-1 hover:bg-red-500/10 rounded-lg text-red-500 hover:text-red-400 transition-colors cursor-pointer"
+                          className="p-1 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-white transition-colors cursor-pointer"
                           title="Delete project"
                         >
                           <Trash2 size={12} />
@@ -699,9 +699,9 @@ export default function ProjectsDashboard({
         })}
 
         {filteredProjects.length === 0 && (
-          <div className="text-center py-12 bg-[#1B122B] rounded-xl border border-purple-900/20 space-y-2">
-            <AlertCircle size={24} className="text-gray-500 mx-auto" />
-            <p className="text-xs text-gray-400 font-medium">No projects match the active query parameters.</p>
+          <div className="text-center py-12 bg-neutral-900 rounded-xl border border-neutral-800 space-y-2">
+            <AlertCircle size={24} className="text-neutral-500 mx-auto" />
+            <p className="text-xs text-neutral-400 font-medium">No projects match the active query parameters.</p>
           </div>
         )}
       </div>

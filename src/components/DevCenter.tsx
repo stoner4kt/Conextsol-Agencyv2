@@ -309,11 +309,11 @@ serve(async (req) => {
   return (
     <div className="space-y-6">
       {/* Tab Header bar */}
-      <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm flex flex-wrap gap-2">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4 shadow-sm flex flex-wrap gap-2">
         <button
           id="dev-subtab-sql"
           onClick={() => setActiveSubTab('sql')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'sql' ? 'bg-brand-purple-900 text-emerald-400' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'sql' ? 'bg-white text-black font-bold' : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300'}`}
         >
           <Database size={14} />
           <span>PostgreSQL Schema Migrations</span>
@@ -322,7 +322,7 @@ serve(async (req) => {
         <button
           id="dev-subtab-next"
           onClick={() => setActiveSubTab('nextjs')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'nextjs' ? 'bg-brand-purple-900 text-emerald-400' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'nextjs' ? 'bg-white text-black font-bold' : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300'}`}
         >
           <Code size={14} />
           <span>Next.js Frontend Code</span>
@@ -331,7 +331,7 @@ serve(async (req) => {
         <button
           id="dev-subtab-edge"
           onClick={() => setActiveSubTab('edge')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'edge' ? 'bg-brand-purple-900 text-emerald-400' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'edge' ? 'bg-white text-black font-bold' : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300'}`}
         >
           <Cpu size={14} />
           <span>Deno Edge Functions</span>
@@ -340,7 +340,7 @@ serve(async (req) => {
         <button
           id="dev-subtab-guide"
           onClick={() => setActiveSubTab('guide')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'guide' ? 'bg-brand-purple-900 text-emerald-400' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'guide' ? 'bg-white text-black font-bold' : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300'}`}
         >
           <BookOpen size={14} />
           <span>Vercel Deploy Instructions</span>
@@ -348,11 +348,11 @@ serve(async (req) => {
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-[#0b0615] rounded-xl border border-brand-purple-900/60 p-5 space-y-4 shadow-xl">
-        <div className="flex items-center justify-between border-b border-brand-purple-950 pb-3">
+      <div className="bg-black rounded-xl border border-neutral-800 p-5 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
           <div className="space-y-0.5">
-            <h3 className="font-display font-bold text-slate-200 text-sm flex items-center space-x-1.5">
-              <Terminal size={15} className="text-emerald-400" />
+            <h3 className="font-display font-bold text-white text-sm flex items-center space-x-1.5">
+              <Terminal size={15} className="text-white" />
               <span>
                 {activeSubTab === 'sql' && 'PostgreSQL migrations - /supabase-schema.sql'}
                 {activeSubTab === 'nextjs' && 'Next.js 14 App Router Structure'}
@@ -360,7 +360,7 @@ serve(async (req) => {
                 {activeSubTab === 'guide' && 'Comprehensive Setup & Deploy Guide'}
               </span>
             </h3>
-            <p className="text-[10px] text-slate-400 font-sans">
+            <p className="text-[10px] text-neutral-400 font-sans">
               Review and copy code directly for production setup in Vercel.
             </p>
           </div>
@@ -375,15 +375,15 @@ serve(async (req) => {
                 activeSubTab === 'edge' ? edgeCode : guideText;
               triggerCopy(text, activeSubTab);
             }}
-            className="flex items-center space-x-1 px-3 py-1.5 bg-brand-purple-900 hover:bg-brand-purple-850 border border-brand-purple-800 text-slate-200 text-xs font-semibold rounded-lg transition-colors cursor-pointer font-sans"
+            className="flex items-center space-x-1 px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer font-sans"
           >
-            {copiedId === activeSubTab ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+            {copiedId === activeSubTab ? <Check size={12} className="text-white" /> : <Copy size={12} />}
             <span>{copiedId === activeSubTab ? 'Copied!' : 'Copy Code'}</span>
           </button>
         </div>
 
         {/* Render Code Block */}
-        <pre className="text-[11px] font-mono text-slate-300 leading-normal max-h-[500px] overflow-y-auto bg-slate-950/60 p-4 rounded-lg border border-brand-purple-950 whitespace-pre scrollbar-thin">
+        <pre className="text-[11px] font-mono text-neutral-300 leading-normal max-h-[500px] overflow-y-auto bg-neutral-950 p-4 rounded-lg border border-neutral-800 whitespace-pre scrollbar-thin">
           <code>
             {activeSubTab === 'sql' && sqlCode}
             {activeSubTab === 'nextjs' && nextCode}
@@ -394,21 +394,21 @@ serve(async (req) => {
       </div>
 
       {/* Live Database Integration Status and Seeding Panel */}
-      <div className="bg-[#1B122B] rounded-xl border border-purple-900/20 p-6 shadow-lg space-y-4 text-left">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-purple-900/15 pb-4">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6 shadow-lg space-y-4 text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-800 pb-4">
           <div className="space-y-1">
             <h4 className="font-display font-bold text-white text-sm flex items-center space-x-2">
-              <Database size={16} className="text-emerald-400" />
+              <Database size={16} className="text-white" />
               <span>Real-Time Database Connectivity Status</span>
             </h4>
-            <p className="text-xs text-gray-400 leading-normal max-w-xl">
+            <p className="text-xs text-neutral-400 leading-normal max-w-xl">
               This agency portal dynamically detects connection settings. If Vite credentials are present, transactions route straight to your live cloud PostgreSQL instance.
             </p>
           </div>
 
           <div className="flex items-center space-x-2 shrink-0">
-            <span className={`h-2.5 w-2.5 rounded-full inline-block ${isSupabaseConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-            <span className={`font-mono text-xs font-black uppercase ${isSupabaseConnected ? 'text-emerald-400' : 'text-amber-400'}`}>
+            <span className="h-2.5 w-2.5 rounded-full inline-block bg-white animate-pulse" />
+            <span className="font-mono text-xs font-black uppercase text-white">
               {isSupabaseConnected ? 'Supabase Connected' : 'Local Storage Sandbox'}
             </span>
           </div>
@@ -416,13 +416,13 @@ serve(async (req) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
           {/* Seed Demo Action */}
-          <div className="border border-purple-900/10 bg-[#0F081C]/40 p-4 rounded-xl flex flex-col justify-between gap-4">
+          <div className="border border-neutral-800 bg-neutral-950 p-4 rounded-xl flex flex-col justify-between gap-4">
             <div className="space-y-1">
               <h5 className="text-xs font-bold text-white flex items-center space-x-1">
-                <Sparkles size={13} className="text-emerald-400" />
+                <Sparkles size={13} className="text-white" />
                 <span>Load Sample Backoffice Sandbox Data</span>
               </h5>
-              <p className="text-[11px] text-gray-400 leading-relaxed">
+              <p className="text-[11px] text-neutral-400 leading-relaxed">
                 Since we removed default seed datasets from the main database, you can load our complete pre-configured demonstration suite (4 Clients, 3 Projects, 4 Active Retainers, and Docs) instantly to inspect the styling and responsiveness.
               </p>
             </div>
@@ -430,7 +430,7 @@ serve(async (req) => {
               id="seed-sandbox-btn"
               onClick={handleSeed}
               disabled={isSeeding}
-              className="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-[#0F081C] font-semibold text-xs rounded-lg shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5"
+              className="w-full py-2.5 bg-white hover:bg-neutral-200 text-black font-extrabold text-xs rounded-lg shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5"
             >
               {isSeeding ? (
                 <>
@@ -447,13 +447,13 @@ serve(async (req) => {
           </div>
 
           {/* Wipe Sandbox Action */}
-          <div className="border border-purple-900/10 bg-[#0F081C]/40 p-4 rounded-xl flex flex-col justify-between gap-4">
+          <div className="border border-neutral-800 bg-neutral-950 p-4 rounded-xl flex flex-col justify-between gap-4">
             <div className="space-y-1">
               <h5 className="text-xs font-bold text-white flex items-center space-x-1">
-                <Trash2 size={13} className="text-red-400" />
+                <Trash2 size={13} className="text-neutral-300" />
                 <span>Purge Local sandbox Databases</span>
               </h5>
-              <p className="text-[11px] text-gray-400 leading-relaxed">
+              <p className="text-[11px] text-neutral-400 leading-relaxed">
                 Wipes and purges any records in your current local sandbox cache. Allows starting completely empty from scratch. This operation is safe and will not delete records in your live remote cloud database.
               </p>
             </div>
@@ -461,7 +461,7 @@ serve(async (req) => {
               id="wipe-sandbox-btn"
               onClick={handleWipe}
               disabled={isWiping}
-              className="w-full py-2.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 font-semibold text-xs rounded-lg transition-all cursor-pointer flex items-center justify-center space-x-1.5"
+              className="w-full py-2.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-neutral-200 font-semibold text-xs rounded-lg transition-all cursor-pointer flex items-center justify-center space-x-1.5"
             >
               {isWiping ? (
                 <>
@@ -480,26 +480,26 @@ serve(async (req) => {
       </div>
 
       {/* Helper checklist */}
-      <div className="bg-[#1B122B] rounded-xl border border-purple-900/20 p-5 shadow-lg space-y-3.5 text-left">
+      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-5 shadow-lg space-y-3.5 text-left">
         <h4 className="font-display font-bold text-white text-sm flex items-center space-x-1.5">
-          <CheckCircle2 size={16} className="text-emerald-400" />
+          <CheckCircle2 size={16} className="text-white" />
           <span>Supabase Production Launch Checklist</span>
         </h4>
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-300 font-sans">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-neutral-300 font-sans">
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span className="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
             <span>Enable RLS on all 4 tables to protect tenant data from anonymous manipulation.</span>
           </li>
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span className="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
             <span>Configure bot webhooks inside Deno secrets manager via CLI.</span>
           </li>
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span className="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
             <span>Establish cron schedule jobs via standard Postgres pg_cron.</span>
           </li>
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span className="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
             <span>Deploy Next.js 14 server with built-in SSR features in Vercel.</span>
           </li>
         </ul>
