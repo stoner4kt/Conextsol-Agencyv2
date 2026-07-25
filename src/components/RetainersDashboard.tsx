@@ -127,7 +127,7 @@ export default function RetainersDashboard({
     }
 
     const created: Retainer = {
-      id: 'r-' + Math.random().toString(36).substring(2, 11),
+      id: crypto.randomUUID(),
       client_id: newForm.client_id,
       service_type: newForm.service_type,
       billing_amount: Number(newForm.billing_amount) || 0,

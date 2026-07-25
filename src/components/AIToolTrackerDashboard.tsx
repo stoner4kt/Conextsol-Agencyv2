@@ -136,7 +136,7 @@ export default function AIToolTrackerDashboard({
     for (const serviceName of AVAILABLE_SERVICES) {
       const config = serviceConfigs[serviceName];
       if (config.active) {
-        const idToUse = config.id || 'ai-acc-' + Math.random().toString(36).substring(2, 9);
+        const idToUse = config.id || crypto.randomUUID();
         
         let finalStatus = config.status;
         const daysLeft = calculateDaysUntilReset(config.reset_date);

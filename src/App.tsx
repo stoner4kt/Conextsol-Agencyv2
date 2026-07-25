@@ -343,7 +343,7 @@ export default function App() {
 
   // Onboarding Wizard complete callback (chains Client + Project + Specs)
   const handleOnboardingComplete = async (newClient: Client, newProject: Project, newDoc: DocumentAndNote) => {
-    const wizardAlertId = 'wizard-' + Date.now();
+    const wizardAlertId = crypto.randomUUID();
     const newAlert: WebhookAlert = {
       id: wizardAlertId,
       timestamp: new Date().toISOString(),
@@ -395,7 +395,7 @@ export default function App() {
         const clientName = client ? client.company_name : 'Unknown Client';
         
         return {
-          id: `deadline-alert-${project.id}-${Date.now()}`,
+          id: crypto.randomUUID(),
           timestamp: new Date().toISOString(),
           type: 'deadline',
           title: `Deadline Alert: ${project.project_name}`,
@@ -416,7 +416,7 @@ export default function App() {
     } else {
       // Log negative search outcome
       const dryAlert: WebhookAlert = {
-        id: `deadline-dry-${Date.now()}`,
+        id: crypto.randomUUID(),
         timestamp: new Date().toISOString(),
         type: 'deadline',
         title: 'Daily Deadline Scanner Executed',
@@ -445,7 +445,7 @@ export default function App() {
         const clientName = client ? client.company_name : 'Unknown Client';
 
         return {
-          id: `retainer-alert-${ret.id}-${Date.now()}`,
+          id: crypto.randomUUID(),
           timestamp: new Date().toISOString(),
           type: 'retainer',
           title: `Retainer Billing Due: ${clientName}`,
@@ -465,7 +465,7 @@ export default function App() {
       }
     } else {
       const dryAlert: WebhookAlert = {
-        id: `retainer-dry-${Date.now()}`,
+        id: crypto.randomUUID(),
         timestamp: new Date().toISOString(),
         type: 'retainer',
         title: 'Billing Scanner Executed',
@@ -484,7 +484,7 @@ export default function App() {
   // Insert a new retainer contract for a specific client
   const handleAddRetainer = async (clientId: string, serviceType: string, amount: number, cycleDay: number) => {
     const newRetainer: Retainer = {
-      id: 'ret-' + Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       client_id: clientId,
       service_type: serviceType,
       billing_amount: amount,
@@ -506,7 +506,7 @@ export default function App() {
     const parsedFiles = files ? files.split(',').map(f => f.trim()).filter(Boolean) : [];
     
     const newDoc: DocumentAndNote = {
-      id: 'doc-' + Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       project_id: projectId,
       title: title,
       content: content,

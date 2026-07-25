@@ -104,7 +104,7 @@ export default function DocumentsDashboard({
       .filter(r => r.length > 0);
 
     const updated: DocumentAndNote = {
-      id: docForm.id || 'd-' + Math.random().toString(36).substring(2, 11),
+      id: docForm.id || crypto.randomUUID(),
       project_id: docForm.project_id || '',
       title: docForm.title,
       content: docForm.content,
