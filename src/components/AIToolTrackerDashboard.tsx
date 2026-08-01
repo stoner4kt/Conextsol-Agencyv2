@@ -254,9 +254,9 @@ export default function AIToolTrackerDashboard({
       <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1">
-            <div className="flex items-center space-x-2">
-              <span className="p-1.5 bg-neutral-800 border border-neutral-700 text-white rounded-lg">
-                <Zap size={18} />
+            <div className="flex items-center space-x-2.5">
+              <span className="p-1 bg-black border border-neutral-800 text-white rounded-xl shadow-md shrink-0">
+                <img src="/logo.png" alt="Conextsol Dash" className="w-6 h-6 object-contain" referrerPolicy="no-referrer" />
               </span>
               <h2 className="text-xl md:text-2xl font-display font-extrabold text-white">
                 AI Tool Account Limits Tracker

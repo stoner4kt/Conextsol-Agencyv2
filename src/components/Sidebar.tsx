@@ -73,13 +73,16 @@ export default function Sidebar({
         {/* Brand Header */}
         <div className="p-6 border-b border-neutral-800 flex items-center justify-between lg:block">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-black font-black shrink-0 shadow-lg shadow-white/10">
-              CX
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Conextsol Dash Logo" 
+              className="w-10 h-10 object-contain rounded-xl bg-black/60 border border-neutral-800 p-0.5 shrink-0 shadow-lg shadow-teal-950/40"
+              referrerPolicy="no-referrer"
+            />
             <div>
-              <h1 className="font-display font-bold tracking-tight text-white text-base">Conextsol</h1>
-              <p className="text-[9px] text-neutral-400 font-mono font-semibold tracking-widest uppercase">
-                Agency Backoffice
+              <h1 className="font-display font-black tracking-tight text-white text-base leading-tight">Conextsol Dash</h1>
+              <p className="text-[8px] text-teal-400 font-mono font-bold tracking-widest uppercase mt-0.5">
+                Optimized Web Systems
               </p>
             </div>
           </div>

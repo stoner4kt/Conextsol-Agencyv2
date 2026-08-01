@@ -609,14 +609,22 @@ export default function App() {
         <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-neutral-900/40 rounded-full blur-[120px]" />
 
         <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center space-y-3">
-          <div className="inline-flex h-12 w-12 rounded-2xl bg-white p-0.5 shadow-xl shadow-white/5">
-            <div className="h-full w-full bg-black rounded-[14px] flex items-center justify-center font-display font-black text-white text-xl tracking-tight">
-              CX
-            </div>
+          <div className="inline-flex h-16 w-16 rounded-2xl bg-black border border-neutral-800 p-2 shadow-2xl shadow-teal-950/50 justify-center items-center">
+            <img 
+              src="/logo.png" 
+              alt="Conextsol Dash Logo" 
+              className="h-full w-full object-contain"
+              referrerPolicy="no-referrer"
+            />
           </div>
-          <h2 className="text-2xl md:text-3xl font-display font-extrabold tracking-tight text-white">
-            Conextsol Agency Portal
-          </h2>
+          <div>
+            <h2 className="text-2xl md:text-3xl font-display font-black tracking-tight text-white">
+              Conextsol Dash
+            </h2>
+            <p className="text-[10px] text-teal-400 font-mono font-bold uppercase tracking-widest mt-1">
+              Optimized Web Systems
+            </p>
+          </div>
           <p className="text-xs text-neutral-400 max-w-xs mx-auto">
             Secure client, project, retainer management, and automated notifications ledger.
           </p>
@@ -728,9 +736,15 @@ export default function App() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center font-sans space-y-4">
-        <div className="h-10 w-10 border-4 border-neutral-800 border-t-white rounded-full animate-spin" />
+        <img 
+          src="/logo.png" 
+          alt="Conextsol Dash" 
+          className="w-16 h-16 object-contain animate-pulse"
+          referrerPolicy="no-referrer"
+        />
+        <div className="h-8 w-8 border-3 border-neutral-800 border-t-teal-400 rounded-full animate-spin" />
         <p className="text-xs text-neutral-400 font-mono font-bold uppercase tracking-widest animate-pulse">
-          Synchronizing Conextsol Database...
+          Synchronizing Conextsol Dash Database...
         </p>
       </div>
     );
@@ -771,24 +785,28 @@ export default function App() {
               <Menu size={22} />
             </button>
 
-            <div>
-              <h1 className="font-display font-extrabold tracking-tight text-white text-base md:text-lg flex items-center gap-2">
-                {/* Micro branding on mobile header */}
-                <span className="lg:hidden text-xs bg-neutral-800 border border-neutral-700 text-white font-mono px-1.5 py-0.5 rounded uppercase font-bold tracking-widest shrink-0">
-                  Conextsol
-                </span>
-                <span className="truncate">
-                  {selectedDocumentId 
-                    ? 'System Specifications Sheets' 
-                    : selectedClientId 
-                      ? 'Client Profile Registry' 
-                      : getTabTitle()
-                  }
-                </span>
-              </h1>
-              <p className="text-[10px] text-neutral-400 font-mono font-semibold tracking-wider uppercase mt-0.5">
-                Conextsol Backoffice • Active Context
-              </p>
+            <div className="flex items-center space-x-2.5">
+              <img 
+                src="/logo.png" 
+                alt="Conextsol Dash Logo" 
+                className="w-7 h-7 object-contain rounded-lg bg-black border border-neutral-800 p-0.5 shrink-0 shadow-sm"
+                referrerPolicy="no-referrer"
+              />
+              <div>
+                <h1 className="font-display font-extrabold tracking-tight text-white text-base md:text-lg flex items-center gap-2">
+                  <span className="truncate">
+                    {selectedDocumentId 
+                      ? 'System Specifications Sheets' 
+                      : selectedClientId 
+                        ? 'Client Profile Registry' 
+                        : getTabTitle()
+                    }
+                  </span>
+                </h1>
+                <p className="text-[10px] text-neutral-400 font-mono font-semibold tracking-wider uppercase mt-0.5">
+                  Conextsol Dash • Backoffice
+                </p>
+              </div>
             </div>
           </div>
 
@@ -934,15 +952,15 @@ export default function App() {
         {/* Footer Credit & Status Line */}
         <footer className="bg-neutral-950 border-t border-neutral-800 py-3.5 px-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-400 gap-2 shrink-0">
           <div className="flex items-center space-x-2">
-            <span className="h-1.5 w-1.5 rounded-full inline-block bg-white animate-pulse" />
+            <img src="/logo.png" alt="Conextsol Dash" className="w-4 h-4 object-contain inline-block shrink-0" referrerPolicy="no-referrer" />
             <span className="font-mono">
               {isSupabaseConfigured 
                 ? 'Production Cloud synchronized with live Supabase database' 
                 : 'Local Sandbox synchronized with localStorage database'}
             </span>
           </div>
-          <div>
-            <span className="font-semibold text-neutral-200">Conextsol Internal Backoffice</span> v1.4.0
+          <div className="flex items-center space-x-1.5">
+            <span className="font-semibold text-neutral-200">Conextsol Dash</span> v1.4.0
           </div>
         </footer>
       </main>

@@ -75,19 +75,27 @@ export default function DashboardStats({
     <div className="space-y-6">
       {/* Simulation Banner & Quick Toggles */}
       <div className="bg-neutral-900 border border-neutral-800 p-5 md:p-6 rounded-2xl shadow-xl text-neutral-300 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-2">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-            </span>
-            <h3 className="font-display font-bold text-sm md:text-base tracking-tight text-white">
-              Durable Simulation Sandbox Active
-            </h3>
+        <div className="flex items-center space-x-3.5">
+          <img 
+            src="/logo.png" 
+            alt="Conextsol Dash" 
+            className="w-10 h-10 object-contain rounded-xl bg-black border border-neutral-800 p-1 shrink-0 shadow-lg shadow-teal-950/30"
+            referrerPolicy="no-referrer"
+          />
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-400"></span>
+              </span>
+              <h3 className="font-display font-bold text-sm md:text-base tracking-tight text-white">
+                Conextsol Dash System Overview
+              </h3>
+            </div>
+            <p className="text-xs text-neutral-400 leading-normal max-w-xl">
+              You can test the entire workflow live. The system date is anchored at <strong className="font-mono text-white">{CURRENT_DATE_STR}</strong>. Run the automated script monitors below to scan deadlines or recurring invoices and trigger actual Telegram alerting webhooks!
+            </p>
           </div>
-          <p className="text-xs text-neutral-400 leading-normal max-w-xl">
-            You can test the entire workflow live. The system date is anchored at <strong className="font-mono text-white">{CURRENT_DATE_STR}</strong>. Run the automated script monitors below to scan deadlines or recurring invoices and trigger actual Telegram alerting webhooks!
-          </p>
         </div>
         <button
           id="wizard-launcher-btn"
