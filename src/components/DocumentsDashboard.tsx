@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  Search, 
-  FileText, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  Save, 
-  X, 
-  Check, 
+import {
+  Search,
+  FileText,
+  Plus,
+  Edit2,
+  Trash2,
+  Save,
+  X,
+  Check,
   AlertCircle,
   Eye,
   BookOpen,
@@ -57,10 +57,10 @@ export default function DocumentsDashboard({
 
   // Filters
   const filteredDocs = state.documents.filter(doc => {
-    const matchesSearch = 
+    const matchesSearch =
       doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doc.content.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesProject = filterProject === 'all' || doc.project_id === filterProject;
 
     return matchesSearch && matchesProject;
@@ -120,13 +120,22 @@ export default function DocumentsDashboard({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div className="space-y-6">
+      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
+        <div className="space-y-2">
+          <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
+          <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Specification Vault</h2>
+          <p className="max-w-3xl text-xs md:text-sm text-slate-400">Search, inspect, and maintain internal specification intelligence.</p>
+        </div>
+      </section>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       {/* 1. LEFT SIDEBAR: Document List & Filters (5 cols on wide screens) */}
       <div className="lg:col-span-5 space-y-4">
         {/* Statistics Header */}
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 flex items-center justify-between shadow-lg">
+        <div className="command-panel p-4 flex items-center justify-between shadow-lg">
           <div className="space-y-0.5">
-            <span className="text-[10px] text-neutral-400 font-mono font-semibold uppercase tracking-wider">Specifications Table</span>
+            <span className="text-[10px] text-slate-400 font-mono font-semibold uppercase tracking-wider">Specifications Table</span>
             <h4 className="text-xl font-display font-black text-white">{state.documents.length} Records</h4>
           </div>
           {isAdmin && !isAdding && !isEditing && (
@@ -141,9 +150,9 @@ export default function DocumentsDashboard({
         </div>
 
         {/* Search & Project Filter */}
-        <div className="bg-neutral-900 border border-neutral-800 p-4 rounded-xl shadow-lg space-y-3">
+        <div className="bg-command-800/90 border border-slate-700/30 p-4 rounded-xl shadow-lg space-y-3">
           <div className="relative">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-500">
+            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
               <Search size={14} />
             </span>
             <input
@@ -151,14 +160,14 @@ export default function DocumentsDashboard({
               placeholder="Search documents by keywords..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-500 focus:outline-none"
             />
           </div>
 
           <select
             value={filterProject}
             onChange={e => setFilterProject(e.target.value)}
-            className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs font-semibold text-neutral-300 focus:outline-none"
+            className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs font-semibold text-slate-300 focus:outline-none"
           >
             <option value="all">All Projects & Targets</option>
             {state.projects.map(p => (
@@ -182,8 +191,8 @@ export default function DocumentsDashboard({
                 className={`
                   p-4 rounded-xl border transition-all cursor-pointer text-left space-y-2
                   ${isSelected
-                    ? 'bg-neutral-800 border-neutral-600 shadow-inner'
-                    : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
+                    ? 'bg-command-700 border-neutral-600 shadow-inner'
+                    : 'bg-command-800/90 border-slate-700/30 hover:border-slate-600/40'
                   }
                 `}
               >
@@ -191,7 +200,7 @@ export default function DocumentsDashboard({
                   <span className="text-[9px] font-mono font-bold text-white uppercase tracking-widest">
                     {getClientNameByProject(doc.project_id)}
                   </span>
-                  <span className="text-[9px] text-neutral-500 font-mono">
+                  <span className="text-[9px] text-slate-500 font-mono">
                     {new Date(doc.updated_at || doc.created_at).toLocaleDateString()}
                   </span>
                 </div>
@@ -200,14 +209,14 @@ export default function DocumentsDashboard({
                   {doc.title}
                 </h4>
 
-                <p className="text-[11px] text-neutral-400 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
                   {doc.content.replace(/[#*`]/g, '').slice(0, 100)}...
                 </p>
 
-                <div className="flex items-center justify-between pt-1 border-t border-neutral-800/80 text-[9px] text-neutral-500">
+                <div className="flex items-center justify-between pt-1 border-t border-slate-700/30/80 text-[9px] text-slate-500">
                   <span className="truncate max-w-[150px] font-mono">{getProjectName(doc.project_id)}</span>
                   {doc.file_references.length > 0 && (
-                    <span className="bg-black border border-neutral-800 text-neutral-400 px-1.5 py-0.2 rounded font-mono">
+                    <span className="bg-command-950 border border-slate-700/30 text-slate-400 px-1.5 py-0.2 rounded font-mono">
                       {doc.file_references.length} refs
                     </span>
                   )}
@@ -217,9 +226,9 @@ export default function DocumentsDashboard({
           })}
 
           {filteredDocs.length === 0 && (
-            <div className="text-center py-12 bg-neutral-900 rounded-xl border border-neutral-800 space-y-2">
-              <FileText size={20} className="text-neutral-500 mx-auto" />
-              <p className="text-xs text-neutral-400">No specs match your filters.</p>
+            <div className="text-center py-12 command-panel space-y-2">
+              <FileText size={20} className="text-slate-500 mx-auto" />
+              <p className="text-xs text-slate-400">No specs match your filters.</p>
             </div>
           )}
         </div>
@@ -227,16 +236,16 @@ export default function DocumentsDashboard({
 
       {/* 2. RIGHT PANEL: Reader / Editor Form (7 cols on wide screens) */}
       <div className="lg:col-span-7">
-        
+
         {/* A. Create or Edit Mode */}
         {isAdding || isEditing ? (
-          <form onSubmit={handleSaveSubmit} className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 md:p-6 shadow-xl space-y-4 animate-fadeIn">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+          <form onSubmit={handleSaveSubmit} className="command-panel p-5 md:p-6 shadow-xl space-y-4 animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-slate-700/30 pb-3">
               <div>
                 <h3 className="font-display font-bold text-white text-sm">
                   {isAdding ? 'Compose New Tech Spec' : 'Modify Specifications Record'}
                 </h3>
-                <p className="text-[10px] text-neutral-400">Markdown syntax is fully supported for contents.</p>
+                <p className="text-[10px] text-slate-400">Markdown syntax is fully supported for contents.</p>
               </div>
               <button
                 type="button"
@@ -244,24 +253,24 @@ export default function DocumentsDashboard({
                   setIsAdding(false);
                   setIsEditing(false);
                 }}
-                className="p-1.5 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-white cursor-pointer"
+                className="p-1.5 hover:bg-command-700 rounded-lg text-slate-400 hover:text-white cursor-pointer"
               >
                 <X size={15} />
               </button>
             </div>
 
             {addError && (
-              <p className="text-xs text-neutral-200 bg-black border border-neutral-700 p-2 rounded">{addError}</p>
+              <p className="text-xs text-slate-200 bg-command-950 border border-slate-600/40 p-2 rounded">{addError}</p>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Associate with Project Target *</label>
+                <label className="block text-[10px] font-semibold text-slate-400 mb-1">Associate with Project Target *</label>
                 <select
                   required
                   value={docForm.project_id || ''}
                   onChange={e => setDocForm({ ...docForm, project_id: e.target.value })}
-                  className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white focus:outline-none"
+                  className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white focus:outline-none"
                 >
                   <option value="">-- Choose Project --</option>
                   {state.projects.map(p => (
@@ -271,38 +280,38 @@ export default function DocumentsDashboard({
               </div>
 
               <div>
-                <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Document Title *</label>
+                <label className="block text-[10px] font-semibold text-slate-400 mb-1">Document Title *</label>
                 <input
                   type="text"
                   placeholder="e.g. Acme Webhook Secret Keys Guide"
                   required
                   value={docForm.title || ''}
                   onChange={e => setDocForm({ ...docForm, title: e.target.value })}
-                  className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                  className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">External File / API Documentation References (Comma-separated)</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">External File / API Documentation References (Comma-separated)</label>
               <input
                 type="text"
                 placeholder="/storage/acme_stripe.pdf, https://stripe.com/docs/api"
                 value={fileRefs}
                 onChange={e => setFileRefs(e.target.value)}
-                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none"
+                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Specifications Content (Markdown syntax) *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Specifications Content (Markdown syntax) *</label>
               <textarea
                 placeholder="Markdown formatted specifications, checklists, code blocks, or secrets rotation instructions..."
                 rows={12}
                 required
                 value={docForm.content || ''}
                 onChange={e => setDocForm({ ...docForm, content: e.target.value })}
-                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs font-mono text-neutral-200 focus:outline-none focus:ring-1 focus:ring-white/20"
+                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs font-mono text-slate-200 focus:outline-none focus:ring-1 focus:ring-white/20"
               />
             </div>
 
@@ -313,7 +322,7 @@ export default function DocumentsDashboard({
                   setIsAdding(false);
                   setIsEditing(false);
                 }}
-                className="px-4 py-2 bg-black hover:bg-neutral-800 border border-neutral-800 text-neutral-400 text-xs font-bold rounded-lg cursor-pointer"
+                className="px-4 py-2 bg-command-950 hover:bg-command-700 border border-slate-700/30 text-slate-400 text-xs font-bold rounded-lg cursor-pointer"
               >
                 Discard
               </button>
@@ -329,16 +338,16 @@ export default function DocumentsDashboard({
         ) : (
           /* B. Reader / Viewer Mode */
           selectedDoc ? (
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 md:p-6 shadow-xl space-y-5 text-left animate-fadeIn">
+            <div className="command-panel p-5 md:p-6 shadow-xl space-y-5 text-left animate-fadeIn">
               {/* Header */}
-              <div className="border-b border-neutral-800 pb-4 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div className="border-b border-slate-700/30 pb-4 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2 flex-wrap">
                     <span className="text-[10px] font-mono text-white font-bold uppercase tracking-wider">
                       {getClientNameByProject(selectedDoc.project_id)}
                     </span>
                     <ChevronRight size={10} className="text-neutral-600" />
-                    <span className="text-[10px] text-neutral-400 font-semibold truncate max-w-[150px]">
+                    <span className="text-[10px] text-slate-400 font-semibold truncate max-w-[150px]">
                       {getProjectName(selectedDoc.project_id)}
                     </span>
                   </div>
@@ -351,7 +360,7 @@ export default function DocumentsDashboard({
                   {isAdmin && (
                     <button
                       onClick={() => handleStartEdit(selectedDoc)}
-                      className="p-1.5 bg-black hover:bg-neutral-800 border border-neutral-800 text-neutral-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 bg-command-950 hover:bg-command-700 border border-slate-700/30 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
                       title="Edit specifications"
                     >
                       <Edit2 size={13} />
@@ -365,7 +374,7 @@ export default function DocumentsDashboard({
                           setSelectedDocId(null);
                         }
                       }}
-                      className="p-1.5 bg-black hover:bg-neutral-800 border border-neutral-800 text-neutral-400 hover:text-white rounded-lg transition-colors cursor-pointer"
+                      className="p-1.5 bg-command-950 hover:bg-command-700 border border-slate-700/30 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
                       title="Delete specification"
                     >
                       <Trash2 size={13} />
@@ -375,16 +384,16 @@ export default function DocumentsDashboard({
               </div>
 
               {/* Rendered Markdown Viewer */}
-              <div className="prose prose-invert prose-xs md:prose-sm max-w-none text-neutral-200 leading-relaxed font-sans max-h-[500px] overflow-y-auto pr-1">
-                <div className="bg-black p-4 rounded-xl border border-neutral-800 font-mono text-xs text-neutral-300 leading-normal whitespace-pre-wrap">
+              <div className="prose prose-invert prose-xs md:prose-sm max-w-none text-slate-200 leading-relaxed font-sans max-h-[500px] overflow-y-auto pr-1">
+                <div className="bg-command-950 p-4 rounded-xl border border-slate-700/30 font-mono text-xs text-slate-300 leading-normal whitespace-pre-wrap">
                   {selectedDoc.content}
                 </div>
               </div>
 
               {/* File references / Attachments links */}
               {selectedDoc.file_references.length > 0 && (
-                <div className="pt-4 border-t border-neutral-800 space-y-2">
-                  <span className="text-[10px] font-mono text-neutral-500 uppercase font-bold block">Resource & Documentation Links</span>
+                <div className="pt-4 border-t border-slate-700/30 space-y-2">
+                  <span className="text-[10px] font-mono text-slate-500 uppercase font-bold block">Resource & Documentation Links</span>
                   <div className="flex items-center gap-2 flex-wrap">
                     {selectedDoc.file_references.map((ref, idx) => {
                       const isWeb = ref.startsWith('http');
@@ -394,11 +403,11 @@ export default function DocumentsDashboard({
                           href={isWeb ? ref : '#'}
                           target={isWeb ? "_blank" : undefined}
                           rel={isWeb ? "noreferrer" : undefined}
-                          className="flex items-center space-x-1 px-2.5 py-1 bg-black hover:bg-neutral-800 border border-neutral-800 text-white rounded-lg text-xs transition-colors font-mono font-bold cursor-pointer"
+                          className="flex items-center space-x-1 px-2.5 py-1 bg-command-950 hover:bg-command-700 border border-slate-700/30 text-white rounded-lg text-xs transition-colors font-mono font-bold cursor-pointer"
                         >
-                          <Link size={10} className="text-neutral-500" />
+                          <Link size={10} className="text-slate-500" />
                           <span className="truncate max-w-[200px]">{ref.split('/').pop()}</span>
-                          {isWeb && <ExternalLink size={10} className="text-neutral-500 ml-1 shrink-0" />}
+                          {isWeb && <ExternalLink size={10} className="text-slate-500 ml-1 shrink-0" />}
                         </a>
                       );
                     })}
@@ -407,15 +416,16 @@ export default function DocumentsDashboard({
               )}
             </div>
           ) : (
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-12 text-center shadow-lg space-y-3">
+            <div className="bg-command-800/90 border border-slate-700/30 rounded-xl p-12 text-center shadow-lg space-y-3">
               <BookOpen size={30} className="text-neutral-600 mx-auto animate-pulse" />
               <h4 className="font-display font-bold text-white text-sm">No Document Selected</h4>
-              <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+              <p className="text-xs text-slate-400 max-w-sm mx-auto">
                 Pick an item from the left directory to view full system configurations and Markdown specifications.
               </p>
             </div>
           )
         )}
+      </div>
       </div>
     </div>
   );
