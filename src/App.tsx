@@ -15,8 +15,7 @@ import {
 } from 'lucide-react';
 import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount } from './types';
 import { 
-  getInitialState, 
-  CURRENT_DATE_STR
+  getInitialState
 } from './mockData';
 import Sidebar from './components/Sidebar';
 import DashboardStats from './components/DashboardStats';
@@ -383,8 +382,9 @@ export default function App() {
 
   // Simulate Deno Edge Function: Scan Projects Due in exactly 2 Days
   const handleRunDeadlineAlerts = async () => {
-    // Current anchored date is '2026-07-15'. 2 Days away is '2026-07-17'.
-    const targetDate = '2026-07-17';
+    const inTwoDays = new Date();
+    inTwoDays.setDate(inTwoDays.getDate() + 2);
+    const targetDate = `${inTwoDays.getFullYear()}-${String(inTwoDays.getMonth() + 1).padStart(2, '0')}-${String(inTwoDays.getDate()).padStart(2, '0')}`;
     
     // Find matching projects
     const matchingProjects = state.projects.filter(p => p.end_date === targetDate);
@@ -420,7 +420,7 @@ export default function App() {
         timestamp: new Date().toISOString(),
         type: 'deadline',
         title: 'Daily Deadline Scanner Executed',
-        message: '🔍 Scan complete: Checked all projects due on 2026-07-17. Zero matches found in database backlog.',
+        message: `🔍 Scan complete: Checked all projects due on ${targetDate}. Zero matches found in database backlog.`,
         recipient: 'System Console',
         status: 'sent'
       };
@@ -432,10 +432,9 @@ export default function App() {
     }
   };
 
-  // Simulate Deno Edge Function: Scan Active Retainers Due Today (Cycle Day === 15)
+  // Simulate Deno Edge Function: Scan Active Retainers Due Today
   const handleRunRetainerAlerts = async () => {
-    // Current anchored date is July 15, so billing day is 15
-    const todayDayNum = 15;
+    const todayDayNum = new Date().getDate();
 
     const matchingRetainers = state.retainers.filter(r => r.is_active && r.billing_cycle_day === todayDayNum);
 

@@ -15,7 +15,6 @@ import {
   Bot
 } from 'lucide-react';
 import { AppState, Project, Client, Retainer, WebhookAlert } from '../types';
-import { CURRENT_DATE_STR } from '../mockData';
 
 interface DashboardStatsProps {
   state: AppState;
@@ -93,7 +92,7 @@ export default function DashboardStats({
               </h3>
             </div>
             <p className="text-xs text-neutral-400 leading-normal max-w-xl">
-              You can test the entire workflow live. The system date is anchored at <strong className="font-mono text-white">{CURRENT_DATE_STR}</strong>. Run the automated script monitors below to scan deadlines or recurring invoices and trigger actual Telegram alerting webhooks!
+              You can test the entire workflow live. The system uses your browser's real local time. Run the automated script monitors below to scan deadlines or recurring invoices and trigger actual Telegram alerting webhooks!
             </p>
           </div>
         </div>
@@ -255,8 +254,19 @@ export default function DashboardStats({
 
           <div className="space-y-4">
             {state.projects.map((project) => {
-              // Highlight projects that end in 2 days
-              const isEndingInTwoDays = project.end_date === '2026-07-17';
+              // Highlight projects that end in 0-2 days
+              const getDaysUntilEnd = (dateStr: string) => {
+                if (!dateStr) return 999;
+                const parts = dateStr.split('-').map(Number);
+                if (parts.length < 3) return 999;
+                const end = new Date(parts[0], parts[1] - 1, parts[2]);
+                end.setHours(0, 0, 0, 0);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return Math.round((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+              };
+              const daysLeft = getDaysUntilEnd(project.end_date);
+              const isEndingInTwoDays = daysLeft >= 0 && daysLeft <= 2;
               return (
                 <div 
                   key={project.id}

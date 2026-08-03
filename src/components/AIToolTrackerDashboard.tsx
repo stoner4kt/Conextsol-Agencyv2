@@ -21,7 +21,6 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { AppState, AIToolAccount } from '../types';
-import { CURRENT_DATE_STR } from '../mockData';
 
 interface AIToolTrackerDashboardProps {
   state: AppState;
@@ -29,6 +28,14 @@ interface AIToolTrackerDashboardProps {
   onDeleteAccount: (id: string) => Promise<void>;
   isAdmin: boolean;
 }
+
+const getTodayDateStr = (): string => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 const AVAILABLE_SERVICES: Array<'Replit' | 'Claude' | 'Codex' | 'Other'> = ['Replit', 'Claude', 'Codex', 'Other'];
 
@@ -50,7 +57,6 @@ export default function AIToolTrackerDashboard({
   const [isEditingExistingEmail, setIsEditingExistingEmail] = useState(false);
 
   // Form State for each service under the entered email
-  // Service key -> { active: boolean, reset_date: string, status: string, notes: string, last_checked: string, id?: string }
   type ServiceConfig = {
     active: boolean;
     reset_date: string;
@@ -60,22 +66,34 @@ export default function AIToolTrackerDashboard({
     id?: string;
   };
 
-  const [serviceConfigs, setServiceConfigs] = useState<Record<string, ServiceConfig>>({
-    Replit: { active: true, reset_date: '2026-07-28', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-    Claude: { active: true, reset_date: '2026-07-18', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-    Codex: { active: true, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-    Other: { active: false, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR }
+  const [serviceConfigs, setServiceConfigs] = useState<Record<string, ServiceConfig>>(() => {
+    const todayStr = getTodayDateStr();
+    return {
+      Replit: { active: true, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Claude: { active: true, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Codex: { active: true, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Other: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr }
+    };
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Helper to calculate Days Until Reset
+  // Helper to calculate Days Until Reset using real browser date
   const calculateDaysUntilReset = (targetResetDateStr: string): number => {
     if (!targetResetDateStr) return 0;
-    const today = new Date(CURRENT_DATE_STR);
-    const reset = new Date(targetResetDateStr);
-    const diffTime = reset.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const parts = targetResetDateStr.split('-').map(Number);
+    if (parts.length < 3) return 0;
+    const [year, month, day] = parts;
+    if (!year || !month || !day) return 0;
+
+    const targetDate = new Date(year, month - 1, day);
+    targetDate.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const diffTime = targetDate.getTime() - today.getTime();
+    return Math.round(diffTime / (1000 * 60 * 60 * 24));
   };
 
   // Get distinct list of account emails
@@ -85,11 +103,12 @@ export default function AIToolTrackerDashboard({
   const handleOpenAddAccountModal = () => {
     setModalEmail('');
     setIsEditingExistingEmail(false);
+    const todayStr = getTodayDateStr();
     setServiceConfigs({
-      Replit: { active: true, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-      Claude: { active: true, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-      Codex: { active: true, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-      Other: { active: false, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR }
+      Replit: { active: true, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Claude: { active: true, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Codex: { active: true, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Other: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr }
     });
     setIsModalOpen(true);
   };
@@ -100,12 +119,13 @@ export default function AIToolTrackerDashboard({
     setIsEditingExistingEmail(true);
 
     const existingRecordsForEmail = state.aiToolAccounts.filter(a => a.account_email.toLowerCase() === emailToEdit.toLowerCase());
+    const todayStr = getTodayDateStr();
     
     const newConfigs: Record<string, ServiceConfig> = {
-      Replit: { active: false, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-      Claude: { active: false, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-      Codex: { active: false, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR },
-      Other: { active: false, reset_date: '2026-08-01', status: 'Usable', notes: '', last_checked: CURRENT_DATE_STR }
+      Replit: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Claude: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Codex: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
+      Other: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr }
     };
 
     existingRecordsForEmail.forEach(rec => {
@@ -115,7 +135,7 @@ export default function AIToolTrackerDashboard({
         reset_date: rec.reset_date,
         status: rec.status,
         notes: rec.notes,
-        last_checked: rec.last_checked || CURRENT_DATE_STR,
+        last_checked: rec.last_checked || todayStr,
         id: rec.id
       };
     });
@@ -131,6 +151,7 @@ export default function AIToolTrackerDashboard({
 
     setIsSubmitting(true);
     const cleanedEmail = modalEmail.trim().toLowerCase();
+    const todayStr = getTodayDateStr();
 
     // Iterate over active services in serviceConfigs and save them
     for (const serviceName of AVAILABLE_SERVICES) {
@@ -153,7 +174,7 @@ export default function AIToolTrackerDashboard({
           reset_date: config.reset_date,
           status: finalStatus,
           notes: config.notes,
-          last_checked: config.last_checked || CURRENT_DATE_STR,
+          last_checked: config.last_checked || todayStr,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
@@ -171,7 +192,7 @@ export default function AIToolTrackerDashboard({
     const updated = {
       ...item,
       status: newStatus,
-      last_checked: CURRENT_DATE_STR,
+      last_checked: getTodayDateStr(),
       updated_at: new Date().toISOString()
     };
     await onSaveAccount(updated);

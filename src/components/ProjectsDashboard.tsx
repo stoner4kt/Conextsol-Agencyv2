@@ -73,9 +73,20 @@ export default function ProjectsDashboard({
     : 0;
   const projectCount = state.projects.length;
 
+  const getDaysUntilEnd = (dateStr: string) => {
+    if (!dateStr) return 999;
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length < 3) return 999;
+    const end = new Date(parts[0], parts[1] - 1, parts[2]);
+    end.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Math.round((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  };
+
   const urgentDeadlineCount = state.projects.filter(p => {
-    // July 15, 2026 is current date, warning is 2 days (July 17, 2026)
-    return p.end_date === '2026-07-17';
+    const diffDays = getDaysUntilEnd(p.end_date);
+    return diffDays >= 0 && diffDays <= 2;
   }).length;
 
   // Filters
@@ -434,7 +445,8 @@ export default function ProjectsDashboard({
       <div className="space-y-4">
         {filteredProjects.map((project) => {
           const isEditing = editingId === project.id;
-          const isEndingInTwoDays = project.end_date === '2026-07-17';
+          const daysLeft = getDaysUntilEnd(project.end_date);
+          const isEndingInTwoDays = daysLeft >= 0 && daysLeft <= 2;
 
           return (
             <div 
