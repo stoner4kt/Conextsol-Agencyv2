@@ -425,7 +425,7 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-neutral-400 mb-1.5">Invoiced Fixed Price ($)</label>
+                <label className="block text-xs font-semibold text-neutral-400 mb-1.5">Invoiced Fixed Price (R)</label>
                 <input 
                   type="number"
                   placeholder="e.g. 18500"

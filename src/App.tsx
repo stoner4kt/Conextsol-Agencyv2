@@ -399,7 +399,7 @@ export default function App() {
           timestamp: new Date().toISOString(),
           type: 'deadline',
           title: `Deadline Alert: ${project.project_name}`,
-          message: `⚠️ Telegram Alert Sent: Project "${project.project_name}" for client "${clientName}" is completing on ${project.end_date} (In 2 Days). Flat rate: $${project.invoiced_amount.toLocaleString()}. Webhook forwarded to Bot API.`,
+          message: `⚠️ Telegram Alert Sent: Project "${project.project_name}" for client "${clientName}" is completing on ${project.end_date} (In 2 Days). Flat rate: R ${project.invoiced_amount.toLocaleString()}. Webhook forwarded to Bot API.`,
           recipient: 'Telegram Admin Feed (@conextsol_ops)',
           status: 'sent'
         };
@@ -448,7 +448,7 @@ export default function App() {
           timestamp: new Date().toISOString(),
           type: 'retainer',
           title: `Retainer Billing Due: ${clientName}`,
-          message: `💰 Telegram Alert Sent: Active "${ret.service_type.toUpperCase()}" retainer is due for billing today (Day ${ret.billing_cycle_day}). Amount: $${ret.billing_amount.toLocaleString()}. Generating QuickBooks invoice.`,
+          message: `💰 Telegram Alert Sent: Active "${ret.service_type.toUpperCase()}" retainer is due for billing today (Day ${ret.billing_cycle_day}). Amount: R ${ret.billing_amount.toLocaleString()}. Generating QuickBooks invoice.`,
           recipient: 'Telegram Admin Billing Feed',
           status: 'sent'
         };

@@ -177,7 +177,7 @@ export default function ClientDetail({
                     {project.project_name}
                   </h4>
                   <span className="font-mono text-xs font-bold text-white">
-                    ${project.invoiced_amount.toLocaleString()}
+                    R {project.invoiced_amount.toLocaleString()}
                   </span>
                 </div>
                 <p className="text-xs text-neutral-400 line-clamp-2">
@@ -322,7 +322,7 @@ export default function ClientDetail({
                   <div className="text-right">
                     <p className="text-[10px] text-neutral-400 font-semibold font-mono">Amount due</p>
                     <p className="font-display font-extrabold text-white text-sm md:text-base">
-                      ${retainer.billing_amount.toLocaleString()} <span className="text-[10px] text-neutral-400 font-normal">/mo</span>
+                      R {retainer.billing_amount.toLocaleString()} <span className="text-[10px] text-neutral-400 font-normal">/mo</span>
                     </p>
                   </div>
                 </div>
@@ -376,7 +376,7 @@ export default function ClientDetail({
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Monthly Billing ($)</label>
+                      <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Monthly Billing (R)</label>
                       <input 
                         type="number"
                         placeholder="e.g. 1500"

@@ -423,7 +423,7 @@ export default function ClientsDashboard({
 
                     {/* Active MRR */}
                     <td className="py-4 px-6 text-center font-mono font-bold text-white">
-                      ${activeMRR.toLocaleString()}
+                      R {activeMRR.toLocaleString()}
                     </td>
 
                     {/* Actions */}
@@ -556,7 +556,7 @@ export default function ClientsDashboard({
                   </div>
                   <div>
                     <span className="text-neutral-500 block text-[9px] uppercase font-semibold">Active MRR</span>
-                    <span className="text-white font-bold">${activeMRR.toLocaleString()}</span>
+                    <span className="text-white font-bold">R {activeMRR.toLocaleString()}</span>
                   </div>
                 </div>
 

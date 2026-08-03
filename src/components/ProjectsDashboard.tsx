@@ -206,14 +206,14 @@ export default function ProjectsDashboard({
         <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-white font-mono font-semibold tracking-wide uppercase">Total Flat Value</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">${totalVolume.toLocaleString()}</h4>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">R {totalVolume.toLocaleString()}</h4>
             <span className="text-[9px] bg-white/10 text-white px-1.5 py-0.2 rounded font-mono font-bold">TOTAL REVENUE</span>
           </div>
         </div>
         <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-neutral-400 font-mono font-semibold tracking-wide uppercase">Average Flat Rate</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">${averageVolume.toLocaleString()}</h4>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">R {averageVolume.toLocaleString()}</h4>
             <span className="text-[10px] text-neutral-400 font-mono">per solution</span>
           </div>
         </div>
@@ -327,7 +327,7 @@ export default function ProjectsDashboard({
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Flat Rate Invoiced * ($)</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Flat Rate Invoiced * (R)</label>
               <input
                 type="number"
                 placeholder="e.g. 15000"
@@ -502,7 +502,7 @@ export default function ProjectsDashboard({
                     />
                   ) : (
                     <span className="font-display font-black text-white text-lg tracking-tight">
-                      ${project.invoiced_amount.toLocaleString()}
+                      R {project.invoiced_amount.toLocaleString()}
                     </span>
                   )}
                 </div>

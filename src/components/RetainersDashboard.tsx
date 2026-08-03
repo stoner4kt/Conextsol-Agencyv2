@@ -162,14 +162,14 @@ export default function RetainersDashboard({
         <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-white font-mono font-semibold tracking-wide uppercase">Active MRR Stream</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">${activeMRR.toLocaleString()}</h4>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">R {activeMRR.toLocaleString()}</h4>
             <span className="text-[9px] bg-white/10 text-white px-1.5 py-0.2 rounded font-mono font-bold">MONTHLY</span>
           </div>
         </div>
         <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-neutral-400 font-mono font-semibold tracking-wide uppercase">Average Retainer Size</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">${averageRecurring.toLocaleString()}</h4>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">R {averageRecurring.toLocaleString()}</h4>
             <span className="text-[10px] text-neutral-400 font-mono">per retainer</span>
           </div>
         </div>
@@ -290,7 +290,7 @@ export default function RetainersDashboard({
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Billing Amount ($/month) *</label>
+              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Billing Amount (R/month) *</label>
               <input
                 type="number"
                 placeholder="e.g. 1500"
@@ -416,7 +416,7 @@ export default function RetainersDashboard({
                           className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white max-w-[90px] text-right"
                         />
                       ) : (
-                        <>${retainer.billing_amount.toLocaleString()}/mo</>
+                        <>R {retainer.billing_amount.toLocaleString()}/mo</>
                       )}
                     </td>
 
@@ -553,7 +553,7 @@ export default function RetainersDashboard({
                         className="px-2 py-0.5 bg-black border border-neutral-800 rounded text-xs text-white w-2/3 block mt-0.5"
                       />
                     ) : (
-                      <span className="text-white font-bold">${retainer.billing_amount}/mo</span>
+                      <span className="text-white font-bold">R {retainer.billing_amount}/mo</span>
                     )}
                   </div>
                   <div>

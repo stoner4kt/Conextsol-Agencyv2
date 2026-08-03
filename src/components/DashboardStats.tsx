@@ -135,7 +135,7 @@ export default function DashboardStats({
           <div className="space-y-1">
             <p className="text-xs text-neutral-400 font-medium">Fixed Projects Backlog</p>
             <h4 className="text-2xl font-display font-extrabold text-white tracking-tight">
-              ${activeProjectsValue.toLocaleString()}
+              R {activeProjectsValue.toLocaleString()}
             </h4>
             <p className="text-[10px] text-neutral-400 font-semibold font-mono">{state.projects.length} accounts delivery</p>
           </div>
@@ -149,7 +149,7 @@ export default function DashboardStats({
           <div className="space-y-1">
             <p className="text-xs text-neutral-400 font-medium">Active Recurring MRR</p>
             <h4 className="text-2xl font-display font-extrabold text-white tracking-tight">
-              ${monthlyRetainersStream.toLocaleString()}
+              R {monthlyRetainersStream.toLocaleString()}
             </h4>
             <p className="text-[10px] text-neutral-400 font-semibold font-mono">
               {state.retainers.filter(r => r.is_active).length} active retainers
@@ -301,7 +301,7 @@ export default function DashboardStats({
                     <div className="sm:text-right shrink-0">
                       <p className="font-mono text-xs text-neutral-400 font-semibold">Invoiced Flat Rate</p>
                       <p className="font-display font-bold text-white text-sm md:text-base">
-                        ${project.invoiced_amount.toLocaleString()}
+                        R {project.invoiced_amount.toLocaleString()}
                       </p>
                     </div>
                   </div>
