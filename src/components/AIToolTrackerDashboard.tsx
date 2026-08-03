@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  Bot, 
-  Search, 
-  Plus, 
-  Edit3, 
-  Trash2, 
-  Clock, 
-  CheckCircle2, 
-  AlertTriangle, 
-  HelpCircle, 
-  X, 
-  Save, 
-  Mail, 
+import {
+  Bot,
+  Search,
+  Plus,
+  Edit3,
+  Trash2,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  HelpCircle,
+  X,
+  Save,
+  Mail,
   Sparkles,
   Zap,
   Filter,
@@ -120,7 +120,7 @@ export default function AIToolTrackerDashboard({
 
     const existingRecordsForEmail = state.aiToolAccounts.filter(a => a.account_email.toLowerCase() === emailToEdit.toLowerCase());
     const todayStr = getTodayDateStr();
-    
+
     const newConfigs: Record<string, ServiceConfig> = {
       Replit: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
       Claude: { active: false, reset_date: todayStr, status: 'Usable', notes: '', last_checked: todayStr },
@@ -158,7 +158,7 @@ export default function AIToolTrackerDashboard({
       const config = serviceConfigs[serviceName];
       if (config.active) {
         const idToUse = config.id || crypto.randomUUID();
-        
+
         let finalStatus = config.status;
         const daysLeft = calculateDaysUntilReset(config.reset_date);
         if (config.status !== 'Limited' && config.status !== 'Unknown') {
@@ -213,7 +213,7 @@ export default function AIToolTrackerDashboard({
     const matchesSearch = item.account_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           item.notes.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           item.service_name.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesService = filterService === 'all' || item.service_name.toLowerCase() === filterService.toLowerCase();
     const matchesStatus = filterStatus === 'all' || item.status.toLowerCase() === filterStatus.toLowerCase();
 
@@ -238,7 +238,7 @@ export default function AIToolTrackerDashboard({
       case 'codex':
         return 'bg-emerald-950/80 border-emerald-800 text-emerald-300';
       default:
-        return 'bg-neutral-800 border-neutral-700 text-neutral-300';
+        return 'bg-command-700 border-slate-600/40 text-slate-300';
     }
   };
 
@@ -251,7 +251,7 @@ export default function AIToolTrackerDashboard({
       case 'Usable':
         return 'bg-emerald-950/90 border-emerald-800 text-emerald-300';
       default:
-        return 'bg-neutral-800 border-neutral-700 text-neutral-400';
+        return 'bg-command-700 border-slate-600/40 text-slate-400';
     }
   };
 
@@ -264,26 +264,41 @@ export default function AIToolTrackerDashboard({
       case 'Usable':
         return <CheckCircle2 size={12} className="shrink-0 text-emerald-400" />;
       default:
-        return <HelpCircle size={12} className="shrink-0 text-neutral-400" />;
+        return <HelpCircle size={12} className="shrink-0 text-slate-400" />;
     }
   };
 
   return (
     <div className="space-y-6">
-      
+      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-2">
+            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
+            <div>
+              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">AI Resource Capacity Grid</h2>
+              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Observe AI account availability, reset windows, and capacity restrictions.</p>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+            <span className="text-teal-300">Signal:</span> Production UI Layer
+          </div>
+        </div>
+      </section>
+
       {/* Header Overview Banner */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+      <div className="bg-command-800/90 border border-slate-700/30 rounded-2xl p-6 shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1">
             <div className="flex items-center space-x-2.5">
-              <span className="p-1 bg-black border border-neutral-800 text-white rounded-xl shadow-md shrink-0">
+              <span className="p-1 bg-command-950 border border-slate-700/30 text-white rounded-xl shadow-md shrink-0">
                 <img src="/logo.png" alt="Conextsol Dash" className="w-6 h-6 object-contain" referrerPolicy="no-referrer" />
               </span>
               <h2 className="text-xl md:text-2xl font-display font-extrabold text-white">
                 AI Tool Account Limits Tracker
               </h2>
             </div>
-            <p className="text-xs text-neutral-400 max-w-2xl font-sans">
+            <p className="text-xs text-slate-400 max-w-2xl font-sans">
               Enter a Google account email once to manage and monitor limits across Replit, Claude, Codex, and other AI services.
             </p>
           </div>
@@ -302,15 +317,15 @@ export default function AIToolTrackerDashboard({
 
         {/* 4 Overview Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 mt-6 relative z-10">
-          <div className="bg-black/60 border border-neutral-800 rounded-xl p-4">
-            <p className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-wider">Unique Accounts</p>
+          <div className="bg-command-950/60 border border-slate-700/30 rounded-xl p-4">
+            <p className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">Unique Accounts</p>
             <div className="flex items-baseline justify-between mt-1">
               <h3 className="text-2xl font-display font-black text-white">{uniqueEmails.length}</h3>
-              <span className="text-[10px] font-mono text-neutral-500">{totalTrackedEntries} service seats</span>
+              <span className="text-[10px] font-mono text-slate-500">{totalTrackedEntries} service seats</span>
             </div>
           </div>
 
-          <div className={`bg-black/60 border rounded-xl p-4 ${limitedCount > 0 ? 'border-red-900/60' : 'border-neutral-800'}`}>
+          <div className={`bg-command-950/60 border rounded-xl p-4 ${limitedCount > 0 ? 'border-red-900/60' : 'border-slate-700/30'}`}>
             <p className="text-[10px] font-mono font-bold text-red-400 uppercase tracking-wider flex items-center gap-1">
               <AlertTriangle size={10} />
               <span>Currently Limited</span>
@@ -321,7 +336,7 @@ export default function AIToolTrackerDashboard({
             </div>
           </div>
 
-          <div className={`bg-black/60 border rounded-xl p-4 ${resetSoonCount > 0 ? 'border-amber-900/60' : 'border-neutral-800'}`}>
+          <div className={`bg-command-950/60 border rounded-xl p-4 ${resetSoonCount > 0 ? 'border-amber-900/60' : 'border-slate-700/30'}`}>
             <p className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
               <Clock size={10} />
               <span>Resetting Soon (≤7d)</span>
@@ -332,7 +347,7 @@ export default function AIToolTrackerDashboard({
             </div>
           </div>
 
-          <div className="bg-black/60 border border-neutral-800 rounded-xl p-4">
+          <div className="bg-command-950/60 border border-slate-700/30 rounded-xl p-4">
             <p className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
               <CheckCircle2 size={10} />
               <span>Fully Usable</span>
@@ -346,7 +361,7 @@ export default function AIToolTrackerDashboard({
       </div>
 
       {/* ACCOUNT EMAIL SELECTOR PILL TABS */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 shadow-lg space-y-3">
+      <div className="command-panel p-4 shadow-lg space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Mail size={15} className="text-white" />
@@ -354,7 +369,7 @@ export default function AIToolTrackerDashboard({
               Select Google Account to Inspect Data
             </span>
           </div>
-          <span className="text-[11px] text-neutral-400 font-mono">
+          <span className="text-[11px] text-slate-400 font-mono">
             {selectedEmailFilter === 'all' ? `Showing all ${uniqueEmails.length} accounts` : `1 account selected`}
           </span>
         </div>
@@ -365,7 +380,7 @@ export default function AIToolTrackerDashboard({
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center space-x-1.5 border ${
               selectedEmailFilter === 'all'
                 ? 'bg-white text-black border-white shadow-md'
-                : 'bg-black text-neutral-300 border-neutral-800 hover:border-neutral-700'
+                : 'bg-command-950 text-slate-300 border-slate-700/30 hover:border-slate-600/40'
             }`}
           >
             <Layers size={13} />
@@ -384,14 +399,14 @@ export default function AIToolTrackerDashboard({
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap flex items-center space-x-2 border ${
                   isSelected
                     ? 'bg-white text-black border-white shadow-md'
-                    : 'bg-black text-neutral-300 border-neutral-800 hover:border-neutral-700'
+                    : 'bg-command-950 text-slate-300 border-slate-700/30 hover:border-slate-600/40'
                 }`}
               >
                 <span>{email}</span>
                 <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
-                  hasLimited 
-                    ? isSelected ? 'bg-red-200 text-red-900' : 'bg-red-950 border border-red-800 text-red-300' 
-                    : isSelected ? 'bg-neutral-200 text-black' : 'bg-neutral-800 text-neutral-400'
+                  hasLimited
+                    ? isSelected ? 'bg-red-200 text-red-900' : 'bg-red-950 border border-red-800 text-red-300'
+                    : isSelected ? 'bg-neutral-200 text-black' : 'bg-command-700 text-slate-400'
                 }`}>
                   {emailRecords.length} services
                 </span>
@@ -402,10 +417,10 @@ export default function AIToolTrackerDashboard({
       </div>
 
       {/* Toolbar & Filters */}
-      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="command-panel p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Search Input */}
         <div className="flex-1 relative w-full">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-500">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
             <Search size={15} />
           </span>
           <input
@@ -413,20 +428,20 @@ export default function AIToolTrackerDashboard({
             placeholder="Search notes, account emails, or services..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-black border border-neutral-800 rounded-xl text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
+            className="w-full pl-9 pr-4 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
           />
         </div>
 
         {/* Dropdown Filters */}
         <div className="flex items-center gap-2 overflow-x-auto shrink-0">
-          <div className="flex items-center space-x-1 text-xs text-neutral-400 font-mono">
+          <div className="flex items-center space-x-1 text-xs text-slate-400 font-mono">
             <Filter size={13} />
             <span>Service:</span>
           </div>
           <select
             value={filterService}
             onChange={e => setFilterService(e.target.value)}
-            className="px-3 py-2 bg-black border border-neutral-800 rounded-xl text-xs font-semibold text-neutral-200 focus:outline-none"
+            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none"
           >
             <option value="all">All Services</option>
             <option value="replit">Replit</option>
@@ -435,13 +450,13 @@ export default function AIToolTrackerDashboard({
             <option value="other">Other</option>
           </select>
 
-          <div className="flex items-center space-x-1 text-xs text-neutral-400 font-mono ml-2">
+          <div className="flex items-center space-x-1 text-xs text-slate-400 font-mono ml-2">
             <span>Status:</span>
           </div>
           <select
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
-            className="px-3 py-2 bg-black border border-neutral-800 rounded-xl text-xs font-semibold text-neutral-200 focus:outline-none"
+            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-200 focus:outline-none"
           >
             <option value="all">All Statuses</option>
             <option value="limited">Limited</option>
@@ -462,14 +477,14 @@ export default function AIToolTrackerDashboard({
           }).length;
 
           return (
-            <div 
+            <div
               key={email}
-              className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 shadow-xl space-y-4 transition-all"
+              className="bg-command-800/90 border border-slate-700/30 rounded-2xl p-6 shadow-xl space-y-4 transition-all"
             >
               {/* Account Card Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-800 pb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700/30 pb-4">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-black border border-neutral-800 text-white rounded-xl">
+                  <div className="p-2 bg-command-950 border border-slate-700/30 text-white rounded-xl">
                     <Mail size={18} />
                   </div>
                   <div>
@@ -481,7 +496,7 @@ export default function AIToolTrackerDashboard({
                         </span>
                       )}
                     </h3>
-                    <p className="text-[11px] text-neutral-400 font-sans mt-0.5">
+                    <p className="text-[11px] text-slate-400 font-sans mt-0.5">
                       {records.length} AI Services configured for this Google account seat.
                     </p>
                   </div>
@@ -490,7 +505,7 @@ export default function AIToolTrackerDashboard({
                 {isAdmin && (
                   <button
                     onClick={() => handleOpenEditAccountModal(email)}
-                    className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer shrink-0"
+                    className="flex items-center space-x-1.5 px-3.5 py-1.5 bg-command-700 hover:bg-neutral-700 border border-slate-600/40 text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer shrink-0"
                   >
                     <Edit3 size={13} />
                     <span>Manage Services for Email</span>
@@ -505,10 +520,10 @@ export default function AIToolTrackerDashboard({
                   const isUrgent = serviceItem.status === 'Limited' || daysLeft <= 3;
 
                   return (
-                    <div 
+                    <div
                       key={serviceItem.id}
-                      className={`bg-black/70 border rounded-xl p-4 shadow-sm space-y-3 flex flex-col justify-between ${
-                        isUrgent ? 'border-neutral-700/80' : 'border-neutral-800'
+                      className={`bg-command-950/70 border rounded-xl p-4 shadow-sm space-y-3 flex flex-col justify-between ${
+                        isUrgent ? 'border-slate-600/40/80' : 'border-slate-700/30'
                       }`}
                     >
                       <div className="space-y-2">
@@ -524,26 +539,26 @@ export default function AIToolTrackerDashboard({
                         </div>
 
                         <div className="flex items-baseline justify-between pt-1">
-                          <span className="text-[10px] text-neutral-500 font-mono">Reset Date: <strong className="text-neutral-300">{serviceItem.reset_date}</strong></span>
-                          <span className={`text-xs font-mono font-bold ${daysLeft <= 7 ? 'text-amber-400' : 'text-neutral-300'}`}>
-                            {daysLeft < 0 
-                              ? 'Passed' 
-                              : daysLeft === 0 
-                                ? 'Resets Today' 
+                          <span className="text-[10px] text-slate-500 font-mono">Reset Date: <strong className="text-slate-300">{serviceItem.reset_date}</strong></span>
+                          <span className={`text-xs font-mono font-bold ${daysLeft <= 7 ? 'text-amber-400' : 'text-slate-300'}`}>
+                            {daysLeft < 0
+                              ? 'Passed'
+                              : daysLeft === 0
+                                ? 'Resets Today'
                                 : `${daysLeft} days left`
                             }
                           </span>
                         </div>
 
                         {serviceItem.notes && (
-                          <p className="text-xs text-neutral-300 font-sans bg-neutral-900 border border-neutral-800 p-2.5 rounded-lg leading-relaxed line-clamp-3">
+                          <p className="text-xs text-slate-300 font-sans bg-command-800/90 border border-slate-700/30 p-2.5 rounded-lg leading-relaxed line-clamp-3">
                             {serviceItem.notes}
                           </p>
                         )}
                       </div>
 
                       {/* Footer Actions */}
-                      <div className="pt-2 border-t border-neutral-800 flex items-center justify-between text-[10px] font-mono text-neutral-500">
+                      <div className="pt-2 border-t border-slate-700/30 flex items-center justify-between text-[10px] font-mono text-slate-500">
                         <span>Checked: {serviceItem.last_checked || 'N/A'}</span>
 
                         {isAdmin && (
@@ -560,7 +575,7 @@ export default function AIToolTrackerDashboard({
                               <button
                                 onClick={() => handleQuickStatusToggle(serviceItem, 'Limited')}
                                 title="Quick Mark Limited"
-                                className="p-1 bg-neutral-800 hover:bg-red-950 border border-neutral-700 text-neutral-300 hover:text-red-300 rounded transition-colors"
+                                className="p-1 bg-command-700 hover:bg-red-950 border border-slate-600/40 text-slate-300 hover:text-red-300 rounded transition-colors"
                               >
                                 <AlertTriangle size={12} />
                               </button>
@@ -589,10 +604,10 @@ export default function AIToolTrackerDashboard({
         })}
 
         {Object.keys(groupedByEmail).length === 0 && (
-          <div className="py-16 bg-neutral-900/40 border border-neutral-800 rounded-2xl text-center space-y-3">
+          <div className="py-16 bg-command-800/90/40 border border-slate-700/30 rounded-2xl text-center space-y-3">
             <Bot size={32} className="text-neutral-600 mx-auto animate-bounce" />
             <h3 className="font-display font-bold text-white text-sm">No Account Limit Records Found</h3>
-            <p className="text-xs text-neutral-400 max-w-sm mx-auto font-sans">
+            <p className="text-xs text-slate-400 max-w-sm mx-auto font-sans">
               No entries found for the selected email or filters. Click "Add New Google Account" above to register an account email once and set up its AI services.
             </p>
           </div>
@@ -601,11 +616,11 @@ export default function AIToolTrackerDashboard({
 
       {/* SINGLE EMAIL MULTI-SERVICE CONFIGURATION MODAL */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto animate-fadeIn">
-            
+        <div className="fixed inset-0 bg-command-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-command-800/90 border border-slate-700/30 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto animate-fadeIn">
+
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-4 sticky top-0 bg-neutral-900 z-10">
+            <div className="flex items-center justify-between border-b border-slate-700/30 pb-4 sticky top-0 bg-command-800/90 z-10">
               <div className="flex items-center space-x-2">
                 <Sparkles size={18} className="text-white" />
                 <h3 className="font-display font-bold text-white text-base">
@@ -614,7 +629,7 @@ export default function AIToolTrackerDashboard({
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-white transition-colors"
+                className="p-1 hover:bg-command-700 rounded-lg text-slate-400 hover:text-white transition-colors"
               >
                 <X size={16} />
               </button>
@@ -622,14 +637,14 @@ export default function AIToolTrackerDashboard({
 
             {/* Form */}
             <form onSubmit={handleSubmitAccountForm} className="space-y-5">
-              
+
               {/* STEP 1: Enter Email ONCE */}
-              <div className="bg-black/60 border border-neutral-800 p-4 rounded-xl space-y-2">
+              <div className="bg-command-950/60 border border-slate-700/30 p-4 rounded-xl space-y-2">
                 <label className="block text-xs font-bold text-white font-mono uppercase tracking-wider">
                   1. Google Account Email *
                 </label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-500">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
                     <Mail size={15} />
                   </span>
                   <input
@@ -639,10 +654,10 @@ export default function AIToolTrackerDashboard({
                     value={modalEmail}
                     onChange={e => setModalEmail(e.target.value)}
                     placeholder="e.g. ai.dev01@conextsol.com"
-                    className="w-full pl-9 pr-4 py-2.5 bg-black border border-neutral-800 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-neutral-500 transition-colors disabled:opacity-75 disabled:bg-neutral-950"
+                    className="w-full pl-9 pr-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-neutral-500 transition-colors disabled:opacity-75 disabled:bg-command-950/90"
                   />
                 </div>
-                <p className="text-[10px] text-neutral-400 font-sans">
+                <p className="text-[10px] text-slate-400 font-sans">
                   Enter the Google account email once. Below you can enable and set limit parameters for Replit, Claude, Codex, and Other.
                 </p>
               </div>
@@ -658,14 +673,14 @@ export default function AIToolTrackerDashboard({
                     const cfg = serviceConfigs[serviceName];
 
                     return (
-                      <div 
+                      <div
                         key={serviceName}
                         className={`border rounded-xl p-4 transition-all ${
-                          cfg.active ? 'bg-black/80 border-neutral-700' : 'bg-black/30 border-neutral-800/60 opacity-60'
+                          cfg.active ? 'bg-command-950/80 border-slate-600/40' : 'bg-command-950/30 border-slate-700/30/60 opacity-60'
                         }`}
                       >
                         {/* Toggle header */}
-                        <div className="flex items-center justify-between border-b border-neutral-800/80 pb-3">
+                        <div className="flex items-center justify-between border-b border-slate-700/30/80 pb-3">
                           <label className="flex items-center space-x-2.5 cursor-pointer">
                             <input
                               type="checkbox"
@@ -677,14 +692,14 @@ export default function AIToolTrackerDashboard({
                                   [serviceName]: { ...prev[serviceName], active }
                                 }));
                               }}
-                              className="h-4 w-4 rounded border-neutral-700 text-white focus:ring-0 bg-neutral-900 cursor-pointer"
+                              className="h-4 w-4 rounded border-slate-600/40 text-white focus:ring-0 bg-command-800/90 cursor-pointer"
                             />
                             <span className={`text-xs font-mono font-bold uppercase px-2 py-0.5 rounded border ${getServiceBadgeStyle(serviceName)}`}>
                               {serviceName}
                             </span>
                           </label>
 
-                          <span className="text-[10px] font-mono text-neutral-400">
+                          <span className="text-[10px] font-mono text-slate-400">
                             {cfg.active ? 'Enabled for this account' : 'Disabled'}
                           </span>
                         </div>
@@ -693,7 +708,7 @@ export default function AIToolTrackerDashboard({
                         {cfg.active && (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3">
                             <div>
-                              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">
+                              <label className="block text-[10px] font-semibold text-slate-400 mb-1">
                                 Reset Date *
                               </label>
                               <input
@@ -707,12 +722,12 @@ export default function AIToolTrackerDashboard({
                                     [serviceName]: { ...prev[serviceName], reset_date: val }
                                   }));
                                 }}
-                                className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-white focus:outline-none"
+                                className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded-lg text-xs text-white focus:outline-none"
                               />
                             </div>
 
                             <div>
-                              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">
+                              <label className="block text-[10px] font-semibold text-slate-400 mb-1">
                                 Status *
                               </label>
                               <select
@@ -724,7 +739,7 @@ export default function AIToolTrackerDashboard({
                                     [serviceName]: { ...prev[serviceName], status: val }
                                   }));
                                 }}
-                                className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-white focus:outline-none font-semibold"
+                                className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded-lg text-xs text-white focus:outline-none font-semibold"
                               >
                                 <option value="Usable">Usable</option>
                                 <option value="Limited">Limited</option>
@@ -734,7 +749,7 @@ export default function AIToolTrackerDashboard({
                             </div>
 
                             <div className="sm:col-span-2">
-                              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">
+                              <label className="block text-[10px] font-semibold text-slate-400 mb-1">
                                 Notes & Limits Details
                               </label>
                               <input
@@ -748,7 +763,7 @@ export default function AIToolTrackerDashboard({
                                   }));
                                 }}
                                 placeholder={`Specific notes for ${serviceName} on ${modalEmail || 'this account'}...`}
-                                className="w-full px-3 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-xs text-white focus:outline-none font-sans"
+                                className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded-lg text-xs text-white focus:outline-none font-sans"
                               />
                             </div>
                           </div>
@@ -760,11 +775,11 @@ export default function AIToolTrackerDashboard({
               </div>
 
               {/* Form Actions */}
-              <div className="pt-3 border-t border-neutral-800 flex items-center justify-end space-x-2 sticky bottom-0 bg-neutral-900 z-10 py-2">
+              <div className="pt-3 border-t border-slate-700/30 flex items-center justify-end space-x-2 sticky bottom-0 bg-command-800/90 z-10 py-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-black hover:bg-neutral-800 border border-neutral-800 text-neutral-300 text-xs font-semibold rounded-xl transition-colors"
+                  className="px-4 py-2 bg-command-950 hover:bg-command-700 border border-slate-700/30 text-slate-300 text-xs font-semibold rounded-xl transition-colors"
                 >
                   Cancel
                 </button>

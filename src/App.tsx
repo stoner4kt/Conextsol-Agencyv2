@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Lock, 
-  ShieldCheck, 
-  Briefcase, 
-  ArrowRight, 
-  Terminal, 
-  Bot, 
-  Compass, 
+import {
+  Lock,
+  ShieldCheck,
+  Briefcase,
+  ArrowRight,
+  Terminal,
+  Bot,
+  Compass,
   Sparkles,
   LogOut,
   Mail,
@@ -14,7 +14,7 @@ import {
   Menu
 } from 'lucide-react';
 import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount } from './types';
-import { 
+import {
   getInitialState
 } from './mockData';
 import Sidebar from './components/Sidebar';
@@ -36,10 +36,10 @@ export default function App() {
   // Load initial local state
   const [state, setState] = useState<AppState>(getInitialState);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+
   // Tab Routing: 'dashboard' | 'clients_dash' | 'projects_dash' | ...
   const [currentTab, setCurrentTab] = useState<string>('dashboard');
-  
+
   // Drill-down Detail States
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export default function App() {
         setIsLoading(true);
         let currentEmail = '';
         let hasActiveSession = false;
-        
+
         // If Supabase is configured, check for active session
         if (isSupabaseConfigured && supabase) {
           const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -97,7 +97,7 @@ export default function App() {
             supabaseService.getAlertsLog(),
             supabaseService.getAIToolAccounts()
           ]);
-          
+
           setState(prev => ({
             ...prev,
             clients,
@@ -135,7 +135,7 @@ export default function App() {
       setAuthError('Please fill in both email and password fields.');
       return;
     }
-    
+
     if (isSupabaseConfigured && supabase) {
       try {
         setIsLoading(true);
@@ -385,15 +385,15 @@ export default function App() {
     const inTwoDays = new Date();
     inTwoDays.setDate(inTwoDays.getDate() + 2);
     const targetDate = `${inTwoDays.getFullYear()}-${String(inTwoDays.getMonth() + 1).padStart(2, '0')}-${String(inTwoDays.getDate()).padStart(2, '0')}`;
-    
+
     // Find matching projects
     const matchingProjects = state.projects.filter(p => p.end_date === targetDate);
-    
+
     if (matchingProjects.length > 0) {
       const newAlerts: WebhookAlert[] = matchingProjects.map(project => {
         const client = state.clients.find(c => c.id === project.client_id);
         const clientName = client ? client.company_name : 'Unknown Client';
-        
+
         return {
           id: crypto.randomUUID(),
           timestamp: new Date().toISOString(),
@@ -503,7 +503,7 @@ export default function App() {
   // Insert documentation tied to a project
   const handleAddDoc = async (projectId: string, title: string, content: string, files: string) => {
     const parsedFiles = files ? files.split(',').map(f => f.trim()).filter(Boolean) : [];
-    
+
     const newDoc: DocumentAndNote = {
       id: crypto.randomUUID(),
       project_id: projectId,
@@ -602,16 +602,16 @@ export default function App() {
   // Render Login Frame if not authenticated
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen bg-black flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans text-neutral-200">
+      <div className="min-h-screen bg-command-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans text-slate-200">
         {/* Subtle monochrome ambient light */}
-        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-neutral-800/30 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-neutral-900/40 rounded-full blur-[120px]" />
+        <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-command-700/30 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-command-800/90/40 rounded-full blur-[120px]" />
 
         <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center space-y-3">
-          <div className="inline-flex h-16 w-16 rounded-2xl bg-black border border-neutral-800 p-2 shadow-2xl shadow-teal-950/50 justify-center items-center">
-            <img 
-              src="/logo.png" 
-              alt="Conextsol Dash Logo" 
+          <div className="inline-flex h-16 w-16 rounded-2xl bg-command-950 border border-slate-700/30 p-2 shadow-2xl shadow-teal-950/50 justify-center items-center">
+            <img
+              src="/logo.png"
+              alt="Conextsol Dash Logo"
               className="h-full w-full object-contain"
               referrerPolicy="no-referrer"
             />
@@ -624,16 +624,16 @@ export default function App() {
               Optimized Web Systems
             </p>
           </div>
-          <p className="text-xs text-neutral-400 max-w-xs mx-auto">
+          <p className="text-xs text-slate-400 max-w-xs mx-auto">
             Secure client, project, retainer management, and automated notifications ledger.
           </p>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-          <div className="bg-neutral-900 border border-neutral-800 py-8 px-4 shadow-2xl rounded-2xl sm:px-10 space-y-6">
-            <div className="border-b border-neutral-800 pb-3 flex items-center justify-between">
+          <div className="bg-command-800/90 border border-slate-700/30 py-8 px-4 shadow-2xl rounded-2xl sm:px-10 space-y-6">
+            <div className="border-b border-slate-700/30 pb-3 flex items-center justify-between">
               <div>
-                <span className={`text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded uppercase ${isSupabaseConfigured ? 'bg-neutral-800 text-white border border-neutral-700' : 'bg-neutral-800 text-neutral-300 border border-neutral-700'}`}>
+                <span className={`text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded uppercase ${isSupabaseConfigured ? 'bg-command-700 text-white border border-slate-600/40' : 'bg-command-700 text-slate-300 border border-slate-600/40'}`}>
                   {isSupabaseConfigured ? 'Supabase Auth' : 'Local Sandbox Mode'}
                 </span>
                 <h3 className="text-sm font-semibold text-white mt-1.5">Sign in to Portal</h3>
@@ -641,39 +641,39 @@ export default function App() {
             </div>
 
             {authError && (
-              <div className="p-3 bg-neutral-950 border border-neutral-700 text-neutral-200 text-xs rounded-xl">
+              <div className="p-3 bg-command-950/90 border border-slate-600/40 text-slate-200 text-xs rounded-xl">
                 {authError}
               </div>
             )}
 
             <form className="space-y-4" onSubmit={handleLogin}>
               <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1.5">Email Address</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Email Address</label>
                 <div className="relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                     <Mail size={14} />
                   </div>
                   <input
                     type="email"
                     value={loginEmail}
                     onChange={e => setLoginEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 bg-black border border-neutral-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                    className="w-full pl-9 pr-3 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
                     placeholder="e.g. admin@conextsol.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-neutral-300 mb-1.5">Secret Password</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">Secret Password</label>
                 <div className="relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
                     <Lock size={14} />
                   </div>
                   <input
                     type="password"
                     value={loginPassword}
                     onChange={e => setLoginPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 bg-black border border-neutral-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                    className="w-full pl-9 pr-3 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
                     placeholder="••••••••"
                   />
                 </div>
@@ -687,22 +687,22 @@ export default function App() {
                 Sign In & Synchronize Portal
               </button>
 
-              <div className="pt-2 border-t border-neutral-800 flex flex-col space-y-2">
-                <p className="text-[10px] text-neutral-400 text-center font-mono">
+              <div className="pt-2 border-t border-slate-700/30 flex flex-col space-y-2">
+                <p className="text-[10px] text-slate-400 text-center font-mono">
                   Quick Access Demo Sign In:
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => handleDemoLogin(true)}
-                    className="py-2 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-mono text-[11px] font-bold rounded-xl transition-all cursor-pointer text-center"
+                    className="py-2 bg-command-700 hover:bg-neutral-700 border border-slate-600/40 text-white font-mono text-[11px] font-bold rounded-xl transition-all cursor-pointer text-center"
                   >
                     Admin Demo
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDemoLogin(false)}
-                    className="py-2 bg-neutral-950 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 font-mono text-[11px] font-medium rounded-xl transition-all cursor-pointer text-center"
+                    className="py-2 bg-command-950/90 hover:bg-command-700 border border-slate-700/30 text-slate-300 font-mono text-[11px] font-medium rounded-xl transition-all cursor-pointer text-center"
                   >
                     Client Guest
                   </button>
@@ -718,15 +718,15 @@ export default function App() {
   // Helper title bar maps
   const getTabTitle = () => {
     switch (currentTab) {
-      case 'dashboard': return 'Operational Control Dashboard';
-      case 'clients_dash': return 'Accounts & Contract Registries';
-      case 'projects_dash': return 'Assigned Development Projects';
-      case 'retainers_dash': return 'Active Retainer Engagements';
-      case 'documents_dash': return 'System Specifications Sheets';
-      case 'ai_tools_tracker': return 'AI Tool Account Limits Tracker';
-      case 'alerts_dash': return 'Dispatched Webhooks & Alerts';
-      case 'wizard': return 'Linked Client Pipeline';
-      case 'dev_center': return 'Dev & Deployment Center';
+      case 'dashboard': return 'Command Deck';
+      case 'clients_dash': return 'Client Registry Command';
+      case 'projects_dash': return 'Project Operations Board';
+      case 'retainers_dash': return 'Recurring Revenue Console';
+      case 'documents_dash': return 'Specification Vault';
+      case 'ai_tools_tracker': return 'AI Resource Capacity Grid';
+      case 'alerts_dash': return 'Dispatch Event Stream';
+      case 'wizard': return 'Client Intake Pipeline';
+      case 'dev_center': return 'Deployment & Data Operations';
       default: return 'Backoffice';
     }
   };
@@ -734,15 +734,15 @@ export default function App() {
   // Render Loader if DB is synchronizing
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center font-sans space-y-4">
-        <img 
-          src="/logo.png" 
-          alt="Conextsol Dash" 
+      <div className="min-h-screen bg-command-950 flex flex-col items-center justify-center font-sans space-y-4">
+        <img
+          src="/logo.png"
+          alt="Conextsol Dash"
           className="w-16 h-16 object-contain animate-pulse"
           referrerPolicy="no-referrer"
         />
-        <div className="h-8 w-8 border-3 border-neutral-800 border-t-teal-400 rounded-full animate-spin" />
-        <p className="text-xs text-neutral-400 font-mono font-bold uppercase tracking-widest animate-pulse">
+        <div className="h-8 w-8 border-3 border-slate-700/30 border-t-teal-400 rounded-full animate-spin" />
+        <p className="text-xs text-slate-400 font-mono font-bold uppercase tracking-widest animate-pulse">
           Synchronizing Conextsol Dash Database...
         </p>
       </div>
@@ -750,11 +750,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex overflow-hidden font-sans text-neutral-300">
-      
+    <div className="min-h-screen flex overflow-hidden font-sans text-slate-300">
+
       {/* Brand Sidebar Left Frame */}
-      <Sidebar 
-        currentTab={currentTab} 
+      <Sidebar
+        currentTab={currentTab}
         setCurrentTab={(tab) => {
           setCurrentTab(tab);
           setSelectedClientId(null);
@@ -769,41 +769,41 @@ export default function App() {
       />
 
       {/* Main content viewport */}
-      <main className="flex-1 overflow-y-auto lg:pl-64 min-h-screen flex flex-col justify-between bg-black">
-        
+      <main className="flex-1 overflow-y-auto lg:pl-72 min-h-screen flex flex-col justify-between bg-transparent">
+
         {/* Dynamic Nav Header Bar */}
-        <header className="bg-neutral-900 border-b border-neutral-800 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+        <header className="bg-command-950/80 border-b border-teal-400/10 px-6 py-4 flex items-center justify-between sticky top-0 z-20 backdrop-blur-xl shadow-[0_12px_40px_rgba(2,6,23,.35)]">
           <div className="flex items-center space-x-3">
             {/* Hamburger button on mobile */}
             <button
               id="mobile-menu-toggle"
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-1.5 hover:bg-neutral-800 rounded-lg text-white transition-colors mr-1 cursor-pointer"
+              className="lg:hidden p-1.5 hover:bg-command-700 rounded-lg text-white transition-colors mr-1 cursor-pointer"
               aria-label="Open Navigation Menu"
             >
               <Menu size={22} />
             </button>
 
             <div className="flex items-center space-x-2.5">
-              <img 
-                src="/logo.png" 
-                alt="Conextsol Dash Logo" 
-                className="w-7 h-7 object-contain rounded-lg bg-black border border-neutral-800 p-0.5 shrink-0 shadow-sm"
+              <img
+                src="/logo.png"
+                alt="Conextsol Dash Logo"
+                className="w-7 h-7 object-contain rounded-lg bg-command-950 border border-slate-700/30 p-0.5 shrink-0 shadow-sm"
                 referrerPolicy="no-referrer"
               />
               <div>
                 <h1 className="font-display font-extrabold tracking-tight text-white text-base md:text-lg flex items-center gap-2">
                   <span className="truncate">
-                    {selectedDocumentId 
-                      ? 'System Specifications Sheets' 
-                      : selectedClientId 
-                        ? 'Client Profile Registry' 
+                    {selectedDocumentId
+                      ? 'System Specifications Sheets'
+                      : selectedClientId
+                        ? 'Client Profile Registry'
                         : getTabTitle()
                     }
                   </span>
                 </h1>
-                <p className="text-[10px] text-neutral-400 font-mono font-semibold tracking-wider uppercase mt-0.5">
-                  Conextsol Dash • Backoffice
+                <p className="text-[10px] text-slate-400 font-mono font-semibold tracking-wider uppercase mt-0.5">
+                  Admin Command Layer • Mission Canvas
                 </p>
               </div>
             </div>
@@ -812,7 +812,7 @@ export default function App() {
           <button
             id="signout-btn"
             onClick={handleSignOut}
-            className="flex items-center space-x-1 text-neutral-400 hover:text-white font-sans text-xs transition-colors font-semibold cursor-pointer shrink-0 bg-neutral-800 lg:bg-transparent px-3 py-1.5 lg:p-0 rounded-lg lg:rounded-none border border-neutral-700 lg:border-none"
+            className="flex items-center space-x-1 text-slate-400 hover:text-white font-sans text-xs transition-colors font-semibold cursor-pointer shrink-0 bg-command-700 lg:bg-transparent px-3 py-1.5 lg:p-0 rounded-lg lg:rounded-none border border-slate-600/40 lg:border-none"
           >
             <LogOut size={14} />
             <span className="hidden sm:inline">Sign Out</span>
@@ -820,18 +820,18 @@ export default function App() {
         </header>
 
         {/* Primary Page Grid */}
-        <div className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto space-y-6">
-          
+        <div className="flex-1 p-6 md:p-8 max-w-[1500px] w-full mx-auto space-y-6">
+
           {/* RENDER SPECIFIC SUB-FLOWS */}
           {selectedDocumentId ? (
-            <DocumentEditor 
+            <DocumentEditor
               documentId={selectedDocumentId}
               state={state}
               onBack={() => setSelectedDocumentId(null)}
               onSaveDocument={handleSaveDocument}
             />
           ) : selectedClientId ? (
-            <ClientDetail 
+            <ClientDetail
               clientId={selectedClientId}
               state={state}
               onBack={() => setSelectedClientId(null)}
@@ -852,7 +852,7 @@ export default function App() {
             /* RENDER THE ACTIVE TAB CONTENT */
             <>
               {currentTab === 'dashboard' && (
-                <DashboardStats 
+                <DashboardStats
                   state={state}
                   onRunDeadlineAlerts={handleRunDeadlineAlerts}
                   onRunRetainerAlerts={handleRunRetainerAlerts}
@@ -865,14 +865,14 @@ export default function App() {
               )}
 
               {currentTab === 'wizard' && (
-                <OnboardingWizard 
+                <OnboardingWizard
                   onComplete={handleOnboardingComplete}
                   onCancel={() => setCurrentTab('dashboard')}
                 />
               )}
 
               {currentTab === 'clients_dash' && (
-                <ClientsDashboard 
+                <ClientsDashboard
                   state={state}
                   onSelectClient={setSelectedClientId}
                   onSaveClient={handleSaveClient}
@@ -883,7 +883,7 @@ export default function App() {
               )}
 
               {currentTab === 'projects_dash' && (
-                <ProjectsDashboard 
+                <ProjectsDashboard
                   state={state}
                   onSaveProject={handleSaveProject}
                   onDeleteProject={handleDeleteProject}
@@ -896,7 +896,7 @@ export default function App() {
               )}
 
               {currentTab === 'retainers_dash' && (
-                <RetainersDashboard 
+                <RetainersDashboard
                   state={state}
                   onSaveRetainer={handleSaveRetainer}
                   onDeleteRetainer={handleDeleteRetainer}
@@ -909,7 +909,7 @@ export default function App() {
               )}
 
               {currentTab === 'documents_dash' && (
-                <DocumentsDashboard 
+                <DocumentsDashboard
                   state={state}
                   onSaveDocument={handleSaveDocumentSingle}
                   onDeleteDocument={handleDeleteDocument}
@@ -918,7 +918,7 @@ export default function App() {
               )}
 
               {currentTab === 'ai_tools_tracker' && (
-                <AIToolTrackerDashboard 
+                <AIToolTrackerDashboard
                   state={state}
                   onSaveAccount={handleSaveAIToolAccount}
                   onDeleteAccount={handleDeleteAIToolAccount}
@@ -927,7 +927,7 @@ export default function App() {
               )}
 
               {currentTab === 'alerts_dash' && (
-                <AlertsDashboard 
+                <AlertsDashboard
                   state={state}
                   onClearAlertsLog={handleClearAlertsLog}
                   onRunDeadlineAlerts={handleRunDeadlineAlerts}
@@ -937,7 +937,7 @@ export default function App() {
               )}
 
               {currentTab === 'dev_center' && (
-                <DevCenter 
+                <DevCenter
                   onSeedDemoData={handleSeedDemoData}
                   onClearAllData={handleClearAllData}
                   isSupabaseConnected={isSupabaseConfigured}
@@ -949,17 +949,17 @@ export default function App() {
         </div>
 
         {/* Footer Credit & Status Line */}
-        <footer className="bg-neutral-950 border-t border-neutral-800 py-3.5 px-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-400 gap-2 shrink-0">
+        <footer className="bg-command-950/80 border-t border-teal-400/10 backdrop-blur-xl py-3.5 px-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2 shrink-0">
           <div className="flex items-center space-x-2">
             <img src="/logo.png" alt="Conextsol Dash" className="w-4 h-4 object-contain inline-block shrink-0" referrerPolicy="no-referrer" />
             <span className="font-mono">
-              {isSupabaseConfigured 
-                ? 'Production Cloud synchronized with live Supabase database' 
+              {isSupabaseConfigured
+                ? 'Production Cloud synchronized with live Supabase database'
                 : 'Local Sandbox synchronized with localStorage database'}
             </span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="font-semibold text-neutral-200">Conextsol Dash</span> v1.4.0
+            <span className="font-semibold text-slate-200">Conextsol Dash</span> v1.4.0
           </div>
         </footer>
       </main>

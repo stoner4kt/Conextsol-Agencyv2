@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  Search, 
-  Building2, 
-  Mail, 
-  Phone, 
-  ArrowRight, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  Save, 
-  X, 
+import {
+  Search,
+  Building2,
+  Mail,
+  Phone,
+  ArrowRight,
+  Plus,
+  Edit2,
+  Trash2,
+  Save,
+  X,
   Check,
   AlertCircle,
   UserCheck,
@@ -69,11 +69,11 @@ export default function ClientsDashboard({
   };
 
   const filteredClients = state.clients.filter(client => {
-    const matchesSearch = 
+    const matchesSearch =
       client.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.primary_contact_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesStatus = filterStatus === 'all' || client.status === filterStatus;
 
     return matchesSearch && matchesStatus;
@@ -132,42 +132,57 @@ export default function ClientsDashboard({
 
   return (
     <div className="space-y-6">
-      {/* 1. Header Overview Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-neutral-400 font-mono font-semibold tracking-wide uppercase">Total Accounts</p>
-          <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{totalCount}</h4>
-            <span className="text-[10px] text-neutral-400 font-mono">clients table</span>
+      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-2">
+            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
+            <div>
+              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Client Registry Command</h2>
+              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Inspect account health, relationship value, contact context, and registry actions.</p>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
+            <span className="text-teal-300">Signal:</span> Production UI Layer
           </div>
         </div>
-        <div className="bg-neutral-900 border border-neutral-700 rounded-xl p-4 md:p-5 shadow-lg">
+      </section>
+      {/* 1. Header Overview Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="command-panel p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Total Accounts</p>
+          <div className="flex items-baseline justify-between mt-1">
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{totalCount}</h4>
+            <span className="text-[10px] text-slate-400 font-mono">clients table</span>
+          </div>
+        </div>
+        <div className="bg-command-800/90 border border-slate-600/40 rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-white font-mono font-semibold tracking-wide uppercase">Active Accounts</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{activeCount}</h4>
             <span className="text-[9px] bg-white/10 text-white px-1.5 py-0.2 rounded font-mono font-bold">LIVE</span>
           </div>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-neutral-300 font-mono font-semibold tracking-wide uppercase">Paused Accounts</p>
+        <div className="command-panel p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-slate-300 font-mono font-semibold tracking-wide uppercase">Paused Accounts</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-neutral-300">{pausedCount}</h4>
-            <span className="text-[9px] bg-neutral-800 text-neutral-300 px-1.5 py-0.2 rounded font-mono font-bold">ON HOLD</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-slate-300">{pausedCount}</h4>
+            <span className="text-[9px] bg-command-700 text-slate-300 px-1.5 py-0.2 rounded font-mono font-bold">ON HOLD</span>
           </div>
         </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-neutral-400 font-mono font-semibold tracking-wide uppercase">Inactive</p>
+        <div className="command-panel p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Inactive</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-neutral-400">{inactiveCount}</h4>
-            <span className="text-[9px] bg-neutral-950 text-neutral-500 px-1.5 py-0.2 rounded font-mono font-bold">ARCHIVED</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-slate-400">{inactiveCount}</h4>
+            <span className="text-[9px] bg-command-950/90 text-slate-500 px-1.5 py-0.2 rounded font-mono font-bold">ARCHIVED</span>
           </div>
         </div>
       </div>
 
       {/* 2. Toolbar & Filtering */}
-      <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="command-panel p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex-1 relative w-full">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-neutral-400">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
             <Search size={15} />
           </span>
           <input
@@ -175,7 +190,7 @@ export default function ClientsDashboard({
             placeholder="Filter clients by company, contact, or email address..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-black border border-neutral-800 rounded-xl text-xs md:text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+            className="w-full pl-9 pr-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-xs md:text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
           />
         </div>
 
@@ -183,7 +198,7 @@ export default function ClientsDashboard({
           <select
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
-            className="px-3 py-2 bg-black border border-neutral-800 rounded-xl text-xs font-semibold text-neutral-300 focus:outline-none focus:ring-2 focus:ring-white/20"
+            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-300 focus:outline-none focus:ring-2 focus:ring-white/20"
           >
             <option value="all">All statuses</option>
             <option value="active">Active only</option>
@@ -195,7 +210,7 @@ export default function ClientsDashboard({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsAdding(!isAdding)}
-                className="flex items-center space-x-1.5 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-sans text-xs font-bold rounded-xl transition-all cursor-pointer"
+                className="flex items-center space-x-1.5 px-4 py-2 bg-command-700 hover:bg-neutral-700 border border-slate-600/40 text-white font-sans text-xs font-bold rounded-xl transition-all cursor-pointer"
               >
                 {isAdding ? <X size={13} /> : <Plus size={13} />}
                 <span>{isAdding ? 'Cancel' : 'Add Client'}</span>
@@ -214,76 +229,76 @@ export default function ClientsDashboard({
 
       {/* 3. Collapsible Add Form */}
       {isAdding && (
-        <form onSubmit={handleAddSubmit} className="bg-neutral-900 border border-neutral-800 p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn">
-          <div className="border-b border-neutral-800 pb-3">
+        <form onSubmit={handleAddSubmit} className="bg-command-800/90 border border-slate-700/30 p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn">
+          <div className="border-b border-slate-700/30 pb-3">
             <h3 className="font-display font-bold text-white text-xs md:text-sm flex items-center space-x-1.5">
               <Users size={15} className="text-white" />
               <span>Create Client Profile Record</span>
             </h3>
-            <p className="text-[10px] text-neutral-400 mt-0.5 font-sans">
+            <p className="text-[10px] text-slate-400 mt-0.5 font-sans">
               Inserts a brand-new institutional billing entity into the PostgreSQL table.
             </p>
           </div>
 
           {addError && (
-            <p className="text-xs text-neutral-200 bg-neutral-950 border border-neutral-700 p-2.5 rounded-lg font-mono">
+            <p className="text-xs text-slate-200 bg-command-950/90 border border-slate-600/40 p-2.5 rounded-lg font-mono">
               ⚠️ {addError}
             </p>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Company Name *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Company Name *</label>
               <input
                 type="text"
                 placeholder="e.g. Acme Corp"
                 required
                 value={newForm.company_name}
                 onChange={e => setNewForm({ ...newForm, company_name: e.target.value })}
-                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Contact Name *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Contact Name *</label>
               <input
                 type="text"
                 placeholder="e.g. Sarah Jenkins"
                 required
                 value={newForm.primary_contact_name}
                 onChange={e => setNewForm({ ...newForm, primary_contact_name: e.target.value })}
-                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Email Address *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Email Address *</label>
               <input
                 type="email"
                 placeholder="e.g. contact@acme.com"
                 required
                 value={newForm.email}
                 onChange={e => setNewForm({ ...newForm, email: e.target.value })}
-                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Phone Number</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Phone Number</label>
               <input
                 type="tel"
                 placeholder="e.g. +1-555-0192"
                 value={newForm.phone}
                 onChange={e => setNewForm({ ...newForm, phone: e.target.value })}
-                className="w-full px-3 py-2 bg-black border border-neutral-800 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
               />
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-2">
             <div>
-              <label className="block text-[10px] font-semibold text-neutral-400 mb-1">Status</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Status</label>
               <select
                 value={newForm.status}
                 onChange={e => setNewForm({ ...newForm, status: e.target.value as any })}
-                className="bg-black border border-neutral-800 rounded-lg text-xs font-semibold text-neutral-300 p-2"
+                className="bg-command-950 border border-slate-700/30 rounded-lg text-xs font-semibold text-slate-300 p-2"
               >
                 <option value="active">Active</option>
                 <option value="paused">Paused</option>
@@ -302,13 +317,13 @@ export default function ClientsDashboard({
       )}
 
       {/* 4. Table Grid (Desktop) and Card view (Mobile) */}
-      <div className="bg-neutral-900 rounded-xl border border-neutral-800 shadow-xl overflow-hidden">
-        
+      <div className="command-panel shadow-xl overflow-hidden">
+
         {/* DESKTOP TABLE VIEW */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-neutral-800 bg-neutral-950 font-mono text-[10px] text-neutral-400 uppercase tracking-wider">
+              <tr className="border-b border-slate-700/30 bg-command-950/90 font-mono text-[10px] text-slate-400 uppercase tracking-wider">
                 <th className="py-4 px-6">Company Name</th>
                 <th className="py-4 px-6">Primary Contact</th>
                 <th className="py-4 px-6">Email / Phone</th>
@@ -325,7 +340,7 @@ export default function ClientsDashboard({
                 const activeMRR = getRetainerValue(client.id);
 
                 return (
-                  <tr key={client.id} className="hover:bg-neutral-800/40 transition-colors">
+                  <tr key={client.id} className="hover:bg-command-700/40 transition-colors">
                     {/* Company */}
                     <td className="py-4 px-6 font-medium text-white">
                       {isEditing ? (
@@ -333,12 +348,12 @@ export default function ClientsDashboard({
                           type="text"
                           value={editForm.company_name || ''}
                           onChange={e => setEditForm({ ...editForm, company_name: e.target.value })}
-                          className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white max-w-[150px]"
+                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[150px]"
                         />
                       ) : (
-                        <span 
+                        <span
                           onClick={() => onSelectClient(client.id)}
-                          className="hover:text-neutral-300 hover:underline cursor-pointer font-bold"
+                          className="hover:text-slate-300 hover:underline cursor-pointer font-bold"
                         >
                           {client.company_name}
                         </span>
@@ -346,13 +361,13 @@ export default function ClientsDashboard({
                     </td>
 
                     {/* Contact */}
-                    <td className="py-4 px-6 text-neutral-300">
+                    <td className="py-4 px-6 text-slate-300">
                       {isEditing ? (
                         <input
                           type="text"
                           value={editForm.primary_contact_name || ''}
                           onChange={e => setEditForm({ ...editForm, primary_contact_name: e.target.value })}
-                          className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white max-w-[130px]"
+                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[130px]"
                         />
                       ) : (
                         client.primary_contact_name
@@ -360,31 +375,31 @@ export default function ClientsDashboard({
                     </td>
 
                     {/* Email / Phone */}
-                    <td className="py-4 px-6 font-mono text-[11px] text-neutral-400 space-y-1">
+                    <td className="py-4 px-6 font-mono text-[11px] text-slate-400 space-y-1">
                       {isEditing ? (
                         <div className="space-y-1">
                           <input
                             type="email"
                             value={editForm.email || ''}
                             onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                            className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white max-w-[150px] block"
+                            className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[150px] block"
                           />
                           <input
                             type="text"
                             value={editForm.phone || ''}
                             onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                            className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white max-w-[150px] block"
+                            className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[150px] block"
                           />
                         </div>
                       ) : (
                         <>
                           <div className="flex items-center space-x-1.5">
-                            <Mail size={12} className="text-neutral-500" />
+                            <Mail size={12} className="text-slate-500" />
                             <span>{client.email}</span>
                           </div>
                           {client.phone && (
                             <div className="flex items-center space-x-1.5">
-                              <Phone size={12} className="text-neutral-500" />
+                              <Phone size={12} className="text-slate-500" />
                               <span>{client.phone}</span>
                             </div>
                           )}
@@ -398,7 +413,7 @@ export default function ClientsDashboard({
                         <select
                           value={editForm.status || 'active'}
                           onChange={e => setEditForm({ ...editForm, status: e.target.value as any })}
-                          className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white"
+                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white"
                         >
                           <option value="active">active</option>
                           <option value="paused">paused</option>
@@ -408,8 +423,8 @@ export default function ClientsDashboard({
                         <span className={`
                           px-2 py-0.5 rounded-full font-mono text-[9px] uppercase font-bold border inline-block
                           ${client.status === 'active' ? 'bg-white/10 text-white border-white/20' : ''}
-                          ${client.status === 'paused' ? 'bg-neutral-800 text-neutral-300 border-neutral-700' : ''}
-                          ${client.status === 'inactive' ? 'bg-neutral-950 text-neutral-500 border-neutral-800' : ''}
+                          ${client.status === 'paused' ? 'bg-command-700 text-slate-300 border-slate-600/40' : ''}
+                          ${client.status === 'inactive' ? 'bg-command-950/90 text-slate-500 border-slate-700/30' : ''}
                         `}>
                           {client.status}
                         </span>
@@ -433,14 +448,14 @@ export default function ClientsDashboard({
                           <>
                             <button
                               onClick={handleSaveEdit}
-                              className="p-1 bg-neutral-800 border border-neutral-700 text-white hover:bg-neutral-700 rounded-lg transition-colors cursor-pointer"
+                              className="p-1 bg-command-700 border border-slate-600/40 text-white hover:bg-neutral-700 rounded-lg transition-colors cursor-pointer"
                               title="Save client profile"
                             >
                               <Save size={13} />
                             </button>
                             <button
                               onClick={() => setEditingId(null)}
-                              className="p-1 bg-black border border-neutral-800 text-neutral-400 hover:bg-neutral-800 rounded-lg transition-colors cursor-pointer"
+                              className="p-1 bg-command-950 border border-slate-700/30 text-slate-400 hover:bg-command-700 rounded-lg transition-colors cursor-pointer"
                               title="Cancel edit"
                             >
                               <X size={13} />
@@ -451,7 +466,7 @@ export default function ClientsDashboard({
                             {isAdmin && (
                               <button
                                 onClick={() => handleStartEdit(client)}
-                                className="p-1 hover:bg-neutral-800 rounded-lg text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                                className="p-1 hover:bg-command-700 rounded-lg text-slate-300 hover:text-white transition-colors cursor-pointer"
                                 title="Edit client profile"
                               >
                                 <Edit2 size={13} />
@@ -459,7 +474,7 @@ export default function ClientsDashboard({
                             )}
                             <button
                               onClick={() => onSelectClient(client.id)}
-                              className="p-1 hover:bg-neutral-800 rounded-lg text-white transition-colors cursor-pointer"
+                              className="p-1 hover:bg-command-700 rounded-lg text-white transition-colors cursor-pointer"
                               title="Inspect client workspace"
                             >
                               <ArrowRight size={13} />
@@ -471,7 +486,7 @@ export default function ClientsDashboard({
                                     onDeleteClient(client.id);
                                   }
                                 }}
-                                className="p-1 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-white transition-colors cursor-pointer"
+                                className="p-1 hover:bg-command-700 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
                                 title="Delete client profile"
                               >
                                 <Trash2 size={13} />
@@ -496,7 +511,7 @@ export default function ClientsDashboard({
             const activeMRR = getRetainerValue(client.id);
 
             return (
-              <div key={client.id} className="p-4 space-y-3 bg-neutral-900 hover:bg-neutral-800/60 transition-colors">
+              <div key={client.id} className="p-4 space-y-3 bg-command-800/90 hover:bg-command-700/60 transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="space-y-0.5">
                     {isEditing ? (
@@ -504,26 +519,26 @@ export default function ClientsDashboard({
                         type="text"
                         value={editForm.company_name || ''}
                         onChange={e => setEditForm({ ...editForm, company_name: e.target.value })}
-                        className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white block w-full mb-1"
+                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white block w-full mb-1"
                       />
                     ) : (
-                      <h4 
+                      <h4
                         onClick={() => onSelectClient(client.id)}
                         className="font-display font-bold text-white text-sm hover:underline cursor-pointer"
                       >
                         {client.company_name}
                       </h4>
                     )}
-                    
+
                     {isEditing ? (
                       <input
                         type="text"
                         value={editForm.primary_contact_name || ''}
                         onChange={e => setEditForm({ ...editForm, primary_contact_name: e.target.value })}
-                        className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white block w-full"
+                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white block w-full"
                       />
                     ) : (
-                      <p className="text-xs text-neutral-400">{client.primary_contact_name}</p>
+                      <p className="text-xs text-slate-400">{client.primary_contact_name}</p>
                     )}
                   </div>
 
@@ -531,7 +546,7 @@ export default function ClientsDashboard({
                     <select
                       value={editForm.status || 'active'}
                       onChange={e => setEditForm({ ...editForm, status: e.target.value as any })}
-                      className="px-1.5 py-0.5 bg-black border border-neutral-800 rounded text-[10px] text-white"
+                      className="px-1.5 py-0.5 bg-command-950 border border-slate-700/30 rounded text-[10px] text-white"
                     >
                       <option value="active">active</option>
                       <option value="paused">paused</option>
@@ -541,52 +556,52 @@ export default function ClientsDashboard({
                     <span className={`
                       px-2 py-0.5 rounded-full font-mono text-[8px] uppercase font-bold border
                       ${client.status === 'active' ? 'bg-white/10 text-white border-white/20' : ''}
-                      ${client.status === 'paused' ? 'bg-neutral-800 text-neutral-300 border-neutral-700' : ''}
-                      ${client.status === 'inactive' ? 'bg-neutral-950 text-neutral-500 border-neutral-800' : ''}
+                      ${client.status === 'paused' ? 'bg-command-700 text-slate-300 border-slate-600/40' : ''}
+                      ${client.status === 'inactive' ? 'bg-command-950/90 text-slate-500 border-slate-700/30' : ''}
                     `}>
                       {client.status}
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono py-2 bg-neutral-950 px-3 rounded-lg border border-neutral-800">
+                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono py-2 bg-command-950/90 px-3 rounded-lg border border-slate-700/30">
                   <div>
-                    <span className="text-neutral-500 block text-[9px] uppercase font-semibold">Active Projects</span>
+                    <span className="text-slate-500 block text-[9px] uppercase font-semibold">Active Projects</span>
                     <span className="text-white font-bold">{projectsCount} accounts</span>
                   </div>
                   <div>
-                    <span className="text-neutral-500 block text-[9px] uppercase font-semibold">Active MRR</span>
+                    <span className="text-slate-500 block text-[9px] uppercase font-semibold">Active MRR</span>
                     <span className="text-white font-bold">R {activeMRR.toLocaleString()}</span>
                   </div>
                 </div>
 
-                <div className="space-y-1 text-xs text-neutral-400">
+                <div className="space-y-1 text-xs text-slate-400">
                   {isEditing ? (
                     <div className="space-y-1 pt-1">
                       <input
                         type="email"
                         value={editForm.email || ''}
                         onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                        className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full block"
+                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white w-full block"
                         placeholder="Email"
                       />
                       <input
                         type="text"
                         value={editForm.phone || ''}
                         onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                        className="px-2 py-1 bg-black border border-neutral-800 rounded text-xs text-white w-full block"
+                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white w-full block"
                         placeholder="Phone"
                       />
                     </div>
                   ) : (
                     <>
                       <div className="flex items-center space-x-1.5">
-                        <Mail size={11} className="text-neutral-500 shrink-0" />
+                        <Mail size={11} className="text-slate-500 shrink-0" />
                         <span className="truncate">{client.email}</span>
                       </div>
                       {client.phone && (
                         <div className="flex items-center space-x-1.5">
-                          <Phone size={11} className="text-neutral-500 shrink-0" />
+                          <Phone size={11} className="text-slate-500 shrink-0" />
                           <span>{client.phone}</span>
                         </div>
                       )}
@@ -594,10 +609,10 @@ export default function ClientsDashboard({
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-neutral-800">
+                <div className="flex items-center justify-between pt-2 border-t border-slate-700/30">
                   <button
                     onClick={() => onSelectClient(client.id)}
-                    className="flex items-center space-x-1 text-xs font-bold text-white hover:text-neutral-300 transition-colors"
+                    className="flex items-center space-x-1 text-xs font-bold text-white hover:text-slate-300 transition-colors"
                   >
                     <span>Open Backoffice Workspace</span>
                     <ArrowRight size={12} />
@@ -608,13 +623,13 @@ export default function ClientsDashboard({
                       <>
                         <button
                           onClick={handleSaveEdit}
-                          className="p-1.5 bg-neutral-800 text-white rounded-lg text-xs font-bold"
+                          className="p-1.5 bg-command-700 text-white rounded-lg text-xs font-bold"
                         >
                           Save
                         </button>
                         <button
                           onClick={() => setEditingId(null)}
-                          className="p-1.5 bg-black text-neutral-400 rounded-lg text-xs"
+                          className="p-1.5 bg-command-950 text-slate-400 rounded-lg text-xs"
                         >
                           Cancel
                         </button>
@@ -624,7 +639,7 @@ export default function ClientsDashboard({
                         {isAdmin && (
                           <button
                             onClick={() => handleStartEdit(client)}
-                            className="p-1 text-neutral-300 hover:text-white"
+                            className="p-1 text-slate-300 hover:text-white"
                           >
                             <Edit2 size={12} />
                           </button>
@@ -636,7 +651,7 @@ export default function ClientsDashboard({
                                 onDeleteClient(client.id);
                               }
                             }}
-                            className="p-1 text-neutral-400 hover:text-white"
+                            className="p-1 text-slate-400 hover:text-white"
                           >
                             <Trash2 size={12} />
                           </button>
@@ -651,9 +666,9 @@ export default function ClientsDashboard({
         </div>
 
         {filteredClients.length === 0 && (
-          <div className="text-center py-12 bg-neutral-900/40 space-y-2">
-            <AlertCircle size={24} className="text-neutral-500 mx-auto" />
-            <p className="text-xs text-neutral-400 font-medium">No company accounts match your query parameters.</p>
+          <div className="text-center py-12 bg-command-800/90/40 space-y-2">
+            <AlertCircle size={24} className="text-slate-500 mx-auto" />
+            <p className="text-xs text-slate-400 font-medium">No company accounts match your query parameters.</p>
           </div>
         )}
       </div>
