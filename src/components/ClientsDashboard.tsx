@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import {
-  Search,
-  Building2,
-  Mail,
-  Phone,
-  ArrowRight,
-  Plus,
-  Edit2,
-  Trash2,
-  Save,
-  X,
+import { 
+  Search, 
+  Building2, 
+  Mail, 
+  Phone, 
+  ArrowRight, 
+  Plus, 
+  Edit2, 
+  Trash2, 
+  Save, 
+  X, 
   Check,
   AlertCircle,
   UserCheck,
@@ -69,11 +69,11 @@ export default function ClientsDashboard({
   };
 
   const filteredClients = state.clients.filter(client => {
-    const matchesSearch =
+    const matchesSearch = 
       client.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.primary_contact_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       client.email.toLowerCase().includes(searchTerm.toLowerCase());
-
+    
     const matchesStatus = filterStatus === 'all' || client.status === filterStatus;
 
     return matchesSearch && matchesStatus;
@@ -102,7 +102,6 @@ export default function ClientsDashboard({
       return;
     }
 
-    // Email unique check locally
     if (state.clients.some(c => c.email.toLowerCase() === newForm.email.toLowerCase())) {
       setAddError('This email is already registered to another client profile.');
       return;
@@ -132,65 +131,50 @@ export default function ClientsDashboard({
 
   return (
     <div className="space-y-6">
-      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Client Registry Command</h2>
-              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Inspect account health, relationship value, contact context, and registry actions.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
-            <span className="text-teal-300">Signal:</span> Production UI Layer
-          </div>
-        </div>
-      </section>
       {/* 1. Header Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="command-panel p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Total Accounts</p>
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Total Registries</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{totalCount}</h4>
-            <span className="text-[10px] text-slate-400 font-mono">clients table</span>
+            <span className="text-[10px] text-slate-500 font-mono">accounts table</span>
           </div>
         </div>
-        <div className="bg-command-800/90 border border-slate-600/40 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-white font-mono font-semibold tracking-wide uppercase">Active Accounts</p>
+        <div className="bg-[#0b0f19] border border-emerald-900/50 rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-emerald-400 font-mono font-semibold tracking-wide uppercase">Active Clients</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{activeCount}</h4>
-            <span className="text-[9px] bg-white/10 text-white px-1.5 py-0.2 rounded font-mono font-bold">LIVE</span>
+            <span className="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-1.5 py-0.2 rounded font-mono font-bold">OPERATIONAL</span>
           </div>
         </div>
-        <div className="command-panel p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-slate-300 font-mono font-semibold tracking-wide uppercase">Paused Accounts</p>
+        <div className="bg-[#0b0f19] border border-amber-900/50 rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-amber-400 font-mono font-semibold tracking-wide uppercase">Paused Accounts</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-slate-300">{pausedCount}</h4>
-            <span className="text-[9px] bg-command-700 text-slate-300 px-1.5 py-0.2 rounded font-mono font-bold">ON HOLD</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-slate-200">{pausedCount}</h4>
+            <span className="text-[9px] bg-amber-950 text-amber-400 border border-amber-800 px-1.5 py-0.2 rounded font-mono font-bold">STANDBY</span>
           </div>
         </div>
-        <div className="command-panel p-4 md:p-5 shadow-lg">
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Inactive</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-slate-400">{inactiveCount}</h4>
-            <span className="text-[9px] bg-command-950/90 text-slate-500 px-1.5 py-0.2 rounded font-mono font-bold">ARCHIVED</span>
+            <span className="text-[9px] bg-[#070a12] text-slate-500 border border-[#1a2234] px-1.5 py-0.2 rounded font-mono font-bold">ARCHIVED</span>
           </div>
         </div>
       </div>
 
       {/* 2. Toolbar & Filtering */}
-      <div className="command-panel p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex-1 relative w-full">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
             <Search size={15} />
           </span>
           <input
             type="text"
-            placeholder="Filter clients by company, contact, or email address..."
+            placeholder="Search accounts by company, contact, or email address..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-xs md:text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+            className="w-full pl-9 pr-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs md:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono transition-colors"
           />
         </div>
 
@@ -198,26 +182,26 @@ export default function ClientsDashboard({
           <select
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
-            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-300 focus:outline-none focus:ring-2 focus:ring-white/20"
+            className="px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs font-mono font-semibold text-slate-300 focus:outline-none focus:border-cyan-500 cursor-pointer"
           >
-            <option value="all">All statuses</option>
-            <option value="active">Active only</option>
-            <option value="paused">Paused only</option>
-            <option value="inactive">Inactive only</option>
+            <option value="all">All Statuses</option>
+            <option value="active">Active Only</option>
+            <option value="paused">Paused Only</option>
+            <option value="inactive">Inactive Only</option>
           </select>
 
           {isAdmin && (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsAdding(!isAdding)}
-                className="flex items-center space-x-1.5 px-4 py-2 bg-command-700 hover:bg-neutral-700 border border-slate-600/40 text-white font-sans text-xs font-bold rounded-xl transition-all cursor-pointer"
+                className="flex items-center space-x-1.5 px-3.5 py-2 bg-[#121826] hover:bg-[#1a2234] border border-cyan-500/40 text-cyan-300 font-mono text-xs font-bold rounded-xl transition-all cursor-pointer"
               >
                 {isAdding ? <X size={13} /> : <Plus size={13} />}
-                <span>{isAdding ? 'Cancel' : 'Add Client'}</span>
+                <span>{isAdding ? 'Cancel' : 'New Client'}</span>
               </button>
               <button
                 onClick={onOpenWizard}
-                className="flex items-center space-x-1.5 px-4 py-2 bg-white hover:bg-neutral-200 text-black font-sans text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer"
+                className="flex items-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-sans text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer"
               >
                 <UserCheck size={13} />
                 <span>Onboard Pipeline</span>
@@ -229,76 +213,76 @@ export default function ClientsDashboard({
 
       {/* 3. Collapsible Add Form */}
       {isAdding && (
-        <form onSubmit={handleAddSubmit} className="bg-command-800/90 border border-slate-700/30 p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn">
-          <div className="border-b border-slate-700/30 pb-3">
-            <h3 className="font-display font-bold text-white text-xs md:text-sm flex items-center space-x-1.5">
-              <Users size={15} className="text-white" />
+        <form onSubmit={handleAddSubmit} className="bg-[#0b0f19] border border-[#1a2234] p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn">
+          <div className="border-b border-[#1a2234] pb-3">
+            <h3 className="font-display font-bold text-white text-xs md:text-sm flex items-center space-x-2">
+              <Users size={15} className="text-cyan-400" />
               <span>Create Client Profile Record</span>
             </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5 font-sans">
-              Inserts a brand-new institutional billing entity into the PostgreSQL table.
+            <p className="text-[10px] font-mono text-slate-400 mt-0.5">
+              Inserts a new institutional account record into the database.
             </p>
           </div>
 
           {addError && (
-            <p className="text-xs text-slate-200 bg-command-950/90 border border-slate-600/40 p-2.5 rounded-lg font-mono">
+            <p className="text-xs text-rose-300 bg-rose-950/60 border border-rose-800/80 p-2.5 rounded-lg font-mono">
               ⚠️ {addError}
             </p>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Company Name *</label>
+              <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Company Name *</label>
               <input
                 type="text"
-                placeholder="e.g. Acme Corp"
+                placeholder="e.g. Zenith Retail"
                 required
                 value={newForm.company_name}
                 onChange={e => setNewForm({ ...newForm, company_name: e.target.value })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Contact Name *</label>
+              <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Contact Name *</label>
               <input
                 type="text"
                 placeholder="e.g. Sarah Jenkins"
                 required
                 value={newForm.primary_contact_name}
                 onChange={e => setNewForm({ ...newForm, primary_contact_name: e.target.value })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Email Address *</label>
+              <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Email Address *</label>
               <input
                 type="email"
-                placeholder="e.g. contact@acme.com"
+                placeholder="e.g. contact@zenithretail.co"
                 required
                 value={newForm.email}
                 onChange={e => setNewForm({ ...newForm, email: e.target.value })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Phone Number</label>
+              <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Phone Number</label>
               <input
                 type="tel"
-                placeholder="e.g. +1-555-0192"
+                placeholder="e.g. +27-82-555-0192"
                 value={newForm.phone}
                 onChange={e => setNewForm({ ...newForm, phone: e.target.value })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
               />
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-2">
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Status</label>
+              <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Account Status</label>
               <select
                 value={newForm.status}
                 onChange={e => setNewForm({ ...newForm, status: e.target.value as any })}
-                className="bg-command-950 border border-slate-700/30 rounded-lg text-xs font-semibold text-slate-300 p-2"
+                className="bg-[#06080d] border border-[#1a2234] rounded-lg text-xs font-mono font-semibold text-slate-300 p-2 cursor-pointer"
               >
                 <option value="active">Active</option>
                 <option value="paused">Paused</option>
@@ -307,24 +291,24 @@ export default function ClientsDashboard({
             </div>
             <button
               type="submit"
-              className="flex items-center space-x-1 px-4 py-2.5 bg-white hover:bg-neutral-200 text-black font-sans text-xs font-extrabold rounded-lg shadow-md cursor-pointer"
+              className="flex items-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-sans text-xs font-extrabold rounded-lg shadow-md cursor-pointer"
             >
               <Check size={14} />
-              <span>Insert Client</span>
+              <span>Insert Client Profile</span>
             </button>
           </div>
         </form>
       )}
 
       {/* 4. Table Grid (Desktop) and Card view (Mobile) */}
-      <div className="command-panel shadow-xl overflow-hidden">
-
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] shadow-xl overflow-hidden">
+        
         {/* DESKTOP TABLE VIEW */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-700/30 bg-command-950/90 font-mono text-[10px] text-slate-400 uppercase tracking-wider">
-                <th className="py-4 px-6">Company Name</th>
+              <tr className="border-b border-[#1a2234] bg-[#070a12] font-mono text-[10px] text-slate-400 uppercase tracking-wider">
+                <th className="py-4 px-6">Company Entity</th>
                 <th className="py-4 px-6">Primary Contact</th>
                 <th className="py-4 px-6">Email / Phone</th>
                 <th className="py-4 px-6 text-center">Status</th>
@@ -333,14 +317,14 @@ export default function ClientsDashboard({
                 <th className="py-4 px-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800 text-xs md:text-sm">
+            <tbody className="divide-y divide-[#1a2234] text-xs md:text-sm">
               {filteredClients.map((client) => {
                 const isEditing = editingId === client.id;
                 const projectsCount = getProjectCount(client.id);
                 const activeMRR = getRetainerValue(client.id);
 
                 return (
-                  <tr key={client.id} className="hover:bg-command-700/40 transition-colors">
+                  <tr key={client.id} className="hover:bg-[#121826]/60 transition-colors">
                     {/* Company */}
                     <td className="py-4 px-6 font-medium text-white">
                       {isEditing ? (
@@ -348,12 +332,12 @@ export default function ClientsDashboard({
                           type="text"
                           value={editForm.company_name || ''}
                           onChange={e => setEditForm({ ...editForm, company_name: e.target.value })}
-                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[150px]"
+                          className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white max-w-[150px] font-mono"
                         />
                       ) : (
-                        <span
+                        <span 
                           onClick={() => onSelectClient(client.id)}
-                          className="hover:text-slate-300 hover:underline cursor-pointer font-bold"
+                          className="hover:text-cyan-400 hover:underline cursor-pointer font-bold text-slate-100"
                         >
                           {client.company_name}
                         </span>
@@ -367,7 +351,7 @@ export default function ClientsDashboard({
                           type="text"
                           value={editForm.primary_contact_name || ''}
                           onChange={e => setEditForm({ ...editForm, primary_contact_name: e.target.value })}
-                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[130px]"
+                          className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white max-w-[130px] font-mono"
                         />
                       ) : (
                         client.primary_contact_name
@@ -382,23 +366,23 @@ export default function ClientsDashboard({
                             type="email"
                             value={editForm.email || ''}
                             onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                            className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[150px] block"
+                            className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white max-w-[150px] block"
                           />
                           <input
                             type="text"
                             value={editForm.phone || ''}
                             onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                            className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[150px] block"
+                            className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white max-w-[150px] block"
                           />
                         </div>
                       ) : (
                         <>
-                          <div className="flex items-center space-x-1.5">
-                            <Mail size={12} className="text-slate-500" />
+                          <div className="flex items-center space-x-1.5 text-slate-300">
+                            <Mail size={12} className="text-cyan-400" />
                             <span>{client.email}</span>
                           </div>
                           {client.phone && (
-                            <div className="flex items-center space-x-1.5">
+                            <div className="flex items-center space-x-1.5 text-slate-400">
                               <Phone size={12} className="text-slate-500" />
                               <span>{client.phone}</span>
                             </div>
@@ -413,7 +397,7 @@ export default function ClientsDashboard({
                         <select
                           value={editForm.status || 'active'}
                           onChange={e => setEditForm({ ...editForm, status: e.target.value as any })}
-                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white"
+                          className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white font-mono"
                         >
                           <option value="active">active</option>
                           <option value="paused">paused</option>
@@ -421,10 +405,10 @@ export default function ClientsDashboard({
                         </select>
                       ) : (
                         <span className={`
-                          px-2 py-0.5 rounded-full font-mono text-[9px] uppercase font-bold border inline-block
-                          ${client.status === 'active' ? 'bg-white/10 text-white border-white/20' : ''}
-                          ${client.status === 'paused' ? 'bg-command-700 text-slate-300 border-slate-600/40' : ''}
-                          ${client.status === 'inactive' ? 'bg-command-950/90 text-slate-500 border-slate-700/30' : ''}
+                          px-2 py-0.5 rounded font-mono text-[9px] uppercase font-bold border inline-block
+                          ${client.status === 'active' ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800' : ''}
+                          ${client.status === 'paused' ? 'bg-amber-950/80 text-amber-300 border-amber-800' : ''}
+                          ${client.status === 'inactive' ? 'bg-[#070a12] text-slate-500 border-[#1a2234]' : ''}
                         `}>
                           {client.status}
                         </span>
@@ -437,7 +421,7 @@ export default function ClientsDashboard({
                     </td>
 
                     {/* Active MRR */}
-                    <td className="py-4 px-6 text-center font-mono font-bold text-white">
+                    <td className="py-4 px-6 text-center font-mono font-bold text-emerald-400">
                       R {activeMRR.toLocaleString()}
                     </td>
 
@@ -448,14 +432,14 @@ export default function ClientsDashboard({
                           <>
                             <button
                               onClick={handleSaveEdit}
-                              className="p-1 bg-command-700 border border-slate-600/40 text-white hover:bg-neutral-700 rounded-lg transition-colors cursor-pointer"
+                              className="p-1 bg-cyan-950 border border-cyan-700 text-cyan-300 hover:bg-cyan-900 rounded-lg transition-colors cursor-pointer"
                               title="Save client profile"
                             >
                               <Save size={13} />
                             </button>
                             <button
                               onClick={() => setEditingId(null)}
-                              className="p-1 bg-command-950 border border-slate-700/30 text-slate-400 hover:bg-command-700 rounded-lg transition-colors cursor-pointer"
+                              className="p-1 bg-[#06080d] border border-[#1a2234] text-slate-400 hover:bg-[#121826] rounded-lg transition-colors cursor-pointer"
                               title="Cancel edit"
                             >
                               <X size={13} />
@@ -466,7 +450,7 @@ export default function ClientsDashboard({
                             {isAdmin && (
                               <button
                                 onClick={() => handleStartEdit(client)}
-                                className="p-1 hover:bg-command-700 rounded-lg text-slate-300 hover:text-white transition-colors cursor-pointer"
+                                className="p-1 hover:bg-[#121826] rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
                                 title="Edit client profile"
                               >
                                 <Edit2 size={13} />
@@ -474,7 +458,7 @@ export default function ClientsDashboard({
                             )}
                             <button
                               onClick={() => onSelectClient(client.id)}
-                              className="p-1 hover:bg-command-700 rounded-lg text-white transition-colors cursor-pointer"
+                              className="p-1 bg-[#121826] hover:bg-[#1a2234] border border-[#1a2234] text-cyan-400 rounded-lg transition-colors cursor-pointer"
                               title="Inspect client workspace"
                             >
                               <ArrowRight size={13} />
@@ -486,7 +470,7 @@ export default function ClientsDashboard({
                                     onDeleteClient(client.id);
                                   }
                                 }}
-                                className="p-1 hover:bg-command-700 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                className="p-1 hover:bg-[#121826] rounded-lg text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
                                 title="Delete client profile"
                               >
                                 <Trash2 size={13} />
@@ -504,14 +488,14 @@ export default function ClientsDashboard({
         </div>
 
         {/* MOBILE CARDS VIEW */}
-        <div className="block md:hidden divide-y divide-neutral-800">
+        <div className="block md:hidden divide-y divide-[#1a2234]">
           {filteredClients.map((client) => {
             const isEditing = editingId === client.id;
             const projectsCount = getProjectCount(client.id);
             const activeMRR = getRetainerValue(client.id);
 
             return (
-              <div key={client.id} className="p-4 space-y-3 bg-command-800/90 hover:bg-command-700/60 transition-colors">
+              <div key={client.id} className="p-4 space-y-3 bg-[#0b0f19] hover:bg-[#121826] transition-colors">
                 <div className="flex items-start justify-between">
                   <div className="space-y-0.5">
                     {isEditing ? (
@@ -519,23 +503,23 @@ export default function ClientsDashboard({
                         type="text"
                         value={editForm.company_name || ''}
                         onChange={e => setEditForm({ ...editForm, company_name: e.target.value })}
-                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white block w-full mb-1"
+                        className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white block w-full mb-1 font-mono"
                       />
                     ) : (
-                      <h4
+                      <h4 
                         onClick={() => onSelectClient(client.id)}
-                        className="font-display font-bold text-white text-sm hover:underline cursor-pointer"
+                        className="font-display font-bold text-white text-sm hover:text-cyan-400 cursor-pointer"
                       >
                         {client.company_name}
                       </h4>
                     )}
-
+                    
                     {isEditing ? (
                       <input
                         type="text"
                         value={editForm.primary_contact_name || ''}
                         onChange={e => setEditForm({ ...editForm, primary_contact_name: e.target.value })}
-                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white block w-full"
+                        className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white block w-full font-mono"
                       />
                     ) : (
                       <p className="text-xs text-slate-400">{client.primary_contact_name}</p>
@@ -546,7 +530,7 @@ export default function ClientsDashboard({
                     <select
                       value={editForm.status || 'active'}
                       onChange={e => setEditForm({ ...editForm, status: e.target.value as any })}
-                      className="px-1.5 py-0.5 bg-command-950 border border-slate-700/30 rounded text-[10px] text-white"
+                      className="px-1.5 py-0.5 bg-[#06080d] border border-[#1a2234] rounded text-[10px] text-white font-mono"
                     >
                       <option value="active">active</option>
                       <option value="paused">paused</option>
@@ -554,53 +538,53 @@ export default function ClientsDashboard({
                     </select>
                   ) : (
                     <span className={`
-                      px-2 py-0.5 rounded-full font-mono text-[8px] uppercase font-bold border
-                      ${client.status === 'active' ? 'bg-white/10 text-white border-white/20' : ''}
-                      ${client.status === 'paused' ? 'bg-command-700 text-slate-300 border-slate-600/40' : ''}
-                      ${client.status === 'inactive' ? 'bg-command-950/90 text-slate-500 border-slate-700/30' : ''}
+                      px-2 py-0.5 rounded font-mono text-[8px] uppercase font-bold border
+                      ${client.status === 'active' ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800' : ''}
+                      ${client.status === 'paused' ? 'bg-amber-950/80 text-amber-300 border-amber-800' : ''}
+                      ${client.status === 'inactive' ? 'bg-[#070a12] text-slate-500 border-[#1a2234]' : ''}
                     `}>
                       {client.status}
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono py-2 bg-command-950/90 px-3 rounded-lg border border-slate-700/30">
+                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono py-2 bg-[#06080d] px-3 rounded-lg border border-[#1a2234]">
                   <div>
                     <span className="text-slate-500 block text-[9px] uppercase font-semibold">Active Projects</span>
                     <span className="text-white font-bold">{projectsCount} accounts</span>
                   </div>
                   <div>
                     <span className="text-slate-500 block text-[9px] uppercase font-semibold">Active MRR</span>
-                    <span className="text-white font-bold">R {activeMRR.toLocaleString()}</span>
+                    <span className="text-emerald-400 font-bold">R {activeMRR.toLocaleString()}</span>
                   </div>
                 </div>
 
-                <div className="space-y-1 text-xs text-slate-400">
+                <div className="space-y-1 text-xs text-slate-400 font-mono">
                   {isEditing ? (
                     <div className="space-y-1 pt-1">
                       <input
                         type="email"
                         value={editForm.email || ''}
                         onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white w-full block"
+                        className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white w-full block"
                         placeholder="Email"
                       />
                       <input
                         type="text"
                         value={editForm.phone || ''}
                         onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white w-full block"
+                        className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white w-full block"
                         placeholder="Phone"
                       />
                     </div>
                   ) : (
                     <>
-                      <div className="flex items-center space-x-1.5">
-                        <Mail size={11} className="text-slate-500 shrink-0" />
+                      <div className="flex items-center space-x-1.5 text-slate-300">
+                        <Mail size={11} className="text-cyan-400 shrink-0" />
                         <span className="truncate">{client.email}</span>
                       </div>
                       {client.phone && (
-                        <div className="flex items-center space-x-1.5">
+                        <div className="flex items-center space-x-1.5 text-slate-400">
                           <Phone size={11} className="text-slate-500 shrink-0" />
                           <span>{client.phone}</span>
                         </div>
@@ -609,12 +593,12 @@ export default function ClientsDashboard({
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-700/30">
+                <div className="flex items-center justify-between pt-2 border-t border-[#1a2234]">
                   <button
                     onClick={() => onSelectClient(client.id)}
-                    className="flex items-center space-x-1 text-xs font-bold text-white hover:text-slate-300 transition-colors"
+                    className="flex items-center space-x-1 text-xs font-bold text-cyan-400 hover:underline"
                   >
-                    <span>Open Backoffice Workspace</span>
+                    <span>Inspect Account Intelligence</span>
                     <ArrowRight size={12} />
                   </button>
 
@@ -623,13 +607,13 @@ export default function ClientsDashboard({
                       <>
                         <button
                           onClick={handleSaveEdit}
-                          className="p-1.5 bg-command-700 text-white rounded-lg text-xs font-bold"
+                          className="p-1.5 bg-cyan-950 text-cyan-300 rounded-lg text-xs font-mono font-bold"
                         >
                           Save
                         </button>
                         <button
                           onClick={() => setEditingId(null)}
-                          className="p-1.5 bg-command-950 text-slate-400 rounded-lg text-xs"
+                          className="p-1.5 bg-[#06080d] text-slate-400 rounded-lg text-xs font-mono"
                         >
                           Cancel
                         </button>
@@ -639,7 +623,7 @@ export default function ClientsDashboard({
                         {isAdmin && (
                           <button
                             onClick={() => handleStartEdit(client)}
-                            className="p-1 text-slate-300 hover:text-white"
+                            className="p-1 text-slate-400 hover:text-white"
                           >
                             <Edit2 size={12} />
                           </button>
@@ -651,7 +635,7 @@ export default function ClientsDashboard({
                                 onDeleteClient(client.id);
                               }
                             }}
-                            className="p-1 text-slate-400 hover:text-white"
+                            className="p-1 text-slate-500 hover:text-rose-400"
                           >
                             <Trash2 size={12} />
                           </button>
@@ -666,9 +650,9 @@ export default function ClientsDashboard({
         </div>
 
         {filteredClients.length === 0 && (
-          <div className="text-center py-12 bg-command-800/90/40 space-y-2">
+          <div className="text-center py-12 bg-[#06080d]/40 space-y-2">
             <AlertCircle size={24} className="text-slate-500 mx-auto" />
-            <p className="text-xs text-slate-400 font-medium">No company accounts match your query parameters.</p>
+            <p className="text-xs text-slate-400 font-mono">No company account records match your search filter.</p>
           </div>
         )}
       </div>

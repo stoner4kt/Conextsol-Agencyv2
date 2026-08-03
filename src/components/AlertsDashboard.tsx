@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
-import {
-  BellRing,
-  Search,
-  Trash2,
-  AlertCircle,
-  Calendar,
-  Clock,
-  Bot,
-  Send,
-  Sparkles,
-  RefreshCw,
+import { 
+  BellRing, 
+  Search, 
+  Trash2, 
+  Clock, 
+  Bot, 
+  RefreshCw, 
   X
 } from 'lucide-react';
-import { WebhookAlert, AppState } from '../types';
+import { AppState } from '../types';
 
 interface AlertsDashboardProps {
   state: AppState;
@@ -41,10 +37,10 @@ export default function AlertsDashboard({
 
   // Filters
   const filteredAlerts = state.alertsLog.filter(alert => {
-    const matchesSearch =
+    const matchesSearch = 
       alert.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       alert.message.toLowerCase().includes(searchTerm.toLowerCase());
-
+    
     const matchesType = filterType === 'all' || alert.type === filterType;
 
     return matchesSearch && matchesType;
@@ -56,7 +52,7 @@ export default function AlertsDashboard({
     setTimeout(() => {
       onRunDeadlineAlerts();
       setRunningAlert(null);
-      setSuccessMsg('Daily Scan Complete: Triggered telegram alert sequence for projects terminating within 48h.');
+      setSuccessMsg('Deadline Scan Executed: Checked active project deliverables terminating within 48 hours.');
       setTimeout(() => setSuccessMsg(null), 5000);
     }, 700);
   };
@@ -66,36 +62,21 @@ export default function AlertsDashboard({
     setTimeout(() => {
       onRunRetainerAlerts();
       setRunningAlert(null);
-      setSuccessMsg('Retainer Cycle Scan Complete: Dispatched telegram alerts for accounts billed on Day 15.');
+      setSuccessMsg('Retainer Cycle Scan Executed: Parsed billing cycle schedules for monthly SLA streams.');
       setTimeout(() => setSuccessMsg(null), 5000);
     }, 700);
   };
 
   return (
     <div className="space-y-6">
-      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Dispatch Event Stream</h2>
-              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Run scans and audit webhook transmissions from the operations ledger.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
-            <span className="text-teal-300">Signal:</span> Production UI Layer
-          </div>
-        </div>
-      </section>
-      {/* Simulation success alerts toast */}
+      {/* Toast */}
       {successMsg && (
-        <div className="p-4 bg-command-800/90 border border-slate-600/40 text-white rounded-xl flex items-center justify-between text-xs md:text-sm shadow-md animate-fadeIn">
+        <div className="p-4 bg-emerald-950/80 border border-emerald-800 text-emerald-300 rounded-xl flex items-center justify-between text-xs md:text-sm shadow-lg animate-fadeIn font-mono">
           <div className="flex items-center space-x-2.5">
-            <Bot size={18} className="shrink-0 text-white" />
+            <Bot size={18} className="shrink-0 text-emerald-400" />
             <span className="font-semibold">{successMsg}</span>
           </div>
-          <button onClick={() => setSuccessMsg(null)} className="p-1 hover:bg-command-700 rounded text-slate-400 hover:text-white">
+          <button onClick={() => setSuccessMsg(null)} className="p-1 hover:bg-emerald-900 rounded text-emerald-400">
             <X size={14} />
           </button>
         </div>
@@ -103,81 +84,81 @@ export default function AlertsDashboard({
 
       {/* 1. Header Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="command-panel p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Total Alerts Fired</p>
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Total Alert Dispatches</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{totalCount}</h4>
-            <span className="text-[10px] text-slate-400 font-mono">logs table</span>
+            <span className="text-[10px] text-slate-500 font-mono">logs table</span>
           </div>
         </div>
-        <div className="command-panel p-4 md:p-5 shadow-lg">
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Deadline Alerts</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{deadlineCount}</h4>
-            <span className="text-[9px] bg-command-950 border border-slate-700/30 text-slate-300 px-1.5 py-0.2 rounded font-mono font-bold">CRON DAILY</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-cyan-400">{deadlineCount}</h4>
+            <span className="text-[9px] bg-[#06080d] border border-[#1a2234] text-slate-400 px-1.5 py-0.2 rounded font-mono font-bold">DAILY</span>
           </div>
         </div>
-        <div className="command-panel p-4 md:p-5 shadow-lg">
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Billing Invoices</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{retainerCount}</h4>
-            <span className="text-[9px] bg-command-950 border border-slate-700/30 text-slate-300 px-1.5 py-0.2 rounded font-mono font-bold">CRON HOURLY</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-emerald-400">{retainerCount}</h4>
+            <span className="text-[9px] bg-[#06080d] border border-[#1a2234] text-slate-400 px-1.5 py-0.2 rounded font-mono font-bold">MONTHLY</span>
           </div>
         </div>
-        <div className="command-panel p-4 md:p-5 shadow-lg">
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Delivery Status</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">100%</h4>
-            <span className="text-[9px] bg-command-950 border border-slate-700/30 text-slate-300 px-1.5 py-0.2 rounded font-mono font-bold">TRANSMITTED</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-slate-200">100%</h4>
+            <span className="text-[9px] bg-[#06080d] border border-[#1a2234] text-emerald-400 px-1.5 py-0.2 rounded font-mono font-bold">ACTIVE</span>
           </div>
         </div>
       </div>
 
       {/* 2. Admin trigger block */}
-      <div className="command-panel p-5 shadow-lg space-y-4">
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-5 shadow-lg space-y-4">
         <div>
           <h3 className="font-display font-bold text-white text-xs md:text-sm flex items-center space-x-1.5">
-            <Bot size={15} className="text-slate-300" />
-            <span>Manual Script / Webhook Executions</span>
+            <Bot size={15} className="text-cyan-400" />
+            <span>Manual Signal & Webhook Dispatchers</span>
           </h3>
-          <p className="text-[10px] text-slate-400 mt-0.5">
-            Trigger simulated scans to query active postgres tables, parse deadlines or billing days, and fire outgoing webhooks.
+          <p className="text-[10px] text-slate-400 mt-0.5 font-mono">
+            Trigger on-demand routine scans for project milestones or SLA retainer billing cycles.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono">
           <button
             onClick={handleRunDeadline}
             disabled={runningAlert !== null}
-            className="flex items-center justify-center space-x-2 py-3 bg-command-950 hover:bg-command-700 border border-slate-700/30 text-xs text-white font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50"
+            className="flex items-center justify-center space-x-2 py-3 bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] text-xs text-slate-200 font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50"
           >
-            <RefreshCw size={12} className={runningAlert === 'deadline' ? 'animate-spin text-white' : 'text-slate-400'} />
-            <span>{runningAlert === 'deadline' ? 'Scanning Projects...' : 'Trigger Project Deadline Scan'}</span>
+            <RefreshCw size={12} className={runningAlert === 'deadline' ? 'animate-spin text-cyan-400' : 'text-slate-400'} />
+            <span>{runningAlert === 'deadline' ? 'Scanning Projects...' : 'Run Project Deadline Scan'}</span>
           </button>
 
           <button
             onClick={handleRunRetainers}
             disabled={runningAlert !== null}
-            className="flex items-center justify-center space-x-2 py-3 bg-white hover:bg-neutral-200 text-black text-xs font-black rounded-xl transition-all cursor-pointer disabled:opacity-50"
+            className="flex items-center justify-center space-x-2 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 text-xs font-extrabold rounded-xl transition-all cursor-pointer disabled:opacity-50 font-sans"
           >
-            <RefreshCw size={12} className={runningAlert === 'retainer' ? 'animate-spin text-black' : 'text-black'} />
-            <span>{runningAlert === 'retainer' ? 'Scanning Retainers...' : 'Trigger Retainer Billing Scan'}</span>
+            <RefreshCw size={12} className={runningAlert === 'retainer' ? 'animate-spin text-slate-950' : 'text-slate-950'} />
+            <span>{runningAlert === 'retainer' ? 'Scanning Retainers...' : 'Run Retainer Billing Scan'}</span>
           </button>
         </div>
       </div>
 
       {/* 3. Filtering Toolbar */}
-      <div className="command-panel p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono">
         <div className="flex-1 relative w-full">
           <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
             <Search size={15} />
           </span>
           <input
             type="text"
-            placeholder="Search dispatch logs by message payload, title, client names..."
+            placeholder="Search dispatch logs..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-xs md:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-500 transition-colors"
+            className="w-full pl-9 pr-4 py-2 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
           />
         </div>
 
@@ -185,21 +166,21 @@ export default function AlertsDashboard({
           <select
             value={filterType}
             onChange={e => setFilterType(e.target.value)}
-            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-300 focus:outline-none"
+            className="px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs font-semibold text-slate-300 focus:outline-none focus:border-cyan-500 cursor-pointer"
           >
-            <option value="all">All Webhook Types</option>
-            <option value="deadline">Project Deadlines Only</option>
-            <option value="retainer">Billing Invoices Only</option>
+            <option value="all">All Notification Types</option>
+            <option value="deadline">Project Deadlines</option>
+            <option value="retainer">Retainer Billing</option>
           </select>
 
           {isAdmin && state.alertsLog.length > 0 && (
             <button
               onClick={() => {
-                if (confirm('Are you sure you want to permanently clear the transmission logs history?')) {
+                if (confirm('Clear alert dispatch history?')) {
                   onClearAlertsLog();
                 }
               }}
-              className="flex items-center space-x-1.5 px-4 py-2 bg-command-950 hover:bg-command-700 border border-slate-700/30 text-slate-300 font-sans text-xs font-bold rounded-xl transition-all cursor-pointer"
+              className="flex items-center space-x-1.5 px-4 py-2 bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] text-slate-400 hover:text-rose-400 text-xs font-bold rounded-xl transition-all cursor-pointer"
             >
               <Trash2 size={13} />
               <span>Reset Logs</span>
@@ -209,21 +190,21 @@ export default function AlertsDashboard({
       </div>
 
       {/* 4. Logs rendering */}
-      <div className="command-panel shadow-xl overflow-hidden divide-y divide-neutral-800">
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] shadow-xl overflow-hidden divide-y divide-[#1a2234]">
         {filteredAlerts.map((alert) => {
           const isDeadline = alert.type === 'deadline';
           return (
-            <div key={alert.id} className="p-4 md:p-5 flex flex-col md:flex-row md:items-start justify-between gap-4 hover:bg-command-700/50 transition-all">
+            <div key={alert.id} className="p-4 md:p-5 flex flex-col md:flex-row md:items-start justify-between gap-4 hover:bg-[#121826]/60 transition-all">
               <div className="space-y-2 text-left flex-1">
                 <div className="flex items-center space-x-2">
                   <span className={`
                     px-2.5 py-0.5 rounded font-mono text-[9px] uppercase font-black border
-                    ${isDeadline
-                      ? 'bg-command-950 text-white border-slate-600/40'
-                      : 'bg-command-700 text-slate-200 border-slate-600/40'
+                    ${isDeadline 
+                      ? 'bg-cyan-950 text-cyan-300 border-cyan-800' 
+                      : 'bg-emerald-950 text-emerald-300 border-emerald-800'
                     }
                   `}>
-                    {isDeadline ? 'Project Deadline scanner' : 'Retainer invoice due'}
+                    {isDeadline ? 'Project Milestone Alert' : 'Retainer Billing Alert'}
                   </span>
                   <span className="flex items-center space-x-1 text-[10px] text-slate-500 font-mono">
                     <Clock size={11} />
@@ -235,20 +216,20 @@ export default function AlertsDashboard({
                   {alert.title}
                 </h4>
 
-                <p className="text-xs text-slate-300 bg-command-950 border border-slate-700/30 p-3 rounded-lg leading-relaxed font-sans font-medium whitespace-pre-wrap max-w-4xl">
+                <p className="text-xs text-slate-300 bg-[#06080d] border border-[#1a2234] p-3 rounded-lg leading-relaxed font-sans font-medium whitespace-pre-wrap max-w-4xl">
                   {alert.message}
                 </p>
               </div>
 
-              <div className="shrink-0 flex md:flex-col items-center md:items-end justify-between md:justify-start gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-slate-700/30">
+              <div className="shrink-0 flex md:flex-col items-center md:items-end justify-between md:justify-start gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-[#1a2234] font-mono">
                 <div>
-                  <span className="text-[9px] font-mono font-bold text-slate-500 uppercase block">Transmission Channel</span>
-                  <span className="text-xs font-mono font-bold text-slate-400 block">{alert.recipient}</span>
+                  <span className="text-[9px] font-bold text-slate-500 uppercase block">Recipient</span>
+                  <span className="text-xs font-bold text-slate-400 block">{alert.recipient}</span>
                 </div>
 
-                <span className="text-[10px] bg-command-950 border border-slate-700/30 text-slate-300 font-bold px-2 py-0.5 rounded flex items-center space-x-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse inline-block" />
-                  <span>TRANSMITTED OK</span>
+                <span className="text-[10px] bg-[#06080d] border border-emerald-800/80 text-emerald-400 font-bold px-2 py-0.5 rounded flex items-center space-x-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                  <span>DISPATCHED</span>
                 </span>
               </div>
             </div>
@@ -256,11 +237,11 @@ export default function AlertsDashboard({
         })}
 
         {filteredAlerts.length === 0 && (
-          <div className="text-center py-16 bg-command-800/90/30 space-y-3">
-            <BellRing size={28} className="text-neutral-600 mx-auto animate-bounce" />
+          <div className="text-center py-16 bg-[#0b0f19] space-y-3 font-mono">
+            <BellRing size={28} className="text-slate-600 mx-auto animate-bounce" />
             <h4 className="font-display font-bold text-white text-xs md:text-sm">No Webhook Logs Recorded</h4>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              Outbound Telegram dispatch logs are empty. Run simulated daily/hourly monitors above to dispatch notifications.
+            <p className="text-xs text-slate-400 max-w-sm mx-auto font-sans">
+              Alert log history is clean. Execute a manual scan above to test dispatch routines.
             </p>
           </div>
         )}

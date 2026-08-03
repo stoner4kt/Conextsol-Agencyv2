@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import {
-  Terminal,
-  Copy,
-  Check,
-  ExternalLink,
-  Code,
-  Database,
-  Cpu,
-  BookOpen,
+import { 
+  Terminal, 
+  Copy, 
+  Check, 
+  Code, 
+  Database, 
+  Cpu, 
+  BookOpen, 
   CheckCircle2,
   Trash2,
   Sparkles,
@@ -113,8 +112,8 @@ ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE retainers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE documents_and_notes ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Admins have full access"
-ON clients FOR ALL TO authenticated
+CREATE POLICY "Admins have full access" 
+ON clients FOR ALL TO authenticated 
 USING (auth.jwt() ->> 'email' LIKE '%@conextsol.com' OR auth.jwt() ->> 'email' = 'reeqieric41@gmail.com');
 
 CREATE POLICY "Clients can view linked projects"
@@ -142,10 +141,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const isAdmin = user.email?.endsWith('@conextsol.com') || user.email === 'reeqieric41@gmail.com';
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
-      <Sidebar
-        userEmail={user.email}
-        isAdmin={isAdmin}
+    <div className="flex h-screen bg-[#06080d] overflow-hidden font-sans text-slate-100">
+      <Sidebar 
+        userEmail={user.email} 
+        isAdmin={isAdmin} 
       />
       <main className="flex-1 overflow-y-auto p-6 md:p-10">
         <div className="max-w-7xl mx-auto space-y-6">
@@ -154,102 +153,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </main>
     </div>
   );
-}
-
-// app/onboarding/page.tsx
-// Linear Client -> Project -> Initial Documentation onboarding wizard.
-
-'use client';
-
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client';
-
-export default function OnboardingWizard() {
-  const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [loading, setLoading] = useState(false);
-
-  // State elements
-  const [clientId, setClientId] = useState('');
-  const [projectId, setProjectId] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [contactName, setContactName] = useState('');
-  const [email, setEmail] = useState('');
-
-  // Project details
-  const [projectName, setProjectName] = useState('');
-  const [amount, setAmount] = useState(15000);
-
-  // Initial Document spec sheet
-  const [docTitle, setDocTitle] = useState('Specs Summary');
-  const [docContent, setDocContent] = useState('### Core Spec Notes');
-
-  const handleStep1 = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('clients')
-      .insert([{ company_name: companyName, primary_contact_name: contactName, email: email }])
-      .select('id')
-      .single();
-
-    if (error) {
-      alert(error.message);
-    } else {
-      setClientId(data.id);
-      setStep(2);
-    }
-    setLoading(false);
-  };
-
-  const handleStep2 = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('projects')
-      .insert([{ client_id: clientId, project_name: projectName, invoiced_amount: amount }])
-      .select('id')
-      .single();
-
-    if (error) {
-      alert(error.message);
-    } else {
-      setProjectId(data.id);
-      setStep(3);
-    }
-    setLoading(false);
-  };
-
-  const handleStep3 = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    const { error } = await supabase
-      .from('documents_and_notes')
-      .insert([{ project_id: projectId, title: docTitle, content: docContent }]);
-
-    if (error) {
-      alert(error.message);
-    } else {
-      router.push('/dashboard');
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className="bg-white p-6 rounded-xl border border-slate-100 max-w-xl mx-auto shadow-sm">
-      <h2 className="font-display font-bold text-lg mb-4">Client Onboarding Wizard</h2>
-      {step === 1 && <form onSubmit={handleStep1}>...</form>}
-      {step === 2 && <form onSubmit={handleStep2}>...</form>}
-      {step === 3 && <form onSubmit={handleStep3}>...</form>}
-    </div>
-  );
 }`;
 
   // 3. Supabase Deno Edge Function script details
   const edgeCode = `// supabase/functions/deadline-alerts/index.ts
-// Deno Edge Function scanning project deadlines and messaging Telegram Webhooks.
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
@@ -259,7 +166,6 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Calculate target date (+2 days in the future)
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + 2);
     const targetDateStr = targetDate.toISOString().split("T")[0];
@@ -293,112 +199,90 @@ serve(async (req) => {
 
   // 4. Detailed Guide/README text preview
   const guideText = `# Conextsol Deployment Manual
-# Direct steps for setting up Supabase, loading tables, and pushing the app to Vercel production.
+# Direct steps for setting up Supabase, loading tables, and pushing the app to production.
 
 1. Create a Supabase project at https://supabase.com.
 2. Initialize schema by pasting contents from the "SQL Migrations" tab directly into SQL Editor.
-3. Fetch the SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANOTHER_ANON_KEY inside Settings -> API.
-4. Copy-paste them to your vercel environment fields or .env.local file.
-5. Link Supabase CLI, bind secrets, and run deployment for Deno Edge Functions:
-   $ npx supabase secrets set TELEGRAM_BOT_TOKEN="..." TELEGRAM_CHAT_ID="..."
-   $ npx supabase fn deploy deadline-alerts
-   $ npx supabase fn deploy retainer-billing
-6. Enable the pg_cron extension via the SQL Editor and define daily schedule timers.
-7. Launch the Next.js workspace on Vercel with a single git push.`;
+3. Fetch SUPABASE_URL and SUPABASE_ANON_KEY inside Settings -> API.
+4. Copy-paste them into your environment credentials.
+5. Deploy Edge Functions and set up pg_cron schedules.`;
 
   return (
     <div className="space-y-6">
-      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Deployment & Data Operations</h2>
-              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Operate environment status, seed routines, and protected data controls.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
-            <span className="text-teal-300">Signal:</span> Production UI Layer
-          </div>
-        </div>
-      </section>
-      {/* Tab Header bar */}
-      <div className="command-panel p-4 shadow-sm flex flex-wrap gap-2">
+      {/* Subtab Header bar */}
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-4 shadow-sm flex flex-wrap gap-2 font-mono">
         <button
           id="dev-subtab-sql"
           onClick={() => setActiveSubTab('sql')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'sql' ? 'bg-white text-black font-bold' : 'bg-command-700 hover:bg-neutral-700 text-slate-300'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'sql' ? 'bg-cyan-400 text-slate-950 font-sans' : 'bg-[#06080d] hover:bg-[#121826] text-slate-300'}`}
         >
           <Database size={14} />
-          <span>PostgreSQL Schema Migrations</span>
+          <span>PostgreSQL Schema</span>
         </button>
 
         <button
           id="dev-subtab-next"
           onClick={() => setActiveSubTab('nextjs')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'nextjs' ? 'bg-white text-black font-bold' : 'bg-command-700 hover:bg-neutral-700 text-slate-300'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'nextjs' ? 'bg-cyan-400 text-slate-950 font-sans' : 'bg-[#06080d] hover:bg-[#121826] text-slate-300'}`}
         >
           <Code size={14} />
-          <span>Next.js Frontend Code</span>
+          <span>Next.js Architecture</span>
         </button>
 
         <button
           id="dev-subtab-edge"
           onClick={() => setActiveSubTab('edge')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'edge' ? 'bg-white text-black font-bold' : 'bg-command-700 hover:bg-neutral-700 text-slate-300'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'edge' ? 'bg-cyan-400 text-slate-950 font-sans' : 'bg-[#06080d] hover:bg-[#121826] text-slate-300'}`}
         >
           <Cpu size={14} />
-          <span>Deno Edge Functions</span>
+          <span>Edge Functions</span>
         </button>
 
         <button
           id="dev-subtab-guide"
           onClick={() => setActiveSubTab('guide')}
-          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'guide' ? 'bg-white text-black font-bold' : 'bg-command-700 hover:bg-neutral-700 text-slate-300'}`}
+          className={`flex items-center space-x-1.5 px-4 py-2 text-xs font-bold rounded-lg transition-colors cursor-pointer ${activeSubTab === 'guide' ? 'bg-cyan-400 text-slate-950 font-sans' : 'bg-[#06080d] hover:bg-[#121826] text-slate-300'}`}
         >
           <BookOpen size={14} />
-          <span>Vercel Deploy Instructions</span>
+          <span>Deploy Instructions</span>
         </button>
       </div>
 
       {/* Main Content Area */}
-      <div className="bg-command-950 rounded-xl border border-slate-700/30 p-5 space-y-4 shadow-xl">
-        <div className="flex items-center justify-between border-b border-slate-700/30 pb-3">
+      <div className="bg-[#06080d] rounded-xl border border-[#1a2234] p-5 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-[#1a2234] pb-3">
           <div className="space-y-0.5">
             <h3 className="font-display font-bold text-white text-sm flex items-center space-x-1.5">
-              <Terminal size={15} className="text-white" />
+              <Terminal size={15} className="text-cyan-400" />
               <span>
                 {activeSubTab === 'sql' && 'PostgreSQL migrations - /supabase-schema.sql'}
-                {activeSubTab === 'nextjs' && 'Next.js 14 App Router Structure'}
+                {activeSubTab === 'nextjs' && 'Next.js App Router Structure'}
                 {activeSubTab === 'edge' && 'Supabase Edge Functions'}
-                {activeSubTab === 'guide' && 'Comprehensive Setup & Deploy Guide'}
+                {activeSubTab === 'guide' && 'Setup & Deployment Manual'}
               </span>
             </h3>
-            <p className="text-[10px] text-slate-400 font-sans">
-              Review and copy code directly for production setup in Vercel.
+            <p className="text-[10px] text-slate-400 font-mono">
+              Inspect and copy code snippets.
             </p>
           </div>
 
-          {/* Copy Button */}
           <button
             id="copy-code-btn"
             onClick={() => {
-              const text =
+              const text = 
                 activeSubTab === 'sql' ? sqlCode :
                 activeSubTab === 'nextjs' ? nextCode :
                 activeSubTab === 'edge' ? edgeCode : guideText;
               triggerCopy(text, activeSubTab);
             }}
-            className="flex items-center space-x-1 px-3 py-1.5 bg-command-700 hover:bg-neutral-700 border border-slate-600/40 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer font-sans"
+            className="flex items-center space-x-1 px-3 py-1.5 bg-[#0b0f19] hover:bg-[#121826] border border-[#1a2234] text-slate-200 text-xs font-semibold rounded-lg transition-colors cursor-pointer font-mono"
           >
-            {copiedId === activeSubTab ? <Check size={12} className="text-white" /> : <Copy size={12} />}
-            <span>{copiedId === activeSubTab ? 'Copied!' : 'Copy Code'}</span>
+            {copiedId === activeSubTab ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+            <span>{copiedId === activeSubTab ? 'Copied!' : 'Copy Snippet'}</span>
           </button>
         </div>
 
-        {/* Render Code Block */}
-        <pre className="text-[11px] font-mono text-slate-300 leading-normal max-h-[500px] overflow-y-auto bg-command-950/90 p-4 rounded-lg border border-slate-700/30 whitespace-pre scrollbar-thin">
+        <pre className="text-[11px] font-mono text-slate-300 leading-normal max-h-[500px] overflow-y-auto bg-[#070a12] p-4 rounded-lg border border-[#1a2234] whitespace-pre scrollbar-thin">
           <code>
             {activeSubTab === 'sql' && sqlCode}
             {activeSubTab === 'nextjs' && nextCode}
@@ -408,75 +292,75 @@ serve(async (req) => {
         </pre>
       </div>
 
-      {/* Live Database Integration Status and Seeding Panel */}
-      <div className="command-panel p-6 shadow-lg space-y-4 text-left">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700/30 pb-4">
+      {/* Database Integration Status and Seeding Panel */}
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-6 shadow-lg space-y-4 text-left">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1a2234] pb-4">
           <div className="space-y-1">
             <h4 className="font-display font-bold text-white text-sm flex items-center space-x-2">
-              <Database size={16} className="text-white" />
-              <span>Real-Time Database Connectivity Status</span>
+              <Database size={16} className="text-cyan-400" />
+              <span>Database Connectivity Engine</span>
             </h4>
             <p className="text-xs text-slate-400 leading-normal max-w-xl">
-              This agency portal dynamically detects connection settings. If Vite credentials are present, transactions route straight to your live cloud PostgreSQL instance.
+              Transactions utilize live cloud storage when credentials are available, falling back to clean local persistence.
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 shrink-0">
-            <span className="h-2.5 w-2.5 rounded-full inline-block bg-white animate-pulse" />
-            <span className="font-mono text-xs font-black uppercase text-white">
-              {isSupabaseConnected ? 'Supabase Connected' : 'Local Storage Sandbox'}
+          <div className="flex items-center space-x-2 shrink-0 font-mono">
+            <span className="h-2.5 w-2.5 rounded-full inline-block bg-emerald-400 animate-pulse" />
+            <span className="text-xs font-bold uppercase text-emerald-400">
+              {isSupabaseConnected ? 'Supabase Connected' : 'Local Persistence Active'}
             </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 font-mono">
           {/* Seed Demo Action */}
-          <div className="border border-slate-700/30 bg-command-950/90 p-4 rounded-xl flex flex-col justify-between gap-4">
+          <div className="border border-[#1a2234] bg-[#06080d] p-4 rounded-xl flex flex-col justify-between gap-4">
             <div className="space-y-1">
               <h5 className="text-xs font-bold text-white flex items-center space-x-1">
-                <Sparkles size={13} className="text-white" />
-                <span>Load Sample Backoffice Sandbox Data</span>
+                <Sparkles size={13} className="text-cyan-400" />
+                <span>Seed Demonstration Dataset</span>
               </h5>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Since we removed default seed datasets from the main database, you can load our complete pre-configured demonstration suite (4 Clients, 3 Projects, 4 Active Retainers, and Docs) instantly to inspect the styling and responsiveness.
+              <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
+                Populates 4 Clients, 3 Projects, 4 SLA Retainers, and Tech Specs to test the Command Centre features immediately.
               </p>
             </div>
             <button
               id="seed-sandbox-btn"
               onClick={handleSeed}
               disabled={isSeeding}
-              className="w-full py-2.5 bg-white hover:bg-neutral-200 text-black font-extrabold text-xs rounded-lg shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5"
+              className="w-full py-2.5 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-sans font-extrabold text-xs rounded-lg shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5"
             >
               {isSeeding ? (
                 <>
-                  <RefreshCw size={13} className="animate-spin" />
+                  <RefreshCw size={13} className="animate-spin text-slate-950" />
                   <span>Seeding Records...</span>
                 </>
               ) : (
                 <>
                   <Database size={13} />
-                  <span>Seed Demonstration Dataset</span>
+                  <span>Seed Demo Records</span>
                 </>
               )}
             </button>
           </div>
 
           {/* Wipe Sandbox Action */}
-          <div className="border border-slate-700/30 bg-command-950/90 p-4 rounded-xl flex flex-col justify-between gap-4">
+          <div className="border border-[#1a2234] bg-[#06080d] p-4 rounded-xl flex flex-col justify-between gap-4">
             <div className="space-y-1">
               <h5 className="text-xs font-bold text-white flex items-center space-x-1">
-                <Trash2 size={13} className="text-slate-300" />
-                <span>Purge Local sandbox Databases</span>
+                <Trash2 size={13} className="text-slate-400" />
+                <span>Purge Sandbox Cache</span>
               </h5>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Wipes and purges any records in your current local sandbox cache. Allows starting completely empty from scratch. This operation is safe and will not delete records in your live remote cloud database.
+              <p className="text-[11px] text-slate-400 leading-relaxed font-sans">
+                Wipes state memory cache. Safe operation that allows starting from a clean slate.
               </p>
             </div>
             <button
               id="wipe-sandbox-btn"
               onClick={handleWipe}
               disabled={isWiping}
-              className="w-full py-2.5 bg-command-700 hover:bg-neutral-700 border border-slate-600/40 text-slate-200 font-semibold text-xs rounded-lg transition-all cursor-pointer flex items-center justify-center space-x-1.5"
+              className="w-full py-2.5 bg-[#0b0f19] hover:bg-[#121826] border border-[#1a2234] text-slate-300 font-semibold text-xs rounded-lg transition-all cursor-pointer flex items-center justify-center space-x-1.5"
             >
               {isWiping ? (
                 <>
@@ -486,7 +370,7 @@ serve(async (req) => {
               ) : (
                 <>
                   <Trash2 size={13} />
-                  <span>Purge Local Sandbox Cache</span>
+                  <span>Purge Local Data</span>
                 </>
               )}
             </button>
@@ -495,27 +379,27 @@ serve(async (req) => {
       </div>
 
       {/* Helper checklist */}
-      <div className="command-panel p-5 shadow-lg space-y-3.5 text-left">
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-5 shadow-lg space-y-3.5 text-left">
         <h4 className="font-display font-bold text-white text-sm flex items-center space-x-1.5">
-          <CheckCircle2 size={16} className="text-white" />
-          <span>Supabase Production Launch Checklist</span>
+          <CheckCircle2 size={16} className="text-cyan-400" />
+          <span>Production Integration Checklist</span>
         </h4>
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-300 font-sans">
+        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-300 font-mono">
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-command-700 border border-slate-600/40 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
-            <span>Enable RLS on all 4 tables to protect tenant data from anonymous manipulation.</span>
+            <span className="h-4 w-4 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400 text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span>Enable RLS on clients, projects, retainers, and documents tables.</span>
           </li>
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-command-700 border border-slate-600/40 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
-            <span>Configure bot webhooks inside Deno secrets manager via CLI.</span>
+            <span className="h-4 w-4 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400 text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span>Verify currency localization uses South African Rands (R).</span>
           </li>
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-command-700 border border-slate-600/40 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
-            <span>Establish cron schedule jobs via standard Postgres pg_cron.</span>
+            <span className="h-4 w-4 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400 text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span>Auto-calculate AI tool quota reset countdowns using real browser date.</span>
           </li>
           <li className="flex items-start space-x-2">
-            <span className="h-4 w-4 rounded-full bg-command-700 border border-slate-600/40 text-white font-mono font-bold text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
-            <span>Deploy Next.js 14 server with built-in SSR features in Vercel.</span>
+            <span className="h-4 w-4 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-400 text-[9px] flex items-center justify-center shrink-0 mt-0.5">✓</span>
+            <span>Preserve admin/client role boundaries across all modules.</span>
           </li>
         </ul>
       </div>

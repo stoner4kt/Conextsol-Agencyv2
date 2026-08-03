@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
-import {
-  Search,
-  DollarSign,
-  Calendar,
-  TrendingUp,
-  Plus,
-  Edit2,
-  Trash2,
-  Save,
-  X,
+import { 
+  Plus, 
+  Edit2, 
+  Trash2, 
+  Save, 
+  X, 
   Check,
   AlertCircle,
-  FileCheck,
   Zap,
-  Power,
-  Users
+  Power
 } from 'lucide-react';
-import { Retainer, Client, AppState } from '../types';
+import { Retainer, AppState } from '../types';
 
 interface RetainersDashboardProps {
   state: AppState;
@@ -69,9 +63,9 @@ export default function RetainersDashboard({
   const filteredRetainers = state.retainers.filter(r => {
     const matchesClient = filterClient === 'all' || r.client_id === filterClient;
     const matchesService = filterService === 'all' || r.service_type === filterService;
-    const matchesState =
-      filterState === 'all' ||
-      (filterState === 'active' && r.is_active) ||
+    const matchesState = 
+      filterState === 'all' || 
+      (filterState === 'active' && r.is_active) || 
       (filterState === 'inactive' && !r.is_active);
 
     return matchesClient && matchesService && matchesState;
@@ -150,61 +144,46 @@ export default function RetainersDashboard({
 
   return (
     <div className="space-y-6">
-      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Recurring Revenue Console</h2>
-              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Monitor active maintenance streams, billing cycles, and service coverage.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
-            <span className="text-teal-300">Signal:</span> Production UI Layer
-          </div>
-        </div>
-      </section>
       {/* 1. Header Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="command-panel p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Active Streams</p>
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Active SLA Streams</p>
           <div className="flex items-baseline justify-between mt-1">
             <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">{activeCount} <span className="text-xs text-slate-500 font-normal">/ {totalRetainersCount}</span></h4>
-            <span className="text-[10px] text-slate-400 font-mono">retainers table</span>
+            <span className="text-[10px] text-slate-500 font-mono font-bold">active contracts</span>
           </div>
         </div>
-        <div className="bg-command-800/90 border border-slate-600/40 rounded-xl p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-white font-mono font-semibold tracking-wide uppercase">Active MRR Stream</p>
+        <div className="bg-[#0b0f19] border border-emerald-900/50 rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-emerald-400 font-mono font-semibold tracking-wide uppercase">Active MRR Volume</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">R {activeMRR.toLocaleString()}</h4>
-            <span className="text-[9px] bg-white/10 text-white px-1.5 py-0.2 rounded font-mono font-bold">MONTHLY</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-emerald-400">R {activeMRR.toLocaleString()}</h4>
+            <span className="text-[9px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-1.5 py-0.2 rounded font-mono font-bold">RECURRING</span>
           </div>
         </div>
-        <div className="command-panel p-4 md:p-5 shadow-lg">
-          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Average Retainer Size</p>
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
+          <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Average Retainer</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">R {averageRecurring.toLocaleString()}</h4>
-            <span className="text-[10px] text-slate-400 font-mono">per retainer</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-slate-200">R {averageRecurring.toLocaleString()}</h4>
+            <span className="text-[10px] text-slate-500 font-mono">per SLA</span>
           </div>
         </div>
-        <div className="command-panel p-4 md:p-5 shadow-lg">
+        <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
           <p className="text-[10px] md:text-xs text-slate-400 font-mono font-semibold tracking-wide uppercase">Cycle Peak Day</p>
           <div className="flex items-baseline justify-between mt-1">
-            <h4 className="text-xl md:text-2xl font-display font-extrabold text-white">Day 15</h4>
-            <span className="text-[10px] text-white font-semibold font-mono">Max volume check</span>
+            <h4 className="text-xl md:text-2xl font-display font-extrabold text-cyan-400">Day 15</h4>
+            <span className="text-[10px] text-slate-500 font-mono">invoice batch</span>
           </div>
         </div>
       </div>
 
       {/* 2. Toolbar & Filtering */}
-      <div className="command-panel p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto font-mono text-xs">
           {/* Client Filter */}
           <select
             value={filterClient}
             onChange={e => setFilterClient(e.target.value)}
-            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-300 focus:outline-none focus:ring-2 focus:ring-white/20 max-w-[160px]"
+            className="px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-xl font-semibold text-slate-300 focus:outline-none focus:border-cyan-500 max-w-[170px] cursor-pointer"
           >
             <option value="all">All Clients</option>
             {state.clients.map(c => (
@@ -216,7 +195,7 @@ export default function RetainersDashboard({
           <select
             value={filterService}
             onChange={e => setFilterService(e.target.value)}
-            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-300 focus:outline-none focus:ring-2 focus:ring-white/20"
+            className="px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-xl font-semibold text-slate-300 focus:outline-none focus:border-cyan-500 cursor-pointer"
           >
             <option value="all">All Service Types</option>
             <option value="web hosting">Web Hosting</option>
@@ -229,7 +208,7 @@ export default function RetainersDashboard({
           <select
             value={filterState}
             onChange={e => setFilterState(e.target.value)}
-            className="px-3 py-2 bg-command-950 border border-slate-700/30 rounded-xl text-xs font-semibold text-slate-300 focus:outline-none focus:ring-2 focus:ring-white/20"
+            className="px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-xl font-semibold text-slate-300 focus:outline-none focus:border-cyan-500 cursor-pointer"
           >
             <option value="all">All Billing Status</option>
             <option value="active">Active Only</option>
@@ -246,7 +225,7 @@ export default function RetainersDashboard({
               }
               setIsAdding(!isAdding);
             }}
-            className="flex items-center space-x-1.5 px-4.5 py-2.5 bg-white hover:bg-neutral-200 text-black font-sans text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer w-full md:w-auto justify-center"
+            className="flex items-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-sans text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer w-full md:w-auto justify-center"
           >
             {isAdding ? <X size={13} /> : <Plus size={13} />}
             <span>{isAdding ? 'Cancel' : 'Add Retainer'}</span>
@@ -256,31 +235,31 @@ export default function RetainersDashboard({
 
       {/* 3. Collapsible Add Form */}
       {isAdding && (
-        <form onSubmit={handleAddSubmit} className="bg-command-800/90 border border-slate-700/30 p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn">
-          <div className="border-b border-slate-700/30 pb-3">
+        <form onSubmit={handleAddSubmit} className="bg-[#0b0f19] border border-[#1a2234] p-5 md:p-6 rounded-xl shadow-xl space-y-4 animate-fadeIn font-mono">
+          <div className="border-b border-[#1a2234] pb-3">
             <h3 className="font-display font-bold text-white text-xs md:text-sm flex items-center space-x-1.5">
-              <Zap size={15} className="text-white animate-pulse" />
+              <Zap size={15} className="text-emerald-400" />
               <span>Create Monthly Billing Retainer</span>
             </h3>
-            <p className="text-[10px] text-slate-400 mt-0.5 font-sans">
-              Adds a recurring subscription directly linked to a client company profile.
+            <p className="text-[10px] text-slate-400 mt-0.5">
+              Adds a recurring SLA stream bound to an active client profile.
             </p>
           </div>
 
           {addError && (
-            <p className="text-xs text-slate-200 bg-command-950/90 border border-slate-600/40 p-2.5 rounded-lg font-mono">
+            <p className="text-xs text-rose-300 bg-rose-950/60 border border-rose-800/80 p-2.5 rounded-lg">
               ⚠️ {addError}
             </p>
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Select Client Profile *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Select Client *</label>
               <select
                 required
                 value={newForm.client_id}
                 onChange={e => setNewForm({ ...newForm, client_id: e.target.value })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white focus:outline-none"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
               >
                 <option value="">-- Choose Client --</option>
                 {state.clients.map(c => (
@@ -290,12 +269,12 @@ export default function RetainersDashboard({
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Service Classification *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Service Type *</label>
               <select
                 required
                 value={newForm.service_type}
                 onChange={e => setNewForm({ ...newForm, service_type: e.target.value as any })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white focus:outline-none"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
               >
                 <option value="web hosting">Web Hosting</option>
                 <option value="web maintenance">Web Maintenance</option>
@@ -305,19 +284,19 @@ export default function RetainersDashboard({
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Billing Amount (R/month) *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Billing Amount (R/mo) *</label>
               <input
                 type="number"
                 placeholder="e.g. 1500"
                 required
                 value={newForm.billing_amount}
                 onChange={e => setNewForm({ ...newForm, billing_amount: e.target.value })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Billing Cycle Day (1-31) *</label>
+              <label className="block text-[10px] font-semibold text-slate-400 mb-1">Cycle Day (1-31) *</label>
               <input
                 type="number"
                 min="1"
@@ -326,7 +305,7 @@ export default function RetainersDashboard({
                 required
                 value={newForm.billing_cycle_day}
                 onChange={e => setNewForm({ ...newForm, billing_cycle_day: e.target.value })}
-                className="w-full px-3 py-2 bg-command-950 border border-slate-700/30 rounded-lg text-xs text-white placeholder-neutral-600 focus:outline-none focus:border-neutral-500"
+                className="w-full px-3 py-2 bg-[#06080d] border border-[#1a2234] rounded-lg text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500"
               />
             </div>
 
@@ -336,9 +315,9 @@ export default function RetainersDashboard({
                   type="checkbox"
                   checked={newForm.is_active}
                   onChange={e => setNewForm({ ...newForm, is_active: e.target.checked })}
-                  className="rounded border-slate-700/30 bg-command-950 text-white focus:ring-white h-4 w-4"
+                  className="rounded border-[#1a2234] bg-[#06080d] text-cyan-400 focus:ring-cyan-400 h-4 w-4"
                 />
-                <span>Active immediately</span>
+                <span>Active Stream</span>
               </label>
             </div>
           </div>
@@ -346,54 +325,54 @@ export default function RetainersDashboard({
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="flex items-center space-x-1 px-5 py-2.5 bg-white hover:bg-neutral-200 text-black font-sans text-xs font-extrabold rounded-lg shadow-md cursor-pointer"
+              className="flex items-center space-x-1 px-5 py-2.5 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-sans text-xs font-extrabold rounded-lg shadow-md cursor-pointer"
             >
               <Check size={14} />
-              <span>Register Retainer Stream</span>
+              <span>Deploy Retainer Contract</span>
             </button>
           </div>
         </form>
       )}
 
       {/* 4. Table Grid of Retainers */}
-      <div className="command-panel shadow-xl overflow-hidden">
-
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] shadow-xl overflow-hidden">
+        
         {/* DESKTOP VIEW */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-700/30 bg-command-950/40 font-mono text-[10px] text-slate-400 uppercase tracking-wider">
+              <tr className="border-b border-[#1a2234] bg-[#070a12] font-mono text-[10px] text-slate-400 uppercase tracking-wider">
                 <th className="py-4 px-6">Client Profile</th>
-                <th className="py-4 px-6">Service Type</th>
-                <th className="py-4 px-6 text-center">Monthly Cycle Day</th>
-                <th className="py-4 px-6 text-right">Billing Amount</th>
-                <th className="py-4 px-6 text-center">Status</th>
+                <th className="py-4 px-6">Service Category</th>
+                <th className="py-4 px-6 text-center">Cycle Day</th>
+                <th className="py-4 px-6 text-right">Billing Rate</th>
+                <th className="py-4 px-6 text-center">State</th>
                 <th className="py-4 px-6 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-800 text-xs md:text-sm">
+            <tbody className="divide-y divide-[#1a2234] text-xs md:text-sm">
               {filteredRetainers.map((retainer) => {
                 const isEditing = editingId === retainer.id;
 
                 return (
-                  <tr key={retainer.id} className="hover:bg-command-700/50 transition-colors">
+                  <tr key={retainer.id} className="hover:bg-[#121826]/60 transition-colors">
                     {/* Client name */}
                     <td className="py-4 px-6 font-medium text-white">
-                      <span
+                      <span 
                         onClick={() => onSelectClient(retainer.client_id)}
-                        className="hover:text-slate-300 hover:underline cursor-pointer font-bold"
+                        className="hover:text-cyan-400 hover:underline cursor-pointer font-bold"
                       >
                         {getClientName(retainer.client_id)}
                       </span>
                     </td>
 
                     {/* Service type */}
-                    <td className="py-4 px-6 text-slate-300">
+                    <td className="py-4 px-6 text-slate-300 font-mono">
                       {isEditing ? (
                         <select
                           value={editForm.service_type || 'web maintenance'}
                           onChange={e => setEditForm({ ...editForm, service_type: e.target.value as any })}
-                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white focus:outline-none"
+                          className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white focus:outline-none"
                         >
                           <option value="web hosting">web hosting</option>
                           <option value="web maintenance">web maintenance</option>
@@ -414,7 +393,7 @@ export default function RetainersDashboard({
                           max="31"
                           value={editForm.billing_cycle_day || ''}
                           onChange={e => setEditForm({ ...editForm, billing_cycle_day: e.target.value })}
-                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[60px] text-center"
+                          className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white max-w-[60px] text-center"
                         />
                       ) : (
                         <>Day {retainer.billing_cycle_day}</>
@@ -422,16 +401,16 @@ export default function RetainersDashboard({
                     </td>
 
                     {/* Billing Amount */}
-                    <td className="py-4 px-6 text-right font-mono font-bold text-white">
+                    <td className="py-4 px-6 text-right font-mono font-bold text-emerald-400">
                       {isEditing ? (
                         <input
                           type="number"
                           value={editForm.billing_amount || ''}
                           onChange={e => setEditForm({ ...editForm, billing_amount: e.target.value })}
-                          className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white max-w-[90px] text-right"
+                          className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white max-w-[90px] text-right"
                         />
                       ) : (
-                        <>R {retainer.billing_amount.toLocaleString()}/mo</>
+                        <>R {retainer.billing_amount.toLocaleString()} / mo</>
                       )}
                     </td>
 
@@ -441,14 +420,14 @@ export default function RetainersDashboard({
                         onClick={() => handleToggleActive(retainer)}
                         disabled={!isAdmin}
                         className={`
-                          px-3 py-1 rounded-full font-mono text-[9px] uppercase font-bold border transition-all cursor-pointer flex items-center space-x-1 mx-auto
-                          ${retainer.is_active
-                            ? 'bg-command-700 text-white border-slate-600/40 hover:bg-neutral-700'
-                            : 'bg-command-950 text-slate-500 border-slate-700/30 hover:bg-command-800/90'
+                          px-3 py-1 rounded font-mono text-[9px] uppercase font-bold border transition-all cursor-pointer flex items-center space-x-1 mx-auto
+                          ${retainer.is_active 
+                            ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800 hover:bg-emerald-900' 
+                            : 'bg-[#070a12] text-slate-500 border-[#1a2234] hover:bg-[#121826]'
                           }
                         `}
                       >
-                        <Power size={10} className={retainer.is_active ? 'text-white animate-pulse' : 'text-slate-500'} />
+                        <Power size={10} className={retainer.is_active ? 'text-emerald-400 animate-pulse' : 'text-slate-500'} />
                         <span>{retainer.is_active ? 'Active' : 'Paused'}</span>
                       </button>
                     </td>
@@ -460,14 +439,14 @@ export default function RetainersDashboard({
                           <>
                             <button
                               onClick={handleSaveEdit}
-                              className="p-1 bg-command-700 border border-slate-600/40 text-white hover:bg-neutral-700 rounded-lg transition-colors cursor-pointer"
+                              className="p-1 bg-cyan-950 border border-cyan-700 text-cyan-300 hover:bg-cyan-900 rounded-lg transition-colors cursor-pointer"
                               title="Save retainer"
                             >
                               <Save size={13} />
                             </button>
                             <button
                               onClick={() => setEditingId(null)}
-                              className="p-1 bg-command-950 border border-slate-700/30 text-slate-400 hover:bg-command-700 rounded-lg transition-colors cursor-pointer"
+                              className="p-1 bg-[#06080d] border border-[#1a2234] text-slate-400 hover:bg-[#121826] rounded-lg transition-colors cursor-pointer"
                               title="Cancel"
                             >
                               <X size={13} />
@@ -478,7 +457,7 @@ export default function RetainersDashboard({
                             {isAdmin && (
                               <button
                                 onClick={() => handleStartEdit(retainer)}
-                                className="p-1 hover:bg-command-700 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                className="p-1 hover:bg-[#121826] rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
                                 title="Edit Retainer Details"
                               >
                                 <Edit2 size={13} />
@@ -491,7 +470,7 @@ export default function RetainersDashboard({
                                     onDeleteRetainer(retainer.id);
                                   }
                                 }}
-                                className="p-1 hover:bg-command-700 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                className="p-1 hover:bg-[#121826] rounded-lg text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
                                 title="Delete Retainer Profile"
                               >
                                 <Trash2 size={13} />
@@ -509,17 +488,17 @@ export default function RetainersDashboard({
         </div>
 
         {/* MOBILE CARDS VIEW */}
-        <div className="block md:hidden divide-y divide-neutral-800">
+        <div className="block md:hidden divide-y divide-[#1a2234]">
           {filteredRetainers.map((retainer) => {
             const isEditing = editingId === retainer.id;
 
             return (
-              <div key={retainer.id} className="p-4 space-y-3 bg-command-800/90">
+              <div key={retainer.id} className="p-4 space-y-3 bg-[#0b0f19]">
                 <div className="flex items-start justify-between">
                   <div className="space-y-0.5">
-                    <span
+                    <span 
                       onClick={() => onSelectClient(retainer.client_id)}
-                      className="text-[10px] font-mono text-white font-bold uppercase hover:underline cursor-pointer"
+                      className="text-[10px] font-mono text-cyan-400 font-bold uppercase hover:underline cursor-pointer"
                     >
                       {getClientName(retainer.client_id)}
                     </span>
@@ -527,7 +506,7 @@ export default function RetainersDashboard({
                       <select
                         value={editForm.service_type || 'web maintenance'}
                         onChange={e => setEditForm({ ...editForm, service_type: e.target.value as any })}
-                        className="px-2 py-1 bg-command-950 border border-slate-700/30 rounded text-xs text-white block mt-1"
+                        className="px-2 py-1 bg-[#06080d] border border-[#1a2234] rounded text-xs text-white block mt-1 font-mono"
                       >
                         <option value="web hosting">web hosting</option>
                         <option value="web maintenance">web maintenance</option>
@@ -545,10 +524,10 @@ export default function RetainersDashboard({
                     onClick={() => handleToggleActive(retainer)}
                     disabled={!isAdmin}
                     className={`
-                      px-2 py-0.5 rounded-full font-mono text-[8px] uppercase font-bold border transition-all flex items-center space-x-1
-                      ${retainer.is_active
-                        ? 'bg-command-700 text-white border-slate-600/40'
-                        : 'bg-command-950 text-slate-500 border-slate-700/30'
+                      px-2 py-0.5 rounded font-mono text-[8px] uppercase font-bold border transition-all flex items-center space-x-1
+                      ${retainer.is_active 
+                        ? 'bg-emerald-950 text-emerald-400 border-emerald-800' 
+                        : 'bg-[#070a12] text-slate-500 border-[#1a2234]'
                       }
                     `}
                   >
@@ -557,18 +536,18 @@ export default function RetainersDashboard({
                   </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs font-mono py-2 bg-command-950 px-3 rounded-lg border border-slate-700/30">
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono py-2 bg-[#06080d] px-3 rounded-lg border border-[#1a2234]">
                   <div>
-                    <span className="text-slate-500 block text-[9px] uppercase font-semibold">Monthly Cost</span>
+                    <span className="text-slate-500 block text-[9px] uppercase font-semibold">Monthly Amount</span>
                     {isEditing ? (
                       <input
                         type="number"
                         value={editForm.billing_amount || ''}
                         onChange={e => setEditForm({ ...editForm, billing_amount: e.target.value })}
-                        className="px-2 py-0.5 bg-command-950 border border-slate-700/30 rounded text-xs text-white w-2/3 block mt-0.5"
+                        className="px-2 py-0.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white w-2/3 block mt-0.5"
                       />
                     ) : (
-                      <span className="text-white font-bold">R {retainer.billing_amount}/mo</span>
+                      <span className="text-emerald-400 font-bold">R {retainer.billing_amount}/mo</span>
                     )}
                   </div>
                   <div>
@@ -578,7 +557,7 @@ export default function RetainersDashboard({
                         type="number"
                         value={editForm.billing_cycle_day || ''}
                         onChange={e => setEditForm({ ...editForm, billing_cycle_day: e.target.value })}
-                        className="px-2 py-0.5 bg-command-950 border border-slate-700/30 rounded text-xs text-white w-2/3 block mt-0.5"
+                        className="px-2 py-0.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white w-2/3 block mt-0.5"
                       />
                     ) : (
                       <span className="text-white font-bold">Day {retainer.billing_cycle_day}</span>
@@ -587,16 +566,16 @@ export default function RetainersDashboard({
                 </div>
 
                 {isEditing && (
-                  <div className="flex justify-end space-x-2 pt-1">
+                  <div className="flex justify-end space-x-2 pt-1 font-mono">
                     <button
                       onClick={handleSaveEdit}
-                      className="px-2 py-1 bg-white text-black font-semibold text-xs rounded"
+                      className="px-2 py-1 bg-cyan-950 border border-cyan-700 text-cyan-300 text-xs rounded"
                     >
                       Save
                     </button>
                     <button
                       onClick={() => setEditingId(null)}
-                      className="px-2 py-1 bg-command-950 text-slate-400 text-xs rounded"
+                      className="px-2 py-1 bg-[#06080d] text-slate-400 text-xs rounded"
                     >
                       Cancel
                     </button>
@@ -604,7 +583,7 @@ export default function RetainersDashboard({
                 )}
 
                 {!isEditing && isAdmin && (
-                  <div className="flex items-center justify-end space-x-3 pt-2 border-t border-slate-700/30">
+                  <div className="flex items-center justify-end space-x-3 pt-2 border-t border-[#1a2234] font-mono">
                     <button
                       onClick={() => handleStartEdit(retainer)}
                       className="text-xs text-slate-400 hover:text-white flex items-center space-x-1"
@@ -618,7 +597,7 @@ export default function RetainersDashboard({
                           onDeleteRetainer(retainer.id);
                         }
                       }}
-                      className="text-xs text-slate-400 hover:text-white flex items-center space-x-1"
+                      className="text-xs text-slate-500 hover:text-rose-400 flex items-center space-x-1"
                     >
                       <Trash2 size={11} />
                       <span>Cancel</span>
@@ -631,9 +610,9 @@ export default function RetainersDashboard({
         </div>
 
         {filteredRetainers.length === 0 && (
-          <div className="text-center py-12 bg-command-800/90 space-y-2">
+          <div className="text-center py-12 bg-[#0b0f19] space-y-2">
             <AlertCircle size={24} className="text-slate-500 mx-auto" />
-            <p className="text-xs text-slate-400 font-medium">No retainers found matching your filters.</p>
+            <p className="text-xs text-slate-400 font-mono">No retainers found matching your filters.</p>
           </div>
         )}
       </div>

@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import {
-  Building2,
-  Mail,
-  Phone,
-  Calendar,
-  ArrowLeft,
-  DollarSign,
+import { 
+  Mail, 
+  Phone, 
+  Calendar, 
+  ArrowLeft, 
+  Plus, 
+  Layers,
+  CreditCard,
   FileText,
   ShieldAlert,
-  Plus,
-  Trash2,
-  Trash
+  ArrowUpRight
 } from 'lucide-react';
-import { AppState, Client, Project, Retainer, DocumentAndNote } from '../types';
+import { AppState } from '../types';
 
 interface ClientDetailProps {
   clientId: string;
@@ -32,21 +31,19 @@ export default function ClientDetail({
   onSelectProject
 }: ClientDetailProps) {
   const client = state.clients.find(c => c.id === clientId);
-
+  
   if (!client) {
     return (
-      <div className="bg-white p-6 rounded-xl text-center space-y-4">
-        <p className="text-sm text-slate-500 font-mono">Client not found in state context.</p>
-        <button onClick={onBack} className="text-xs text-brand-purple-500 hover:underline">Back to registry</button>
+      <div className="bg-[#0b0f19] border border-[#1a2234] p-8 rounded-xl text-center space-y-4">
+        <p className="text-sm text-slate-400 font-mono">Client record not found in system state.</p>
+        <button onClick={onBack} className="text-xs text-cyan-400 hover:underline font-mono">Back to Registry</button>
       </div>
     );
   }
 
-  // Filter projects and retainers associated with this client
   const clientProjects = state.projects.filter(p => p.client_id === client.id);
   const clientRetainers = state.retainers.filter(r => r.client_id === client.id);
 
-  // Quick State for Add Retainer form
   const [showAddRetainer, setShowAddRetainer] = useState(false);
   const [retainerForm, setRetainerForm] = useState({
     serviceType: 'web maintenance',
@@ -54,7 +51,6 @@ export default function ClientDetail({
     billingCycleDay: 1,
   });
 
-  // State for Add Doc form
   const [selectedProjectForDoc, setSelectedProjectForDoc] = useState<string>('');
   const [showAddDoc, setShowAddDoc] = useState(false);
   const [docForm, setDocForm] = useState({
@@ -94,70 +90,54 @@ export default function ClientDetail({
 
   return (
     <div className="space-y-6">
-      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Account Intelligence Profile</h2>
-              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Review the selected account relationship map, revenue footprint, and linked work.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
-            <span className="text-teal-300">Signal:</span> Production UI Layer
-          </div>
-        </div>
-      </section>
-      {/* Back link */}
-      <button
+      {/* Back button */}
+      <button 
         id="client-detail-back"
         onClick={onBack}
-        className="flex items-center space-x-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer"
+        className="flex items-center space-x-1.5 text-xs font-mono font-bold text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer"
       >
         <ArrowLeft size={14} />
-        <span>Back to Accounts Registry</span>
+        <span>Return to Account Registries</span>
       </button>
 
-      {/* Profile Header Cards */}
-      <div className="command-panel p-6 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* Profile Header Hero */}
+      <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="flex items-center space-x-4">
-          <div className="h-14 w-14 rounded-xl bg-command-700 text-white flex items-center justify-center font-display font-bold text-2xl shadow-inner shrink-0 border border-slate-600/40">
+          <div className="h-14 w-14 rounded-xl bg-[#06080d] border border-cyan-500/40 text-cyan-400 flex items-center justify-center font-display font-extrabold text-2xl shadow-inner shrink-0">
             {client.company_name.charAt(0)}
           </div>
           <div className="space-y-1">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2.5">
               <h2 className="text-xl font-display font-extrabold text-white tracking-tight">
                 {client.company_name}
               </h2>
               <span className={`
-                px-2.5 py-0.5 rounded-full font-mono text-[9px] uppercase font-bold border
-                ${client.status === 'active' ? 'bg-command-700 text-white border-slate-600/40' : ''}
-                ${client.status === 'paused' ? 'bg-command-700 text-slate-300 border-slate-600/40' : ''}
-                ${client.status === 'inactive' ? 'bg-command-950 text-slate-500 border-slate-700/30' : ''}
+                px-2.5 py-0.5 rounded font-mono text-[9px] uppercase font-bold border
+                ${client.status === 'active' ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800' : ''}
+                ${client.status === 'paused' ? 'bg-amber-950/80 text-amber-300 border-amber-800' : ''}
+                ${client.status === 'inactive' ? 'bg-[#070a12] text-slate-500 border-[#1a2234]' : ''}
               `}>
                 {client.status}
               </span>
             </div>
-            <p className="text-xs text-slate-400 flex items-center space-x-1">
-              <span>Primary contact:</span>
-              <strong className="text-white">{client.primary_contact_name}</strong>
+            <p className="text-xs text-slate-400 font-mono">
+              Primary Contact: <strong className="text-slate-200">{client.primary_contact_name}</strong>
             </p>
           </div>
         </div>
 
         {/* Contact info block */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-300 font-sans border-t md:border-t-0 md:border-l border-slate-700/30 pt-4 md:pt-0 md:pl-6 max-w-lg shrink-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300 font-mono border-t md:border-t-0 md:border-l border-[#1a2234] pt-4 md:pt-0 md:pl-6 shrink-0">
           <div className="flex items-center space-x-2">
-            <Mail size={14} className="text-slate-400" />
-            <a href={`mailto:${client.email}`} className="hover:underline text-white font-semibold">{client.email}</a>
+            <Mail size={13} className="text-cyan-400" />
+            <a href={`mailto:${client.email}`} className="hover:underline text-cyan-300 font-semibold">{client.email}</a>
           </div>
           <div className="flex items-center space-x-2">
-            <Phone size={14} className="text-slate-400" />
-            <a href={`tel:${client.phone}`} className="hover:underline">{client.phone || 'No phone recorded'}</a>
+            <Phone size={13} className="text-slate-500" />
+            <a href={`tel:${client.phone}`} className="hover:underline text-slate-300">{client.phone || 'No phone recorded'}</a>
           </div>
-          <div className="flex items-center space-x-2 sm:col-span-2 text-slate-500 font-mono text-[10px]">
-            <Calendar size={13} />
+          <div className="flex items-center space-x-2 sm:col-span-2 text-slate-500 text-[10px]">
+            <Calendar size={12} className="text-slate-500" />
             <span>Profile created {new Date(client.created_at).toLocaleDateString()}</span>
           </div>
         </div>
@@ -165,56 +145,58 @@ export default function ClientDetail({
 
       {/* Inner split: Active projects vs Retainers contract */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
+        
         {/* PROJECTS SECTION */}
-        <div className="command-panel p-6 shadow-lg space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-700/30 pb-3">
+        <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-6 shadow-lg space-y-4">
+          <div className="flex items-center justify-between border-b border-[#1a2234] pb-3">
             <div>
-              <h3 className="font-display font-bold text-white text-sm md:text-base">
-                Client Fixed Projects
+              <h3 className="font-display font-bold text-white text-sm md:text-base flex items-center gap-2">
+                <Layers size={16} className="text-cyan-400" />
+                Linked Fixed Projects
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5 font-sans">Projects explicitly tied to this company profile</p>
+              <p className="text-xs text-slate-400 mt-0.5 font-sans">Projects assigned to this company account</p>
             </div>
-            <span className="text-xs font-mono bg-command-950 text-slate-400 border border-slate-700/30 font-bold px-2 py-0.5 rounded">
-              {clientProjects.length} projects
+            <span className="text-xs font-mono bg-[#06080d] text-cyan-400 border border-[#1a2234] font-bold px-2 py-0.5 rounded">
+              {clientProjects.length} Projects
             </span>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             {clientProjects.map(project => (
-              <div
-                key={project.id}
+              <div 
+                key={project.id} 
                 onClick={() => onSelectProject(project.id)}
-                className="border border-slate-700/30 bg-command-950 hover:bg-command-700/60 p-4 rounded-xl cursor-pointer transition-all space-y-2 group"
+                className="border border-[#1a2234] bg-[#070a12] hover:border-cyan-500/40 p-4 rounded-xl cursor-pointer transition-all space-y-2 group"
               >
                 <div className="flex justify-between items-start gap-2">
-                  <h4 className="font-display font-bold text-white text-sm group-hover:text-slate-300 transition-colors">
+                  <h4 className="font-display font-bold text-white text-sm group-hover:text-cyan-400 transition-colors flex items-center gap-1">
                     {project.project_name}
+                    <ArrowUpRight size={13} />
                   </h4>
-                  <span className="font-mono text-xs font-bold text-white">
+                  <span className="font-mono text-xs font-extrabold text-white">
                     R {project.invoiced_amount.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 line-clamp-2">
-                  {project.short_note || 'No operational summary.'}
+                <p className="text-xs text-slate-400 line-clamp-2 font-sans">
+                  {project.short_note || 'No operational summary recorded.'}
                 </p>
-                <div className="flex items-center justify-between pt-1 border-t border-slate-700/30 text-[10px] text-slate-500 font-mono">
-                  <span>Target end: {project.end_date}</span>
-                  <span className="text-white group-hover:text-slate-300 font-bold">View details & documents →</span>
+                <div className="flex items-center justify-between pt-2 border-t border-[#1a2234] text-[10px] text-slate-500 font-mono">
+                  <span>Target date: {project.end_date}</span>
+                  <span className="text-cyan-400 font-bold">Inspect Specs Sheet →</span>
                 </div>
               </div>
             ))}
 
             {clientProjects.length === 0 && (
-              <div className="text-center py-8 text-xs text-slate-500 font-sans">
-                No active fixed-price projects. Use Onboarding Wizard to link projects.
+              <div className="text-center py-8 text-xs text-slate-500 font-mono">
+                No active fixed-price projects linked to this profile.
               </div>
             )}
           </div>
 
-          {/* Seed Doc Modal Form (Admin Restricted conceptually but allowed in dashboard UI) */}
+          {/* Seed Doc Modal Form */}
           {clientProjects.length > 0 && state.isAdmin && (
-            <div className="pt-4 border-t border-slate-700/30">
+            <div className="pt-4 border-t border-[#1a2234]">
               {!showAddDoc ? (
                 <button
                   id="toggle-add-doc"
@@ -222,20 +204,20 @@ export default function ClientDetail({
                     setSelectedProjectForDoc(clientProjects[0].id);
                     setShowAddDoc(true);
                   }}
-                  className="w-full py-2.5 border border-dashed border-slate-600/40 hover:border-neutral-500 bg-command-950 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition-all cursor-pointer text-center"
+                  className="w-full py-2.5 border border-dashed border-[#1a2234] hover:border-cyan-500/50 bg-[#06080d] rounded-xl text-xs font-mono font-semibold text-slate-400 hover:text-cyan-300 transition-all cursor-pointer text-center"
                 >
-                  + Add Documentation (Admin Only)
+                  + Append Documentation / Spec Sheet (Admin)
                 </button>
               ) : (
-                <form onSubmit={handleDocSubmit} className="bg-command-950 p-4 rounded-xl border border-slate-700/30 space-y-3.5">
-                  <h4 className="font-display font-bold text-white text-xs">Add Documentation / Note</h4>
-
+                <form onSubmit={handleDocSubmit} className="bg-[#06080d] p-4 rounded-xl border border-[#1a2234] space-y-3.5">
+                  <h4 className="font-display font-bold text-white text-xs">Append Specification Document</h4>
+                  
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-1">Target Project</label>
+                    <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Target Project</label>
                     <select
                       value={selectedProjectForDoc}
                       onChange={e => setSelectedProjectForDoc(e.target.value)}
-                      className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+                      className="w-full px-3 py-1.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white font-mono focus:outline-none focus:border-cyan-500"
                     >
                       {clientProjects.map(p => (
                         <option key={p.id} value={p.id}>{p.project_name}</option>
@@ -244,53 +226,53 @@ export default function ClientDetail({
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-1">Document Title</label>
-                    <input
+                    <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Document Title</label>
+                    <input 
                       type="text"
-                      placeholder="e.g. Deployment credentials specification"
+                      placeholder="e.g. Deployment Specification"
                       value={docForm.title}
                       onChange={e => setDocForm({ ...docForm, title: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded text-xs text-white focus:outline-none focus:border-neutral-500"
+                      className="w-full px-3 py-1.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white font-mono focus:outline-none focus:border-cyan-500"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-1">Markdown Content</label>
-                    <textarea
+                    <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">Markdown Body</label>
+                    <textarea 
                       rows={3}
-                      placeholder="Markdown notes or key credentials list..."
+                      placeholder="Markdown guidelines or API specifications..."
                       value={docForm.content}
                       onChange={e => setDocForm({ ...docForm, content: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded text-xs text-white font-mono focus:outline-none focus:ring-2 focus:ring-white/20"
+                      className="w-full px-3 py-1.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white font-mono focus:outline-none focus:border-cyan-500"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-semibold text-slate-400 mb-1">File links / PDF references (comma separated)</label>
-                    <input
+                    <label className="block text-[10px] font-mono font-semibold text-slate-400 mb-1">File Artifact Links (Comma separated)</label>
+                    <input 
                       type="text"
                       placeholder="/storage/credentials.pdf"
                       value={docForm.fileReferences}
                       onChange={e => setDocForm({ ...docForm, fileReferences: e.target.value })}
-                      className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded text-xs text-white focus:outline-none"
+                      className="w-full px-3 py-1.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white font-mono focus:outline-none"
                     />
                   </div>
 
-                  <div className="flex items-center justify-end space-x-2 text-[11px] pt-1">
-                    <button
-                      type="button"
+                  <div className="flex items-center justify-end space-x-2 text-[11px] pt-1 font-mono">
+                    <button 
+                      type="button" 
                       onClick={() => setShowAddDoc(false)}
                       className="px-2.5 py-1 text-slate-400 hover:text-white"
                     >
                       Cancel
                     </button>
-                    <button
-                      type="submit"
-                      className="px-3.5 py-1.5 bg-white text-black font-extrabold rounded-lg hover:bg-neutral-200"
+                    <button 
+                      type="submit" 
+                      className="px-3.5 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-extrabold rounded-lg hover:from-cyan-400 hover:to-blue-500"
                     >
-                      Publish Specs
+                      Publish Document
                     </button>
                   </div>
                 </form>
@@ -300,88 +282,89 @@ export default function ClientDetail({
         </div>
 
         {/* RETAINERS SECTION */}
-        <div className="command-panel p-6 shadow-lg space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-700/30 pb-3">
+        <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-6 shadow-lg space-y-4">
+          <div className="flex items-center justify-between border-b border-[#1a2234] pb-3">
             <div>
-              <h3 className="font-display font-bold text-white text-sm md:text-base">
-                Client Retainers Registry
+              <h3 className="font-display font-bold text-white text-sm md:text-base flex items-center gap-2">
+                <CreditCard size={16} className="text-emerald-400" />
+                Retainers & SLA Contracts
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5 font-sans">Recurring billing and flat-rate support streams</p>
+              <p className="text-xs text-slate-400 mt-0.5 font-sans">Recurring billing & maintenance streams</p>
             </div>
-            <span className="text-xs font-mono bg-command-950 text-white border border-slate-700/30 font-bold px-2 py-0.5 rounded">
-              {clientRetainers.length} retainers
+            <span className="text-xs font-mono bg-[#06080d] text-emerald-400 border border-[#1a2234] font-bold px-2 py-0.5 rounded">
+              {clientRetainers.length} Retainers
             </span>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             {clientRetainers.map((retainer) => (
-              <div
+              <div 
                 key={retainer.id}
                 className={`
                   border p-4 rounded-xl space-y-2.5 transition-all
-                  ${retainer.is_active
-                    ? 'border-slate-600/40 bg-command-950'
-                    : 'border-slate-700/30 bg-command-950/40 opacity-60'
+                  ${retainer.is_active 
+                    ? 'border-emerald-800/60 bg-[#070a12]' 
+                    : 'border-[#1a2234] bg-[#06080d] opacity-60'
                   }
                 `}
               >
                 <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
-                    <span className="text-[9px] bg-command-700 border border-slate-600/40 text-slate-200 font-mono font-bold uppercase px-1.5 py-0.2 rounded">
+                    <span className="text-[9px] bg-emerald-950 border border-emerald-800 text-emerald-300 font-mono font-bold uppercase px-1.5 py-0.2 rounded">
                       {retainer.service_type}
                     </span>
                     <h4 className="font-display font-bold text-white text-xs md:text-sm capitalize mt-1">
-                      {retainer.service_type} Contract
+                      {retainer.service_type} Service
                     </h4>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] text-slate-400 font-semibold font-mono">Amount due</p>
-                    <p className="font-display font-extrabold text-white text-sm md:text-base">
+                    <p className="text-[10px] text-slate-400 font-mono">Monthly Rate</p>
+                    <p className="font-display font-extrabold text-emerald-400 text-sm md:text-base">
                       R {retainer.billing_amount.toLocaleString()} <span className="text-[10px] text-slate-400 font-normal">/mo</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-slate-700/30 text-[10px] font-mono text-slate-400">
-                  <span className="flex items-center space-x-1">
-                    <span className={`h-2 w-2 rounded-full ${retainer.is_active ? 'bg-white' : 'bg-neutral-600'}`} />
-                    <span>{retainer.is_active ? 'Active contract' : 'Paused contract'}</span>
+                <div className="flex items-center justify-between pt-2 border-t border-[#1a2234] text-[10px] font-mono text-slate-400">
+                  <span className="flex items-center space-x-1.5">
+                    <span className={`h-2 w-2 rounded-full ${retainer.is_active ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}`} />
+                    <span>{retainer.is_active ? 'Active Contract' : 'Paused Contract'}</span>
                   </span>
-                  <span>Billed on Day {retainer.billing_cycle_day}</span>
+                  <span>Cycle Day: {retainer.billing_cycle_day}</span>
                 </div>
               </div>
             ))}
 
             {clientRetainers.length === 0 && (
-              <div className="text-center py-8 text-xs text-slate-500 font-sans">
-                No active recurring retainers configured. Setup contract below.
+              <div className="text-center py-8 text-xs text-slate-500 font-mono">
+                Zero active recurring retainers linked to this account.
               </div>
             )}
           </div>
 
-          {/* Add Retainer form (Conceptual Database INSERT) */}
+          {/* Add Retainer form */}
           {state.isAdmin && (
-            <div className="pt-4 border-t border-slate-700/30">
+            <div className="pt-4 border-t border-[#1a2234]">
               {!showAddRetainer ? (
                 <button
                   id="toggle-add-retainer"
                   onClick={() => setShowAddRetainer(true)}
-                  className="w-full py-2.5 bg-command-950 hover:bg-command-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer text-center flex items-center justify-center space-x-1.5 border border-slate-700/30"
+                  className="w-full py-2.5 bg-[#06080d] hover:bg-[#121826] text-slate-300 text-xs font-mono font-bold rounded-xl transition-all cursor-pointer text-center flex items-center justify-center space-x-1.5 border border-[#1a2234]"
                 >
-                  <Plus size={14} />
-                  <span>Configure New Retainer (Admin)</span>
+                  <Plus size={14} className="text-emerald-400" />
+                  <span>Configure Retainer Model (Admin)</span>
                 </button>
               ) : (
-                <form onSubmit={handleRetainerSubmit} className="bg-command-950 p-4 rounded-xl border border-slate-700/30 space-y-3">
+                <form onSubmit={handleRetainerSubmit} className="bg-[#06080d] p-4 rounded-xl border border-[#1a2234] space-y-3 font-mono">
                   <h4 className="font-display font-bold text-white text-xs">Configure Retainer Model</h4>
-
+                  
                   <div className="grid grid-cols-2 gap-3">
                     <div className="col-span-2">
                       <label className="block text-[10px] font-semibold text-slate-400 mb-1">Service Category</label>
                       <select
                         value={retainerForm.serviceType}
                         onChange={e => setRetainerForm({ ...retainerForm, serviceType: e.target.value })}
-                        className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded text-xs text-white focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white focus:outline-none"
                       >
                         <option value="web maintenance">Web Maintenance & Support</option>
                         <option value="web hosting">Web Cloud Hosting</option>
@@ -391,43 +374,43 @@ export default function ClientDetail({
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-semibold text-slate-400 mb-1">Monthly Billing (R)</label>
-                      <input
+                      <label className="block text-[10px] font-semibold text-slate-400 mb-1">Monthly Amount (R)</label>
+                      <input 
                         type="number"
                         placeholder="e.g. 1500"
                         value={retainerForm.billingAmount}
                         onChange={e => setRetainerForm({ ...retainerForm, billingAmount: Number(e.target.value) })}
-                        className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded text-xs text-white focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white focus:outline-none"
                         required
                       />
                     </div>
 
                     <div>
                       <label className="block text-[10px] font-semibold text-slate-400 mb-1">Cycle Day (1-31)</label>
-                      <input
+                      <input 
                         type="number"
                         min={1}
                         max={31}
                         placeholder="1"
                         value={retainerForm.billingCycleDay}
                         onChange={e => setRetainerForm({ ...retainerForm, billingCycleDay: Number(e.target.value) })}
-                        className="w-full px-3 py-1.5 bg-command-800/90 border border-slate-700/30 rounded text-xs text-white focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-[#0b0f19] border border-[#1a2234] rounded text-xs text-white focus:outline-none"
                         required
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-2 text-[11px] pt-2 border-t border-slate-700/30">
-                    <button
-                      type="button"
+                  <div className="flex items-center justify-end space-x-2 text-[11px] pt-2 border-t border-[#1a2234]">
+                    <button 
+                      type="button" 
                       onClick={() => setShowAddRetainer(false)}
                       className="px-2.5 py-1 text-slate-400 hover:text-white"
                     >
                       Cancel
                     </button>
-                    <button
-                      type="submit"
-                      className="px-3.5 py-1.5 bg-white text-black font-extrabold rounded-lg hover:bg-neutral-200"
+                    <button 
+                      type="submit" 
+                      className="px-3.5 py-1.5 bg-emerald-500 text-slate-950 font-extrabold rounded-lg hover:bg-emerald-400"
                     >
                       Save Retainer Model
                     </button>

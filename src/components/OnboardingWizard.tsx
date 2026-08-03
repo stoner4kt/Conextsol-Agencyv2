@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import {
-  User,
-  Briefcase,
-  FileText,
-  CheckCircle2,
-  ArrowRight,
-  ArrowLeft,
-  Plus,
-  Code,
-  Sparkles,
+import { 
+  User, 
+  Briefcase, 
+  FileText, 
+  CheckCircle2, 
+  ArrowRight, 
+  ArrowLeft, 
+  Code, 
+  Sparkles, 
   RefreshCw
 } from 'lucide-react';
 import { Client, Project, DocumentAndNote } from '../types';
@@ -73,8 +72,7 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
       return;
     }
     setFormErrors('');
-
-    // Simulate INSERT INTO clients RETURNING id
+    
     const newClientId = generateUUID();
     setGeneratedIds(prev => ({ ...prev, clientId: newClientId }));
     setStep(2);
@@ -89,11 +87,9 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
     }
     setFormErrors('');
 
-    // Simulate INSERT INTO projects RETURNING id
     const newProjectId = generateUUID();
     setGeneratedIds(prev => ({ ...prev, projectId: newProjectId }));
-
-    // Pre-populate document associated email references with the client's email
+    
     setDocForm(prev => ({
       ...prev,
       content: prev.content + `\n\n---\n**Associated Client Email:** ${clientForm.email}\n**Project Contact:** ${clientForm.contactName}`
@@ -111,12 +107,10 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
     }
     setFormErrors('');
 
-    // Generate Doc UUID
     const newDocId = generateUUID();
     const finalIds = { ...generatedIds, docId: newDocId };
     setGeneratedIds(finalIds);
 
-    // Complete the transaction object construction
     const finalClient: Client = {
       id: finalIds.clientId,
       company_name: clientForm.companyName,
@@ -167,7 +161,6 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
       updated_at: new Date().toISOString(),
     };
 
-    // Forward the assembled entities
     onComplete(finalClient, finalProject, finalDoc);
     setStep(4);
   };
@@ -203,43 +196,27 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
   };
 
   return (
-    <div className="space-y-6">
-      <section data-command-briefing className="command-panel relative overflow-hidden p-5 md:p-6">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-300/70 to-transparent" />
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <span className="signal-badge text-teal-200 border-teal-300/25 bg-teal-400/5"><span className="signal-dot text-teal-300" /> Admin OS</span>
-            <div>
-              <h2 className="font-display text-2xl md:text-3xl font-black tracking-tight text-white">Client Intake Pipeline</h2>
-              <p className="mt-1 max-w-3xl text-xs md:text-sm text-slate-400">Commit a linked client, project, and specification transaction.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-slate-700/30 bg-command-950/70 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-slate-400">
-            <span className="text-teal-300">Signal:</span> Production UI Layer
-          </div>
-        </div>
-      </section>
-      <div className="bg-command-800/90 rounded-2xl shadow-2xl border border-slate-700/30 overflow-hidden">
+    <div className="bg-[#0b0f19] rounded-2xl shadow-2xl border border-[#1a2234] overflow-hidden">
       {/* Wizard Header Bar */}
-      <div className="bg-command-950 p-6 md:p-8 text-white border-b border-slate-700/30">
+      <div className="bg-[#06080d] p-6 md:p-8 text-white border-b border-[#1a2234]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="text-[10px] bg-white text-black font-mono font-extrabold tracking-wider px-2 py-0.5 rounded uppercase">
-              LINEAR FLOW
+            <span className="text-[10px] bg-cyan-950 text-cyan-300 font-mono font-bold tracking-wider px-2 py-0.5 rounded uppercase border border-cyan-800">
+              Chained Pipeline
             </span>
             <h2 className="text-xl md:text-2xl font-display font-extrabold mt-1 text-white">
-              Agency Client Onboarding Wizard
+              Client Onboarding Wizard
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Creates linked Client profile, Project registry, and specs in a unified pipeline.
+            <p className="text-xs text-slate-400 mt-0.5 font-sans">
+              Creates Client profile, Project registry, and initial Specs in a single pipeline.
             </p>
           </div>
-          <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex items-center space-x-2 shrink-0 font-mono">
             {step < 4 ? (
-              <button
+              <button 
                 id="wizard-cancel-btn"
                 onClick={onCancel}
-                className="px-3.5 py-1.5 text-xs font-semibold text-slate-400 hover:text-white bg-command-800/90 hover:bg-command-700 rounded-lg transition-colors border border-slate-700/30"
+                className="px-3.5 py-1.5 text-xs font-semibold text-slate-400 hover:text-white bg-[#0b0f19] hover:bg-[#121826] rounded-lg transition-colors border border-[#1a2234] cursor-pointer"
               >
                 Cancel
               </button>
@@ -247,7 +224,7 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
               <button
                 id="wizard-reset-btn"
                 onClick={handleReset}
-                className="flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-extrabold bg-white hover:bg-neutral-200 text-black rounded-lg transition-colors cursor-pointer font-sans"
+                className="flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 rounded-lg transition-colors cursor-pointer font-sans"
               >
                 <RefreshCw size={13} />
                 <span>Onboard Another</span>
@@ -257,20 +234,18 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
         </div>
 
         {/* Chained Steps visual tracker */}
-        <div className="relative flex justify-between items-center max-w-xl mx-auto mt-8 px-4">
-          {/* Background line tracker */}
-          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-command-700 -translate-y-1/2 z-0" />
-          <div
-            className="absolute top-1/2 left-0 h-0.5 bg-white -translate-y-1/2 z-0 transition-all duration-300"
+        <div className="relative flex justify-between items-center max-w-xl mx-auto mt-8 px-4 font-mono">
+          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[#1a2234] -translate-y-1/2 z-0" />
+          <div 
+            className="absolute top-1/2 left-0 h-0.5 bg-cyan-400 -translate-y-1/2 z-0 transition-all duration-300"
             style={{ width: `${((step - 1) / 3) * 100}%` }}
           />
 
-          {/* Step circles */}
           {[
-            { nr: 1, label: 'Client info', icon: User },
-            { nr: 2, label: 'Add Project', icon: Briefcase },
-            { nr: 3, label: 'Initial specs', icon: FileText },
-            { nr: 4, label: 'Success', icon: CheckCircle2 }
+            { nr: 1, label: 'Client Profile', icon: User },
+            { nr: 2, label: 'Project Registry', icon: Briefcase },
+            { nr: 3, label: 'Tech Specs', icon: FileText },
+            { nr: 4, label: 'Deployed', icon: CheckCircle2 }
           ].map((s) => {
             const Icon = s.icon;
             const isCompleted = step > s.nr;
@@ -279,9 +254,9 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
               <div key={s.nr} className="flex flex-col items-center relative z-10">
                 <div className={`
                   h-9 w-9 rounded-full flex items-center justify-center font-display font-bold text-xs transition-all duration-200 border
-                  ${isCompleted ? 'bg-white text-black border-white shadow font-extrabold' : ''}
-                  ${isCurrent ? 'bg-command-700 text-white border-neutral-500 ring-4 ring-neutral-700/30 font-bold' : ''}
-                  ${!isCompleted && !isCurrent ? 'bg-command-800/90 text-slate-500 border-slate-700/30' : ''}
+                  ${isCompleted ? 'bg-cyan-400 text-slate-950 border-cyan-400 font-extrabold' : ''}
+                  ${isCurrent ? 'bg-[#0b0f19] text-cyan-400 border-cyan-500 ring-4 ring-cyan-500/20 font-bold' : ''}
+                  ${!isCompleted && !isCurrent ? 'bg-[#06080d] text-slate-600 border-[#1a2234]' : ''}
                 `}>
                   {isCompleted ? <CheckCircle2 size={16} /> : <Icon size={14} />}
                 </div>
@@ -295,9 +270,9 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
       </div>
 
       {/* Wizard Form Area */}
-      <div className="p-6 md:p-8">
+      <div className="p-6 md:p-8 font-mono">
         {formErrors && (
-          <div className="mb-6 p-4 bg-command-950/90 border border-slate-600/40 rounded-xl flex items-start space-x-2 text-sm text-slate-200">
+          <div className="mb-6 p-4 bg-rose-950/60 border border-rose-800/80 rounded-xl flex items-start space-x-2 text-xs text-rose-300">
             <span className="font-bold">⚠️ Error:</span>
             <span>{formErrors}</span>
           </div>
@@ -306,83 +281,83 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
         {/* STEP 1: CLIENT DETAILS */}
         {step === 1 && (
           <form onSubmit={handleStep1Submit} className="space-y-5 animate-fadeIn">
-            <div className="border-b border-slate-700/30 pb-3">
+            <div className="border-b border-[#1a2234] pb-3">
               <h3 className="font-display font-bold text-white flex items-center space-x-1.5">
-                <span className="h-5 w-5 rounded bg-command-700 border border-slate-600/40 flex items-center justify-center font-mono text-xs text-white font-bold">1</span>
-                <span>Enter Client Profile details</span>
+                <span className="h-5 w-5 rounded bg-[#06080d] border border-[#1a2234] flex items-center justify-center font-mono text-xs text-cyan-400 font-bold">1</span>
+                <span>Enter Client Profile</span>
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5 font-sans">Define core institutional metadata for billing and contacts</p>
+              <p className="text-xs text-slate-400 mt-0.5 font-sans">Institutional metadata for billing & contact management.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Company Name <span className="text-slate-400">*</span></label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Company Name *</label>
+                <input 
                   type="text"
-                  placeholder="e.g. Acme Corp Solutions"
+                  placeholder="e.g. Acme Solutions"
                   value={clientForm.companyName}
                   onChange={e => setClientForm({ ...clientForm, companyName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Primary Contact Name <span className="text-slate-400">*</span></label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Primary Contact Name *</label>
+                <input 
                   type="text"
                   placeholder="e.g. Sarah Jenkins"
                   value={clientForm.contactName}
                   onChange={e => setClientForm({ ...clientForm, contactName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Email Address <span className="text-slate-400">*</span></label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Email Address *</label>
+                <input 
                   type="email"
-                  placeholder="e.g. contact@acmecorp.com"
+                  placeholder="e.g. contact@acme.com"
                   value={clientForm.email}
                   onChange={e => setClientForm({ ...clientForm, email: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   required
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">Phone Number</label>
-                <input
+                <input 
                   type="tel"
-                  placeholder="e.g. +1 (555) 019-2834"
+                  placeholder="e.g. +27 82 123 4567"
                   value={clientForm.phone}
                   onChange={e => setClientForm({ ...clientForm, phone: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">Client Status</label>
-                <select
+                <select 
                   value={clientForm.status}
                   onChange={e => setClientForm({ ...clientForm, status: e.target.value as any })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer"
                 >
-                  <option value="active">Active (Onboard immediately)</option>
-                  <option value="paused">Paused (On hold)</option>
+                  <option value="active">Active</option>
+                  <option value="paused">Paused</option>
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
             </div>
 
-            <div className="flex justify-end pt-4 border-t border-slate-700/30">
+            <div className="flex justify-end pt-4 border-t border-[#1a2234]">
               <button
                 type="submit"
                 id="wizard-step1-next"
-                className="flex items-center space-x-1.5 px-5 py-2.5 text-sm font-extrabold bg-white hover:bg-neutral-200 text-black rounded-lg transition-colors cursor-pointer font-sans"
+                className="flex items-center space-x-1.5 px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 rounded-lg transition-colors cursor-pointer font-sans"
               >
-                <span>Save Client & Add Project</span>
+                <span>Save Profile & Proceed to Project</span>
                 <ArrowRight size={15} />
               </button>
             </div>
@@ -392,135 +367,134 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
         {/* STEP 2: LINKED PROJECT */}
         {step === 2 && (
           <form onSubmit={handleStep2Submit} className="space-y-5 animate-fadeIn">
-            <div className="border-b border-slate-700/30 pb-3 flex justify-between items-center">
+            <div className="border-b border-[#1a2234] pb-3 flex justify-between items-center">
               <div>
                 <h3 className="font-display font-bold text-white flex items-center space-x-1.5">
-                  <span className="h-5 w-5 rounded bg-command-700 border border-slate-600/40 flex items-center justify-center font-mono text-xs text-white font-bold">2</span>
+                  <span className="h-5 w-5 rounded bg-[#06080d] border border-[#1a2234] flex items-center justify-center font-mono text-xs text-cyan-400 font-bold">2</span>
                   <span>Set Up Project Registry</span>
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Auto-linking this project to Client: <strong className="text-white">{clientForm.companyName}</strong> (ID: {generatedIds.clientId.substring(0,8)}...)
+                <p className="text-xs text-slate-400 mt-0.5 font-sans">
+                  Auto-bound to Client: <strong className="text-white">{clientForm.companyName}</strong> ({generatedIds.clientId.substring(0,8)}...)
                 </p>
               </div>
-              <span className="text-[10px] bg-command-700 text-slate-200 border border-slate-600/40 font-mono px-2 py-0.5 rounded font-bold">
-                CLIENT_ID INJECTED
+              <span className="text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono px-2 py-0.5 rounded font-bold">
+                CLIENT_ID BOUND
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Project Name <span className="text-slate-400">*</span></label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Project Name *</label>
+                <input 
                   type="text"
-                  placeholder="e.g. B2B Headless Redesign"
+                  placeholder="e.g. B2B Headless Commerce Platform"
                   value={projectForm.projectName}
                   onChange={e => setProjectForm({ ...projectForm, projectName: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   required
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">Launch Start Date</label>
-                <input
+                <input 
                   type="date"
                   value={projectForm.startDate}
                   onChange={e => setProjectForm({ ...projectForm, startDate: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Target Completion Date</label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Target End Date</label>
+                <input 
                   type="date"
                   value={projectForm.endDate}
                   onChange={e => setProjectForm({ ...projectForm, endDate: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Invoiced Fixed Price (R)</label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Invoiced Price (R)</label>
+                <input 
                   type="number"
-                  placeholder="e.g. 18500"
+                  placeholder="e.g. 25000"
                   value={projectForm.invoicedAmount}
                   onChange={e => setProjectForm({ ...projectForm, invoicedAmount: Number(e.target.value) })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">Services Delivered (Comma-separated)</label>
-                <input
+                <input 
                   type="text"
-                  placeholder="e.g. UI/UX Design, NextJS, Stripe Billing"
+                  placeholder="e.g. UI/UX Design, React, Supabase"
                   value={projectForm.servicesListed}
                   onChange={e => setProjectForm({ ...projectForm, servicesListed: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Operational Summary (Short Notes)</label>
-                <textarea
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Operational Summary</label>
+                <textarea 
                   rows={2}
-                  placeholder="Provide a quick review of core deliverables, tech stack, or client constraints..."
+                  placeholder="Quick summary of scope and core deliverables..."
                   value={projectForm.shortNote}
                   onChange={e => setProjectForm({ ...projectForm, shortNote: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors resize-none"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors resize-none font-sans"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">Staging Link</label>
-                <input
+                <input 
                   type="url"
                   placeholder="https://staging.conextsol.dev"
                   value={projectForm.stagingUrl}
                   onChange={e => setProjectForm({ ...projectForm, stagingUrl: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-400 mb-1.5">GitHub Repository Link</label>
-                <input
+                <input 
                   type="url"
-                  placeholder="https://github.com/conextsol-agency/repo"
+                  placeholder="https://github.com/conextsol/repo"
                   value={projectForm.githubUrl}
                   onChange={e => setProjectForm({ ...projectForm, githubUrl: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Associated Managing Emails (Comma-separated access list)</label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Associated Managing Emails</label>
+                <input 
                   type="text"
-                  placeholder="e.g. team@conextsol.com, client.admin@acmecorp.com"
+                  placeholder="e.g. team@conextsol.com, client.admin@acme.com"
                   value={projectForm.associatedEmails}
                   onChange={e => setProjectForm({ ...projectForm, associatedEmails: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
-                <p className="text-[10px] text-slate-500 mt-1">Users logged in with these emails will have secure visibility of this project under RLS constraints.</p>
               </div>
             </div>
 
-            <div className="flex justify-between pt-4 border-t border-slate-700/30">
+            <div className="flex justify-between pt-4 border-t border-[#1a2234]">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex items-center space-x-1 px-4 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-command-950 hover:bg-command-700 border border-slate-700/30 rounded-lg transition-colors cursor-pointer"
+                className="flex items-center space-x-1 px-4 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] rounded-lg transition-colors cursor-pointer"
               >
                 <ArrowLeft size={14} />
-                <span>Back to Step 1</span>
+                <span>Back</span>
               </button>
               <button
                 type="submit"
                 id="wizard-step2-next"
-                className="flex items-center space-x-1.5 px-5 py-2.5 text-sm font-extrabold bg-white hover:bg-neutral-200 text-black rounded-lg transition-colors cursor-pointer font-sans"
+                className="flex items-center space-x-1.5 px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 rounded-lg transition-colors cursor-pointer font-sans"
               >
                 <span>Save Project & Add Specs</span>
                 <ArrowRight size={15} />
@@ -532,72 +506,72 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
         {/* STEP 3: INITIAL DOCUMENTATION */}
         {step === 3 && (
           <form onSubmit={handleStep3Submit} className="space-y-5 animate-fadeIn">
-            <div className="border-b border-slate-700/30 pb-3 flex justify-between items-center">
+            <div className="border-b border-[#1a2234] pb-3 flex justify-between items-center">
               <div>
                 <h3 className="font-display font-bold text-white flex items-center space-x-1.5">
-                  <span className="h-5 w-5 rounded bg-command-700 border border-slate-600/40 flex items-center justify-center font-mono text-xs text-white font-bold">3</span>
-                  <span>Attach Initial Documentation</span>
+                  <span className="h-5 w-5 rounded bg-[#06080d] border border-[#1a2234] flex items-center justify-center font-mono text-xs text-cyan-400 font-bold">3</span>
+                  <span>Attach Tech Specifications</span>
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Linked to Project: <strong className="text-white">{projectForm.projectName}</strong>
+                <p className="text-xs text-slate-400 mt-0.5 font-sans">
+                  Bound to Project: <strong className="text-white">{projectForm.projectName}</strong>
                 </p>
               </div>
-              <span className="text-[10px] bg-command-700 text-slate-200 border border-slate-600/40 font-mono px-2 py-0.5 rounded font-bold">
-                PROJECT_ID INJECTED
+              <span className="text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono px-2 py-0.5 rounded font-bold">
+                PROJECT_ID BOUND
               </span>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Document / Notes Title <span className="text-slate-400">*</span></label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Document Title *</label>
+                <input 
                   type="text"
                   value={docForm.title}
                   onChange={e => setDocForm({ ...docForm, title: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Document Content (Supports Markdown styling) <span className="text-slate-400">*</span></label>
-                <textarea
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">Specifications Content (Markdown) *</label>
+                <textarea 
                   rows={6}
                   value={docForm.content}
                   onChange={e => setDocForm({ ...docForm, content: e.target.value })}
-                  className="w-full px-4 py-3 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-3 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500 transition-colors"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1.5">File Attachments / PDF URLs (Comma-separated paths)</label>
-                <input
+                <label className="block text-xs font-semibold text-slate-400 mb-1.5">File Links / Artifact URLs (Comma-separated)</label>
+                <input 
                   type="text"
-                  placeholder="e.g. /storage/acme_discovery.pdf, https://docs.conextsol.com/spec.png"
+                  placeholder="e.g. /storage/discovery.pdf, https://figma.com/file/..."
                   value={docForm.fileReferences}
                   onChange={e => setDocForm({ ...docForm, fileReferences: e.target.value })}
-                  className="w-full px-4 py-2.5 bg-command-950 border border-slate-700/30 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-neutral-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-[#06080d] border border-[#1a2234] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
             </div>
 
-            <div className="flex justify-between pt-4 border-t border-slate-700/30">
+            <div className="flex justify-between pt-4 border-t border-[#1a2234]">
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="flex items-center space-x-1 px-4 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-command-950 hover:bg-command-700 border border-slate-700/30 rounded-lg transition-colors cursor-pointer"
+                className="flex items-center space-x-1 px-4 py-2.5 text-xs font-semibold text-slate-400 hover:text-white bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] rounded-lg transition-colors cursor-pointer"
               >
                 <ArrowLeft size={14} />
-                <span>Back to Step 2</span>
+                <span>Back</span>
               </button>
               <button
                 type="submit"
                 id="wizard-step3-submit"
-                className="flex items-center space-x-1.5 px-5 py-2.5 text-sm font-extrabold bg-white hover:bg-neutral-200 text-black rounded-lg transition-all shadow-md cursor-pointer font-sans"
+                className="flex items-center space-x-1.5 px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 rounded-lg transition-all shadow-md cursor-pointer font-sans"
               >
-                <Sparkles size={14} className="animate-pulse" />
-                <span>Assemble & Dispatch Pipeline</span>
+                <Sparkles size={14} />
+                <span>Deploy Onboarding Pipeline</span>
               </button>
             </div>
           </form>
@@ -606,43 +580,43 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
         {/* STEP 4: SUCCESS SUMMARY */}
         {step === 4 && (
           <div className="text-center py-6 md:py-10 space-y-6 animate-fadeIn max-w-xl mx-auto">
-            <div className="h-16 w-16 bg-command-700 border border-slate-600/40 rounded-full flex items-center justify-center text-white mx-auto shadow-sm">
+            <div className="h-16 w-16 bg-emerald-950 border border-emerald-800 rounded-full flex items-center justify-center text-emerald-400 mx-auto shadow-md">
               <CheckCircle2 size={32} />
             </div>
 
             <div className="space-y-1">
               <h3 className="font-display font-extrabold text-white text-lg md:text-xl">
-                Pipeline Constructed Successfully!
+                Onboarding Complete!
               </h3>
-              <p className="text-xs text-slate-400">
-                A single chained transaction generated and linked 3 entities in the backoffice.
+              <p className="text-xs text-slate-400 font-sans">
+                Successfully generated and linked Client, Project, and Tech Spec records.
               </p>
             </div>
 
             {/* Entity UUID map */}
-            <div className="bg-command-950 border border-slate-700/30 rounded-xl p-4 text-left font-mono text-[11px] text-slate-300 space-y-2.5">
-              <div className="flex items-center justify-between border-b border-slate-700/30 pb-2">
-                <span className="font-semibold text-white flex items-center space-x-1.5">
-                  <span className="h-2 w-2 rounded-full bg-neutral-400" />
-                  <span>1. Client Registered</span>
+            <div className="bg-[#06080d] border border-[#1a2234] rounded-xl p-4 text-left font-mono text-[11px] text-slate-300 space-y-2.5">
+              <div className="flex items-center justify-between border-b border-[#1a2234] pb-2">
+                <span className="font-semibold text-slate-400 flex items-center space-x-1.5">
+                  <span className="h-2 w-2 rounded-full bg-cyan-400" />
+                  <span>1. Client Profile</span>
                 </span>
                 <span className="text-white font-bold truncate max-w-[200px]" title={generatedIds.clientId}>
                   {generatedIds.clientId}
                 </span>
               </div>
-              <div className="flex items-center justify-between border-b border-slate-700/30 pb-2">
-                <span className="font-semibold text-white flex items-center space-x-1.5">
-                  <span className="h-2 w-2 rounded-full bg-neutral-300" />
-                  <span>2. Project Created</span>
+              <div className="flex items-center justify-between border-b border-[#1a2234] pb-2">
+                <span className="font-semibold text-slate-400 flex items-center space-x-1.5">
+                  <span className="h-2 w-2 rounded-full bg-blue-400" />
+                  <span>2. Project Registry</span>
                 </span>
                 <span className="text-white font-bold truncate max-w-[200px]" title={generatedIds.projectId}>
                   {generatedIds.projectId}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-white flex items-center space-x-1.5">
-                  <span className="h-2 w-2 rounded-full bg-white" />
-                  <span>3. Document Seeded</span>
+                <span className="font-semibold text-slate-400 flex items-center space-x-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                  <span>3. Tech Spec Sheet</span>
                 </span>
                 <span className="text-white font-bold truncate max-w-[200px]" title={generatedIds.docId}>
                   {generatedIds.docId}
@@ -650,19 +624,19 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
               </div>
             </div>
 
-            {/* Postgres SQL Equivalent Simulator Log */}
-            <div className="bg-command-950/90 text-slate-300 rounded-xl p-4 text-left border border-slate-700/30 font-mono text-[10px] space-y-3 shadow-inner">
-              <p className="text-white font-semibold border-b border-slate-700/30 pb-1.5 flex items-center space-x-1.5">
-                <Code size={12} />
-                <span>Simulated Supabase SQL Transaction</span>
+            {/* Postgres SQL Log */}
+            <div className="bg-[#06080d] text-slate-300 rounded-xl p-4 text-left border border-[#1a2234] font-mono text-[10px] space-y-3 shadow-inner">
+              <p className="text-slate-400 font-semibold border-b border-[#1a2234] pb-1.5 flex items-center space-x-1.5">
+                <Code size={12} className="text-cyan-400" />
+                <span>Database Insert Executed</span>
               </p>
               <div className="space-y-1.5 text-slate-400 max-h-40 overflow-y-auto pr-2">
                 <p className="text-slate-500">-- Step 1: Client record</p>
-                <p>INSERT INTO <span className="text-white">clients</span> (id, company_name, status) VALUES ('{generatedIds.clientId.substring(0,8)}...', '{clientForm.companyName}', 'active');</p>
-                <p className="text-slate-500 mt-2">-- Step 2: Project with implicit client_id</p>
-                <p>INSERT INTO <span className="text-white">projects</span> (id, client_id, name) VALUES ('{generatedIds.projectId.substring(0,8)}...', '<span className="text-white">{generatedIds.clientId.substring(0,8)}...</span>', '{projectForm.projectName}');</p>
-                <p className="text-slate-500 mt-2">-- Step 3: Document linked with project_id</p>
-                <p>INSERT INTO <span className="text-white">documents_and_notes</span> (id, project_id, title) VALUES ('{generatedIds.docId.substring(0,8)}...', '<span className="text-white">{generatedIds.projectId.substring(0,8)}...</span>', '{docForm.title}');</p>
+                <p>INSERT INTO <span className="text-cyan-400">clients</span> (id, company_name) VALUES ('{generatedIds.clientId.substring(0,8)}...', '{clientForm.companyName}');</p>
+                <p className="text-slate-500 mt-2">-- Step 2: Project with client_id</p>
+                <p>INSERT INTO <span className="text-blue-400">projects</span> (id, client_id) VALUES ('{generatedIds.projectId.substring(0,8)}...', '{generatedIds.clientId.substring(0,8)}...');</p>
+                <p className="text-slate-500 mt-2">-- Step 3: Tech spec with project_id</p>
+                <p>INSERT INTO <span className="text-emerald-400">documents_and_notes</span> (id, project_id) VALUES ('{generatedIds.docId.substring(0,8)}...', '{generatedIds.projectId.substring(0,8)}...');</p>
               </div>
             </div>
 
@@ -670,14 +644,13 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-5 py-2.5 text-xs font-extrabold bg-white hover:bg-neutral-200 text-black rounded-lg transition-colors cursor-pointer"
+                className="px-5 py-2.5 text-xs font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 rounded-lg transition-colors cursor-pointer font-sans"
               >
-                Return to Dashboard
+                Return to Command Deck
               </button>
             </div>
           </div>
         )}
-      </div>
       </div>
     </div>
   );
