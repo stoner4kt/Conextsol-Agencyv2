@@ -25,7 +25,6 @@ import RetainersDashboard from './components/RetainersDashboard';
 import DocumentsDashboard from './components/DocumentsDashboard';
 import AlertsDashboard from './components/AlertsDashboard';
 import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
-import DevCenter from './components/DevCenter';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
@@ -726,7 +725,6 @@ export default function App() {
       case 'ai_tools_tracker': return 'AI Resource Capacity Grid';
       case 'alerts_dash': return 'Dispatch Event Stream';
       case 'wizard': return 'Client Intake Pipeline';
-      case 'dev_center': return 'Deployment & Data Operations';
       default: return 'Command Centre';
     }
   };
@@ -942,14 +940,6 @@ export default function App() {
                   onRunDeadlineAlerts={handleRunDeadlineAlerts}
                   onRunRetainerAlerts={handleRunRetainerAlerts}
                   isAdmin={state.isAdmin}
-                />
-              )}
-
-              {currentTab === 'dev_center' && (
-                <DevCenter 
-                  onSeedDemoData={handleSeedDemoData}
-                  onClearAllData={handleClearAllData}
-                  isSupabaseConnected={isSupabaseConfigured}
                 />
               )}
             </>

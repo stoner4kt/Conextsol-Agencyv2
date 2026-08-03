@@ -4,7 +4,6 @@ import {
   ShieldCheck, 
   User, 
   FileText, 
-  Terminal, 
   UserCheck, 
   X, 
   AlertCircle,
@@ -46,7 +45,6 @@ export default function Sidebar({
     { id: 'ai_tools_tracker', label: 'AI Tool Limits', icon: Zap, code: '06' },
     { id: 'alerts_dash', label: 'Dispatched Webhooks', icon: BellRing, code: '07' },
     { id: 'wizard', label: 'Onboarding Pipeline', icon: UserCheck, code: '08' },
-    { id: 'dev_center', label: 'Dev & Deployment Center', icon: Terminal, code: '09' },
   ];
 
   const toggleAdmin = () => {
@@ -103,7 +101,7 @@ export default function Sidebar({
             <p className="text-[10px] font-mono uppercase text-slate-400 tracking-widest font-semibold">
               Mission Modules
             </p>
-            <span className="text-[9px] font-mono text-cyan-400/80 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-900/40">9 READY</span>
+            <span className="text-[9px] font-mono text-cyan-400/80 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-900/40">8 READY</span>
           </div>
           {navItems.map((item) => {
             const Icon = item.icon;
