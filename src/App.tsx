@@ -376,103 +376,147 @@ export default function App() {
     }, 1500);
   };
 
-  // Simulate Deno Edge Function: Scan Projects Due in exactly 2 Days
+  // Deno Edge Function Invocation: Scan Projects Due in exactly 2 Days
+  // Scheduled via pg_cron in production. This button enables manual on-demand testing.
   const handleRunDeadlineAlerts = async () => {
-    const inTwoDays = new Date();
-    inTwoDays.setDate(inTwoDays.getDate() + 2);
-    const targetDate = `${inTwoDays.getFullYear()}-${String(inTwoDays.getMonth() + 1).padStart(2, '0')}-${String(inTwoDays.getDate()).padStart(2, '0')}`;
-    
-    // Find matching projects
-    const matchingProjects = state.projects.filter(p => p.end_date === targetDate);
-    
-    if (matchingProjects.length > 0) {
-      const newAlerts: WebhookAlert[] = matchingProjects.map(project => {
-        const client = state.clients.find(c => c.id === project.client_id);
-        const clientName = client ? client.company_name : 'Unknown Client';
-        
-        return {
+    try {
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error('Supabase is not configured. Cannot invoke Edge Function.');
+      }
+
+      // Invoke the real Edge Function
+      const { data, error } = await supabase.functions.invoke('deadline-alerts');
+
+      if (error) {
+        throw error;
+      }
+
+      const checkedDate = data?.checkedDate || 'unknown date';
+      const alertFired = data?.alertFired || 0;
+
+      if (alertFired > 0) {
+        const newAlert: WebhookAlert = {
           id: crypto.randomUUID(),
           timestamp: new Date().toISOString(),
           type: 'deadline',
-          title: `Deadline Alert: ${project.project_name}`,
-          message: `⚠️ Telegram Alert Sent: Project "${project.project_name}" for client "${clientName}" is completing on ${project.end_date} (In 2 Days). Flat rate: R ${project.invoiced_amount.toLocaleString()}. Webhook forwarded to Bot API.`,
+          title: `Deadline Scanner Executed (Live Edge Function)`,
+          message: `✅ Telegram Alert Sent: Edge function successfully processed ${alertFired} project deadline(s) approaching on ${checkedDate}. Webhook forwarded to Telegram Bot API.`,
           recipient: 'Telegram Admin Feed (@conextsol_ops)',
           status: 'sent'
         };
-      });
 
-      setState(prev => ({
-        ...prev,
-        alertsLog: [...newAlerts, ...prev.alertsLog]
-      }));
+        setState(prev => ({
+          ...prev,
+          alertsLog: [newAlert, ...prev.alertsLog]
+        }));
+        await supabaseService.saveAlert(newAlert);
 
-      for (const alert of newAlerts) {
-        await supabaseService.saveAlert(alert);
+      } else {
+        const dryAlert: WebhookAlert = {
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          type: 'deadline',
+          title: 'Daily Deadline Scanner Executed (Live Edge Function)',
+          message: `🔍 Scan complete: Edge function checked all projects due on ${checkedDate}. Zero matches found in database backlog.`,
+          recipient: 'System Console',
+          status: 'sent'
+        };
+        
+        setState(prev => ({
+          ...prev,
+          alertsLog: [dryAlert, ...prev.alertsLog]
+        }));
+        await supabaseService.saveAlert(dryAlert);
       }
-    } else {
-      // Log negative search outcome
-      const dryAlert: WebhookAlert = {
+    } catch (err: any) {
+      console.error('Edge Function Error (deadline-alerts):', err);
+      
+      const failedAlert: WebhookAlert = {
         id: crypto.randomUUID(),
         timestamp: new Date().toISOString(),
         type: 'deadline',
-        title: 'Daily Deadline Scanner Executed',
-        message: `🔍 Scan complete: Checked all projects due on ${targetDate}. Zero matches found in database backlog.`,
+        title: 'Deadline Scanner Failed',
+        message: `❌ Error invoking Edge Function "deadline-alerts": ${err.message || 'Unknown network error'}. Ensure the function is deployed and accessible.`,
         recipient: 'System Console',
         status: 'sent'
       };
+
       setState(prev => ({
         ...prev,
-        alertsLog: [dryAlert, ...prev.alertsLog]
+        alertsLog: [failedAlert, ...prev.alertsLog]
       }));
-      await supabaseService.saveAlert(dryAlert);
+      await supabaseService.saveAlert(failedAlert);
     }
   };
 
-  // Simulate Deno Edge Function: Scan Active Retainers Due Today
+  // Deno Edge Function Invocation: Scan Active Retainers Due Today
+  // Scheduled via pg_cron in production. This button enables manual on-demand testing.
   const handleRunRetainerAlerts = async () => {
-    const todayDayNum = new Date().getDate();
+    try {
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error('Supabase is not configured. Cannot invoke Edge Function.');
+      }
 
-    const matchingRetainers = state.retainers.filter(r => r.is_active && r.billing_cycle_day === todayDayNum);
+      const { data, error } = await supabase.functions.invoke('retainer-billing');
 
-    if (matchingRetainers.length > 0) {
-      const newAlerts: WebhookAlert[] = matchingRetainers.map(ret => {
-        const client = state.clients.find(c => c.id === ret.client_id);
-        const clientName = client ? client.company_name : 'Unknown Client';
+      if (error) {
+        throw error;
+      }
 
-        return {
+      const dayOfMonth = data?.dayOfMonth || new Date().getDate();
+      const alertFired = data?.alertFired || 0;
+
+      if (alertFired > 0) {
+        const newAlert: WebhookAlert = {
           id: crypto.randomUUID(),
           timestamp: new Date().toISOString(),
           type: 'retainer',
-          title: `Retainer Billing Due: ${clientName}`,
-          message: `💰 Telegram Alert Sent: Active "${ret.service_type.toUpperCase()}" retainer is due for billing today (Day ${ret.billing_cycle_day}). Amount: R ${ret.billing_amount.toLocaleString()}. Generating QuickBooks invoice.`,
+          title: `Retainer Billing Scanner Executed (Live Edge Function)`,
+          message: `💰 Telegram Alert Sent: Edge function successfully processed ${alertFired} active retainer(s) due on Day ${dayOfMonth}. Generating QuickBooks invoices.`,
           recipient: 'Telegram Admin Billing Feed',
           status: 'sent'
         };
-      });
 
-      setState(prev => ({
-        ...prev,
-        alertsLog: [...newAlerts, ...prev.alertsLog]
-      }));
-
-      for (const alert of newAlerts) {
-        await supabaseService.saveAlert(alert);
+        setState(prev => ({
+          ...prev,
+          alertsLog: [newAlert, ...prev.alertsLog]
+        }));
+        await supabaseService.saveAlert(newAlert);
+      } else {
+        const dryAlert: WebhookAlert = {
+          id: crypto.randomUUID(),
+          timestamp: new Date().toISOString(),
+          type: 'retainer',
+          title: 'Billing Scanner Executed (Live Edge Function)',
+          message: `🔍 Scan complete: Edge function checked active retainers billed on Day ${dayOfMonth}. Zero active entries matched.`,
+          recipient: 'System Console',
+          status: 'sent'
+        };
+        
+        setState(prev => ({
+          ...prev,
+          alertsLog: [dryAlert, ...prev.alertsLog]
+        }));
+        await supabaseService.saveAlert(dryAlert);
       }
-    } else {
-      const dryAlert: WebhookAlert = {
+    } catch (err: any) {
+      console.error('Edge Function Error (retainer-billing):', err);
+      
+      const failedAlert: WebhookAlert = {
         id: crypto.randomUUID(),
         timestamp: new Date().toISOString(),
         type: 'retainer',
-        title: 'Billing Scanner Executed',
-        message: `🔍 Scan complete: Checked active retainers billed on Day ${todayDayNum}. Zero active entries matched.`,
+        title: 'Billing Scanner Failed',
+        message: `❌ Error invoking Edge Function "retainer-billing": ${err.message || 'Unknown network error'}. Ensure the function is deployed and accessible.`,
         recipient: 'System Console',
         status: 'sent'
       };
+
       setState(prev => ({
         ...prev,
-        alertsLog: [dryAlert, ...prev.alertsLog]
+        alertsLog: [failedAlert, ...prev.alertsLog]
       }));
-      await supabaseService.saveAlert(dryAlert);
+      await supabaseService.saveAlert(failedAlert);
     }
   };
 
