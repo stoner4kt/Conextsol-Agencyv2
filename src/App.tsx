@@ -25,6 +25,7 @@ import RetainersDashboard from './components/RetainersDashboard';
 import DocumentsDashboard from './components/DocumentsDashboard';
 import AlertsDashboard from './components/AlertsDashboard';
 import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
+import GitHubDashboard from './components/GitHubDashboard';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
@@ -769,6 +770,7 @@ export default function App() {
       case 'ai_tools_tracker': return 'AI Resource Capacity Grid';
       case 'alerts_dash': return 'Dispatch Event Stream';
       case 'wizard': return 'Client Intake Pipeline';
+      case 'github': return 'GitHub Integration Hub';
       default: return 'Command Centre';
     }
   };
@@ -986,6 +988,8 @@ export default function App() {
                   isAdmin={state.isAdmin}
                 />
               )}
+
+              {currentTab === 'github' && <GitHubDashboard />}
             </>
           )}
 
