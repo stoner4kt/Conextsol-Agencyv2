@@ -93,9 +93,10 @@ npx supabase link --project-ref your-supabase-project-id
 ```
 
 ### B. Configure Secrets in Supabase
-Set the Telegram credentials inside the Supabase secret store so the Edge Functions can read them at runtime:
+Set the Telegram credentials and the GitHub personal access token inside the Supabase secret store so the Edge Functions can read them at runtime. The token must be able to read the repositories exposed by the GitHub Hub (and needs repository contents write access only when enabling write operations):
 ```bash
 npx supabase secrets set TELEGRAM_BOT_TOKEN="your-bot-token" TELEGRAM_CHAT_ID="your-chat-id"
+npx supabase secrets set GITHUB_TOKEN="your-github-personal-access-token"
 ```
 
 ### C. Deploy Functions to Production
@@ -103,6 +104,7 @@ Run these commands inside your project root directory:
 ```bash
 npx supabase fn deploy deadline-alerts
 npx supabase fn deploy retainer-billing
+npx supabase fn deploy github-proxy
 ```
 
 ### D. Set Up Cron Schedules
