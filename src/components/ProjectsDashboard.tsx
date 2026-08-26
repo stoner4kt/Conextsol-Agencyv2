@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { Project, AppState } from '../types';
+import GitHubResourceList from './github/GitHubResourceList';
 
 interface ProjectsDashboardProps {
   state: AppState;
@@ -616,6 +617,8 @@ export default function ProjectsDashboard({
                   </div>
                 )}
               </div>
+
+              <GitHubResourceList projectId={project.id} githubUrl={project.github_url} title="Project GitHub Resources" />
 
               {/* Bottom Metadata Bar & Actions */}
               <div className="pt-3 border-t border-[#1a2234] flex flex-wrap items-center justify-between text-[11px] text-slate-400 gap-3">
