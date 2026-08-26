@@ -1,4 +1,4 @@
-import { supabase } from '../supabaseClient';
+import { supabase, supabaseAnonKey, supabaseUrl } from '../supabaseClient';
 import { Client, Project } from '../types';
 
 export type GitHubErrorCode = 'AUTHENTICATION_REQUIRED' | 'AUTHORIZATION_FAILED' | 'INVALID_REQUEST' | 'REPOSITORY_NOT_FOUND' | 'FILE_NOT_FOUND' | 'RATE_LIMITED' | 'GITHUB_UNAVAILABLE' | 'INTERNAL_ERROR';
@@ -34,11 +34,51 @@ type GitHubAction =
   | { action: 'write-file'; repo: string; path: string; content: string; message: string; sha?: string; branch: string }
   | { action: 'delete-file'; repo: string; path: string; sha: string; message: string; branch: string };
 
+function safeDiagnostics(payload: GitHubAction, details: Record<string, unknown>) {
+  if ((import.meta as any).env?.DEV || localStorage.getItem('conextsol_github_debug') === 'true') {
+    console.info('[GitHub proxy diagnostic]', { action: payload.action, ...details });
+  }
+}
+
 async function gh<T>(payload: GitHubAction): Promise<T> {
-  if (!supabase) throw new GitHubServiceError('Supabase is not configured. GitHub integration is unavailable.', 'GITHUB_UNAVAILABLE');
-  const { data, error } = await supabase.functions.invoke('github-proxy', { body: payload });
-  if (error) throw new GitHubServiceError(error.message || 'GitHub proxy error', 'GITHUB_UNAVAILABLE', 'status' in error ? Number(error.status) : undefined);
-  if (data?.error) throw new GitHubServiceError(data.error.message || 'GitHub request failed.', data.error.code || 'INTERNAL_ERROR', data.error.details?.status);
+  if (!supabase || !supabaseUrl || !supabaseAnonKey) throw new GitHubServiceError('Supabase is not configured. GitHub integration is unavailable.', 'GITHUB_UNAVAILABLE');
+
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  const functionUrl = `${supabaseUrl.replace(/\/$/, '')}/functions/v1/github-proxy`;
+  const sessionExists = Boolean(session && !sessionError);
+  const accessTokenExists = Boolean(session?.access_token);
+  safeDiagnostics(payload, { functionUrl, sessionExists, accessTokenExists, origin: window.location.origin });
+
+  if (!session?.access_token) {
+    throw new GitHubServiceError('Authentication required: sign in with Supabase before using the GitHub integration.', 'AUTHENTICATION_REQUIRED');
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(functionUrl, {
+      method: 'POST',
+      headers: {
+        apikey: supabaseAnonKey,
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+        'x-client-info': 'conextsol-agency-github-v1',
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    safeDiagnostics(payload, { functionUrl, sessionExists, accessTokenExists, networkError: err instanceof Error ? err.message : String(err) });
+    throw new GitHubServiceError('Supabase Edge Function request failed before a response was received. Check CORS allowed origins, network connectivity, and the production Supabase URL.', 'GITHUB_UNAVAILABLE');
+  }
+
+  const text = await response.text();
+  const data = text ? JSON.parse(text) : null;
+  safeDiagnostics(payload, { functionUrl, httpStatus: response.status, ok: response.ok, sessionExists, accessTokenExists });
+
+  if (!response.ok || data?.error) {
+    const code = data?.error?.code || (response.status === 401 ? 'AUTHENTICATION_REQUIRED' : 'GITHUB_UNAVAILABLE');
+    const message = data?.error?.message || `GitHub proxy request failed with HTTP ${response.status}.`;
+    throw new GitHubServiceError(message, code, response.status);
+  }
   return data as T;
 }
 

@@ -37,7 +37,7 @@ Set these only in Supabase Edge Function secrets, never as `VITE_*`, Cloudflare 
 - `GITHUB_PAT` — GitHub personal access token used by `github-proxy`.
 - `GITHUB_OWNER` — default GitHub owner/org used when the frontend sends a repository name without an owner.
 - `ALLOWED_ORIGINS` — comma-separated browser origins allowed by the GitHub proxy CORS response, for example production Cloudflare origin plus local development.
-- `SITE_ORIGIN` — optional single-origin fallback when `ALLOWED_ORIGINS` is not provided.
+- `SITE_ORIGIN` — optional single-origin fallback when `ALLOWED_ORIGINS` is not provided. Prefer `ALLOWED_ORIGINS` for production.
 - Existing operational secrets used by other Edge Functions include `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `TELEGRAM_BOT_TOKEN`, and `TELEGRAM_CHAT_ID`.
 
 ## Supabase setup and migrations
@@ -110,7 +110,8 @@ npm run build
 ## Troubleshooting
 
 - `OPTIONS /github-proxy` returning `204` and `POST` returning `404` usually means the function is reachable but the GitHub action contract or repository identifier is wrong. V1 accepts `owner/name` or a bare repository name that is resolved with `GITHUB_OWNER`.
-- `AUTHENTICATION_REQUIRED` means the browser does not have a valid Supabase session.
+- `AUTHENTICATION_REQUIRED` means the browser does not have a valid Supabase session. The frontend checks `supabase.auth.getSession()` before sending GitHub requests so a local UI flag cannot masquerade as server auth.
+- `Failed to send a request to the Edge Function` before any POST appears in Supabase logs usually means the browser blocked the POST after preflight. Check that `ALLOWED_ORIGINS` exactly includes `window.location.origin`, and enable safe browser diagnostics with `localStorage.setItem('conextsol_github_debug', 'true')`.
 - `GITHUB_UNAVAILABLE` can mean missing Supabase secrets, GitHub downtime, network failure, or timeout.
 - `RATE_LIMITED` means GitHub rejected the request because of search/API rate limiting.
 

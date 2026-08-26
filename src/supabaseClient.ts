@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL;
-const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY;
+export const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL as string | undefined;
+export const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 // Check if credentials are set and are not placeholders
 export const isSupabaseConfigured = 
@@ -17,5 +17,6 @@ export const supabase = isSupabaseConfigured
 console.log('Supabase Connection Status:', {
   configured: isSupabaseConfigured,
   url: supabaseUrl ? 'Provided' : 'Missing',
-  key: supabaseAnonKey ? 'Provided' : 'Missing'
+  key: supabaseAnonKey ? 'Provided' : 'Missing',
+  projectRef: supabaseUrl?.match(/^https:\/\/([^.]+)\.supabase\.co$/)?.[1] || 'unknown'
 });

@@ -17,7 +17,7 @@ type ErrorCode = "AUTHENTICATION_REQUIRED" | "AUTHORIZATION_FAILED" | "INVALID_R
 
 const allowedOrigins = (Deno.env.get("ALLOWED_ORIGINS") || Deno.env.get("SITE_ORIGIN") || "")
   .split(",")
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/\/$/, ""))
   .filter(Boolean);
 const localOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 const repositoryPattern = /^[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)?$/;
@@ -27,12 +27,16 @@ const maxFileBytes = 1_000_000;
 
 function corsHeaders(req: Request) {
   const origin = req.headers.get("Origin") || "";
-  const allowOrigin = allowedOrigins.includes(origin) || localOriginPattern.test(origin) ? origin : allowedOrigins[0] || "https://conextsol-agencyv2.pages.dev";
+  const normalizedOrigin = origin.replace(/\/$/, "");
+  const isAllowedOrigin = allowedOrigins.includes(normalizedOrigin) || localOriginPattern.test(normalizedOrigin);
+  // If no origins are configured yet, echo the browser origin so authenticated deployments do not fail
+  // after a successful preflight. Configure ALLOWED_ORIGINS in production to make this restrictive.
+  const allowOrigin = isAllowedOrigin ? normalizedOrigin : allowedOrigins.length === 0 && normalizedOrigin ? normalizedOrigin : allowedOrigins[0] || "null";
   return {
     "Access-Control-Allow-Origin": allowOrigin,
     "Vary": "Origin",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, accept, accept-profile, content-profile, prefer",
   };
 }
 
