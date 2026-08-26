@@ -96,7 +96,7 @@ npx supabase link --project-ref your-supabase-project-id
 Set the Telegram credentials and the GitHub personal access token inside the Supabase secret store so the Edge Functions can read them at runtime. The token must be able to read the repositories exposed by the GitHub Hub (and needs repository contents write access only when enabling write operations):
 ```bash
 npx supabase secrets set TELEGRAM_BOT_TOKEN="your-bot-token" TELEGRAM_CHAT_ID="your-chat-id"
-npx supabase secrets set GITHUB_TOKEN="your-github-personal-access-token"
+npx supabase secrets set GITHUB_PAT="your-github-personal-access-token" GITHUB_OWNER="stoner4kt"
 ```
 
 ### C. Deploy Functions to Production

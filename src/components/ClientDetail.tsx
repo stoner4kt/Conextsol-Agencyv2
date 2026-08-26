@@ -12,6 +12,7 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 import { AppState } from '../types';
+import GitHubResourceList from './github/GitHubResourceList';
 
 interface ClientDetailProps {
   clientId: string;
@@ -142,6 +143,8 @@ export default function ClientDetail({
           </div>
         </div>
       </div>
+
+      <GitHubResourceList clientId={client.id} title="Client GitHub Resources" />
 
       {/* Inner split: Active projects vs Retainers contract */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
