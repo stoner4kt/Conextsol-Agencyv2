@@ -74,6 +74,34 @@ export interface AIToolAccount {
   updated_at?: string;
 }
 
+export interface InvoiceLineItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unit_price: number;
+  amount: number;
+}
+
+export interface Invoice {
+  id: string;
+  invoice_number: string;
+  client_id: string;
+  line_items: InvoiceLineItem[];
+  subtotal: number;
+  tax_rate: number;
+  tax_amount: number;
+  total: number;
+  status: 'unpaid' | 'paid' | 'overdue' | 'draft';
+  due_date: string;
+  issued_date: string;
+  paid_at: string | null;
+  payment_notes: string | null;
+  reminder_sent_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface AppState {
   clients: Client[];
   projects: Project[];
@@ -81,6 +109,7 @@ export interface AppState {
   documents: DocumentAndNote[];
   alertsLog: WebhookAlert[];
   aiToolAccounts: AIToolAccount[];
+  invoices: Invoice[];
   isAdmin: boolean;
   userEmail: string | null;
 }

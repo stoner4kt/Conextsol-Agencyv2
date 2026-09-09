@@ -1,12 +1,13 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-import { Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount } from './types';
+import { Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice } from './types';
 import { 
   INITIAL_CLIENTS, 
   INITIAL_PROJECTS, 
   INITIAL_RETAINERS, 
   INITIAL_DOCUMENTS, 
   INITIAL_ALERTS,
-  INITIAL_AI_TOOL_ACCOUNTS
+  INITIAL_AI_TOOL_ACCOUNTS,
+  INITIAL_INVOICES
 } from './mockData';
 
 const CLIENTS_KEY = 'conextsol_clients';
@@ -15,6 +16,7 @@ const RETAINERS_KEY = 'conextsol_retainers';
 const DOCS_KEY = 'conextsol_documents';
 const ALERTS_STORAGE_KEY = 'conextsol_alerts_log';
 const AI_ACCOUNTS_KEY = 'conextsol_ai_tool_accounts';
+const INVOICES_KEY = 'conextsol_invoices';
 
 // Helper for local storage reading with default initial dataset
 function getLocalCollection<T>(key: string, initialDefault: T[]): T[] {
@@ -428,6 +430,144 @@ export const supabaseService = {
     }
   },
 
+  // INVOICES CRUD
+  async getInvoices(): Promise<Invoice[]> {
+    if (!isSupabaseConfigured || !supabase) {
+      return getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('invoices')
+        .select('*')
+        .order('issued_date', { ascending: false });
+
+      if (error) throw error;
+
+      return (data || []).map(invoice => {
+        const rawLineItems = Array.isArray(invoice.line_items)
+          ? invoice.line_items
+          : typeof invoice.line_items === 'string'
+            ? JSON.parse(invoice.line_items)
+            : [];
+
+        return {
+          ...invoice,
+          line_items: rawLineItems.map((lineItem: Invoice['line_items'][number]) => ({
+            ...lineItem,
+            quantity: Number(lineItem.quantity),
+            unit_price: Number(lineItem.unit_price),
+            amount: Number(lineItem.amount),
+          })),
+          subtotal: Number(invoice.subtotal),
+          tax_rate: Number(invoice.tax_rate),
+          tax_amount: Number(invoice.tax_amount),
+          total: Number(invoice.total),
+        };
+      }) as Invoice[];
+    } catch (err) {
+      console.warn('Supabase invoices fetch failed, using LocalStorage:', err);
+      return getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+    }
+  },
+
+  async saveInvoice(invoice: Invoice): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      const current = getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+      const exists = current.some(item => item.id === invoice.id);
+      const updated = exists
+        ? current.map(item => item.id === invoice.id ? invoice : item)
+        : [...current, invoice];
+      saveLocalCollection(INVOICES_KEY, updated);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('invoices').upsert({
+        id: invoice.id,
+        invoice_number: invoice.invoice_number,
+        client_id: invoice.client_id,
+        line_items: invoice.line_items,
+        subtotal: invoice.subtotal,
+        tax_rate: invoice.tax_rate,
+        status: invoice.status,
+        due_date: invoice.due_date,
+        issued_date: invoice.issued_date,
+        paid_at: invoice.paid_at,
+        payment_notes: invoice.payment_notes,
+        reminder_sent_at: invoice.reminder_sent_at,
+        notes: invoice.notes,
+        created_at: invoice.created_at,
+        updated_at: new Date().toISOString()
+      });
+
+      if (error) throw error;
+    } catch (err) {
+      console.warn('Supabase invoice save failed, using LocalStorage:', err);
+      const current = getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+      const exists = current.some(item => item.id === invoice.id);
+      const updated = exists
+        ? current.map(item => item.id === invoice.id ? invoice : item)
+        : [...current, invoice];
+      saveLocalCollection(INVOICES_KEY, updated);
+    }
+  },
+
+  async deleteInvoice(id: string): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      const current = getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+      saveLocalCollection(INVOICES_KEY, current.filter(invoice => invoice.id !== id));
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('invoices').delete().eq('id', id);
+      if (error) throw error;
+    } catch (err) {
+      console.warn('Supabase invoice delete failed, using LocalStorage:', err);
+      const current = getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+      saveLocalCollection(INVOICES_KEY, current.filter(invoice => invoice.id !== id));
+    }
+  },
+
+  async markInvoicePaid(id: string, notes: string): Promise<void> {
+    const paidAt = new Date().toISOString();
+
+    if (!isSupabaseConfigured || !supabase) {
+      const current = getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+      saveLocalCollection(
+        INVOICES_KEY,
+        current.map(invoice => invoice.id === id
+          ? { ...invoice, status: 'paid' as const, paid_at: paidAt, payment_notes: notes, updated_at: paidAt }
+          : invoice)
+      );
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .update({
+          status: 'paid',
+          paid_at: paidAt,
+          payment_notes: notes,
+          updated_at: paidAt
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+    } catch (err) {
+      console.warn('Supabase invoice payment update failed, using LocalStorage:', err);
+      const current = getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
+      saveLocalCollection(
+        INVOICES_KEY,
+        current.map(invoice => invoice.id === id
+          ? { ...invoice, status: 'paid' as const, paid_at: paidAt, payment_notes: notes, updated_at: paidAt }
+          : invoice)
+      );
+    }
+  },
+
   // SEED & WIPE
   async seedDemoData(): Promise<void> {
     saveLocalCollection(CLIENTS_KEY, INITIAL_CLIENTS);
@@ -436,6 +576,7 @@ export const supabaseService = {
     saveLocalCollection(DOCS_KEY, INITIAL_DOCUMENTS);
     saveLocalCollection(ALERTS_STORAGE_KEY, INITIAL_ALERTS);
     saveLocalCollection(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
+    saveLocalCollection(INVOICES_KEY, INITIAL_INVOICES);
   },
 
   async clearAllData(): Promise<void> {
@@ -445,6 +586,7 @@ export const supabaseService = {
     localStorage.removeItem(DOCS_KEY);
     localStorage.removeItem(ALERTS_STORAGE_KEY);
     localStorage.removeItem(AI_ACCOUNTS_KEY);
+    localStorage.removeItem(INVOICES_KEY);
   }
 };
 

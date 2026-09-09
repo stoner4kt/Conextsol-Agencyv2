@@ -244,3 +244,59 @@ INSERT INTO ai_tool_accounts (id, account_email, service_name, reset_date, statu
 ('a5555555-5555-5555-5555-555555555555', 'ai.agent02@conextsol.com', 'Claude', '2026-07-17', 'Limited', 'Hit high-tier token quota during code generation. Resets in 2 days.', '2026-07-15'),
 ('a6666666-6666-6666-6666-666666666666', 'ai.research@conextsol.com', 'Codex', '2026-08-12', 'Usable', 'OpenAI Team seats. Unthrottled rate tier.', '2026-07-12')
 ON CONFLICT (id) DO NOTHING;
+
+-- ====================================================================
+-- INVOICES TABLE MIGRATION
+-- ====================================================================
+
+CREATE TABLE IF NOT EXISTS invoices (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    invoice_number TEXT NOT NULL UNIQUE,
+    client_id UUID NOT NULL REFERENCES clients(id) ON DELETE RESTRICT,
+    line_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+    subtotal NUMERIC(12, 2) NOT NULL DEFAULT 0.00,
+    tax_rate NUMERIC(5, 2) NOT NULL DEFAULT 0.00,
+    tax_amount NUMERIC(12, 2) GENERATED ALWAYS AS (ROUND(subtotal * tax_rate / 100, 2)) STORED,
+    total NUMERIC(12, 2) GENERATED ALWAYS AS (subtotal + ROUND(subtotal * tax_rate / 100, 2)) STORED,
+    status TEXT NOT NULL DEFAULT 'unpaid' CHECK (status IN ('unpaid', 'paid', 'overdue', 'draft')),
+    due_date DATE NOT NULL,
+    issued_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    paid_at TIMESTAMPTZ,
+    payment_notes TEXT,
+    reminder_sent_at TIMESTAMPTZ,
+    notes TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_invoices_client_id ON invoices(client_id);
+CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status);
+CREATE INDEX IF NOT EXISTS idx_invoices_due_date ON invoices(due_date);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_invoices_number ON invoices(invoice_number);
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_trigger WHERE tgname = 'update_invoices_modtime'
+    ) THEN
+        CREATE TRIGGER update_invoices_modtime
+        BEFORE UPDATE ON invoices
+        FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+    END IF;
+END
+$$;
+
+ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admins have full access to invoices"
+ON invoices FOR ALL TO authenticated
+USING (
+    auth.jwt() ->> 'email' LIKE '%@conextsol.com'
+    OR auth.jwt() ->> 'email' = 'reeqieric41@gmail.com'
+)
+WITH CHECK (
+    auth.jwt() ->> 'email' LIKE '%@conextsol.com'
+    OR auth.jwt() ->> 'email' = 'reeqieric41@gmail.com'
+);
+
+CREATE SEQUENCE IF NOT EXISTS invoice_seq START 1;
