@@ -1,0 +1,1 @@
+- [External npm lockfile URLs](external-npm-lockfile-urls.md) — external CI providers cannot resolve Replit package-firewall tarball URLs committed in npm lockfiles.
