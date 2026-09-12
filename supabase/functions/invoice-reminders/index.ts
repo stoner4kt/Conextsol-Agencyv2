@@ -260,7 +260,7 @@ serve(async (req) => {
                 Please arrange payment at your earliest convenience. If you have any questions regarding this invoice, please contact us directly at billing@conextsol.com.
               </p>
             </div>
-            <p style="color: #334155; font-size: 11px; text-align: center; margin-top: 16px;">Conextsol Agency · conextsol.com</p>
+            <p style="color: #334155; font-size: 11px; text-align: center; margin-top: 16px;">Conextsol Agency · conextsol.co.za</p>
           </div>
         `;
 
@@ -271,7 +271,7 @@ serve(async (req) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            from: "billing@conextsol.com",
+            from: "billing@conextsol.co.za",
             to: [client.email],
             subject: `Payment Reminder — ${invoice.invoice_number} (${daysOverdue}d overdue)`,
             html: emailBody,
