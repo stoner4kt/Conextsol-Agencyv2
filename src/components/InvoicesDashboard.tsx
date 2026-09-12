@@ -13,6 +13,7 @@ import {
   Plus,
   Save,
   Search,
+  Send,
   Trash2,
   X,
 } from 'lucide-react';
@@ -25,6 +26,7 @@ interface InvoicesDashboardProps {
   onSaveInvoice: (invoice: Invoice) => void;
   onDeleteInvoice: (id: string) => void;
   onMarkPaid: (id: string, notes: string) => void;
+  onSendInvoice: (invoice: Invoice) => void;
   onRunInvoiceReminders: () => void;
 }
 
@@ -143,7 +145,7 @@ function InvoiceForm({
 }) {
   const isEdit = Boolean(invoiceToEdit);
   const [clientId, setClientId] = useState(invoiceToEdit?.client_id ?? '');
-  const [status, setStatus] = useState<Invoice['status']>(invoiceToEdit?.status ?? 'draft');
+  const [status, setStatus] = useState<Invoice['status']>(invoiceToEdit?.status ?? 'unpaid');
   const [dueDate, setDueDate] = useState(invoiceToEdit?.due_date ?? '');
   const [issuedDate, setIssuedDate] = useState(
     invoiceToEdit?.issued_date ?? new Date().toISOString().split('T')[0]
@@ -379,6 +381,7 @@ export default function InvoicesDashboard({
   onSaveInvoice,
   onDeleteInvoice,
   onMarkPaid,
+  onSendInvoice,
   onRunInvoiceReminders,
 }: InvoicesDashboardProps) {
   const [search, setSearch] = useState('');
@@ -567,6 +570,15 @@ export default function InvoicesDashboard({
                       >
                         <Download size={13} />
                       </button>
+                      {isAdmin && invoice.status !== 'draft' && (
+                        <button
+                          onClick={() => onSendInvoice(invoice)}
+                          title="Send invoice email"
+                          className="p-1.5 bg-cyan-950/50 border border-cyan-800/50 rounded-lg text-cyan-300 hover:bg-cyan-950 transition-colors"
+                        >
+                          <Send size={13} />
+                        </button>
+                      )}
                       {isAdmin && invoice.status !== 'paid' && (
                         <button
                           onClick={() => setMarkPaidInvoice(invoice)}

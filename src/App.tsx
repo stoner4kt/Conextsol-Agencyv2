@@ -333,6 +333,7 @@ export default function App() {
   };
 
   const handleSaveInvoice = async (invoice: Invoice) => {
+    const isNewInvoice = !state.invoices.some(item => item.id === invoice.id);
     setState(prev => {
       const exists = prev.invoices.some(item => item.id === invoice.id);
       const invoices = exists
@@ -341,6 +342,10 @@ export default function App() {
       return { ...prev, invoices };
     });
     await supabaseService.saveInvoice(invoice);
+
+    if (isNewInvoice && invoice.status !== 'draft') {
+      await handleSendInvoiceEmail(invoice, true);
+    }
   };
 
   const handleDeleteInvoice = async (id: string) => {
@@ -360,6 +365,51 @@ export default function App() {
         : invoice)
     }));
     await supabaseService.markInvoicePaid(id, notes);
+  };
+
+  const handleSendInvoiceEmail = async (invoice: Invoice, automatic = false) => {
+    try {
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error('Supabase is not configured.');
+      }
+
+      const { data, error } = await supabase.functions.invoke('invoice-reminders', {
+        body: {
+          action: 'send_invoice',
+          invoiceId: invoice.id,
+        },
+      });
+      if (error) throw error;
+      if (!data?.success) {
+        throw new Error(data?.error ?? 'Invoice email was not sent.');
+      }
+
+      const alert: WebhookAlert = {
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        type: 'deadline',
+        title: automatic ? 'Invoice Email Sent Automatically' : 'Invoice Email Sent',
+        message: `${invoice.invoice_number} was sent to ${data.email ?? 'the client email address'}.`,
+        recipient: data.email ?? 'Client Email Address (via Resend)',
+        status: 'sent',
+      };
+      setState(prev => ({ ...prev, alertsLog: [alert, ...prev.alertsLog] }));
+      await supabaseService.saveAlert(alert);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown invoice email error';
+      console.error('Invoice email failed:', err);
+      const alert: WebhookAlert = {
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        type: 'deadline',
+        title: automatic ? 'Automatic Invoice Email Failed' : 'Invoice Email Failed',
+        message: `${invoice.invoice_number}: ${message}`,
+        recipient: 'Client Email Address (via Resend)',
+        status: 'failed',
+      };
+      setState(prev => ({ ...prev, alertsLog: [alert, ...prev.alertsLog] }));
+      await supabaseService.saveAlert(alert);
+    }
   };
 
   const handleRunInvoiceReminders = async () => {
@@ -1062,6 +1112,7 @@ export default function App() {
                   onSaveInvoice={handleSaveInvoice}
                   onDeleteInvoice={handleDeleteInvoice}
                   onMarkPaid={handleMarkInvoicePaid}
+                  onSendInvoice={handleSendInvoiceEmail}
                   onRunInvoiceReminders={handleRunInvoiceReminders}
                 />
               )}
