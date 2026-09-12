@@ -10,7 +10,7 @@ import {
   Radio,
   Clock
 } from 'lucide-react';
-import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount } from './types';
+import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice } from './types';
 import { 
   getInitialState
 } from './mockData';
@@ -26,6 +26,7 @@ import DocumentsDashboard from './components/DocumentsDashboard';
 import AlertsDashboard from './components/AlertsDashboard';
 import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
 import GitHubDashboard from './components/GitHubDashboard';
+import InvoicesDashboard from './components/InvoicesDashboard';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
@@ -86,13 +87,14 @@ export default function App() {
 
         // Only fetch data if we have an active session or are logged in
         if (hasActiveSession || isLoggedIn) {
-          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts] = await Promise.all([
+          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices] = await Promise.all([
             supabaseService.getClients(),
             supabaseService.getProjects(),
             supabaseService.getRetainers(),
             supabaseService.getDocuments(),
             supabaseService.getAlertsLog(),
-            supabaseService.getAIToolAccounts()
+            supabaseService.getAIToolAccounts(),
+            supabaseService.getInvoices()
           ]);
           
           setState(prev => ({
@@ -102,7 +104,8 @@ export default function App() {
             retainers,
             documents,
             alertsLog,
-            aiToolAccounts
+            aiToolAccounts,
+            invoices
           }));
         } else {
           // Clear cached state if signed out
@@ -113,7 +116,8 @@ export default function App() {
             retainers: [],
             documents: [],
             alertsLog: [],
-            aiToolAccounts: []
+            aiToolAccounts: [],
+            invoices: []
           }));
         }
       } catch (err) {
@@ -326,6 +330,112 @@ export default function App() {
       aiToolAccounts: prev.aiToolAccounts.filter(a => a.id !== id)
     }));
     await supabaseService.deleteAIToolAccount(id);
+  };
+
+  const handleSaveInvoice = async (invoice: Invoice) => {
+    const isNewInvoice = !state.invoices.some(item => item.id === invoice.id);
+    setState(prev => {
+      const exists = prev.invoices.some(item => item.id === invoice.id);
+      const invoices = exists
+        ? prev.invoices.map(item => item.id === invoice.id ? invoice : item)
+        : [...prev.invoices, invoice];
+      return { ...prev, invoices };
+    });
+    await supabaseService.saveInvoice(invoice);
+
+    if (isNewInvoice && invoice.status !== 'draft') {
+      await handleSendInvoiceEmail(invoice, true);
+    }
+  };
+
+  const handleDeleteInvoice = async (id: string) => {
+    setState(prev => ({
+      ...prev,
+      invoices: prev.invoices.filter(invoice => invoice.id !== id)
+    }));
+    await supabaseService.deleteInvoice(id);
+  };
+
+  const handleMarkInvoicePaid = async (id: string, notes: string) => {
+    const paidAt = new Date().toISOString();
+    setState(prev => ({
+      ...prev,
+      invoices: prev.invoices.map(invoice => invoice.id === id
+        ? { ...invoice, status: 'paid' as const, paid_at: paidAt, payment_notes: notes, updated_at: paidAt }
+        : invoice)
+    }));
+    await supabaseService.markInvoicePaid(id, notes);
+  };
+
+  const handleSendInvoiceEmail = async (invoice: Invoice, automatic = false) => {
+    try {
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error('Supabase is not configured.');
+      }
+
+      const { data, error } = await supabase.functions.invoke('invoice-reminders', {
+        body: {
+          action: 'send_invoice',
+          invoiceId: invoice.id,
+        },
+      });
+      if (error) throw error;
+      if (!data?.success) {
+        throw new Error(data?.error ?? 'Invoice email was not sent.');
+      }
+
+      const alert: WebhookAlert = {
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        type: 'deadline',
+        title: automatic ? 'Invoice Email Sent Automatically' : 'Invoice Email Sent',
+        message: `${invoice.invoice_number} was sent to ${data.email ?? 'the client email address'}.`,
+        recipient: data.email ?? 'Client Email Address (via Resend)',
+        status: 'sent',
+      };
+      setState(prev => ({ ...prev, alertsLog: [alert, ...prev.alertsLog] }));
+      await supabaseService.saveAlert(alert);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown invoice email error';
+      console.error('Invoice email failed:', err);
+      const alert: WebhookAlert = {
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        type: 'deadline',
+        title: automatic ? 'Automatic Invoice Email Failed' : 'Invoice Email Failed',
+        message: `${invoice.invoice_number}: ${message}`,
+        recipient: 'Client Email Address (via Resend)',
+        status: 'failed',
+      };
+      setState(prev => ({ ...prev, alertsLog: [alert, ...prev.alertsLog] }));
+      await supabaseService.saveAlert(alert);
+    }
+  };
+
+  const handleRunInvoiceReminders = async () => {
+    try {
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error('Supabase is not configured.');
+      }
+
+      const { data, error } = await supabase.functions.invoke('invoice-reminders');
+      if (error) throw error;
+
+      const alert: WebhookAlert = {
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        type: 'deadline',
+        title: 'Invoice Reminder Scan Executed',
+        message: `Reminder check: ${data?.overdueCount ?? 0} overdue invoice(s) processed. Emails dispatched via Resend.`,
+        recipient: 'Client Email Addresses (via Resend)',
+        status: 'sent',
+      };
+
+      setState(prev => ({ ...prev, alertsLog: [alert, ...prev.alertsLog] }));
+      await supabaseService.saveAlert(alert);
+    } catch (err) {
+      console.error('invoice-reminders invocation failed:', err);
+    }
   };
 
   // Clear Alerts Logs
@@ -603,13 +713,14 @@ export default function App() {
   const handleSeedDemoData = async () => {
     setIsLoading(true);
     await supabaseService.seedDemoData();
-    const [clients, projects, retainers, documents, alertsLog, aiToolAccounts] = await Promise.all([
+    const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices] = await Promise.all([
       supabaseService.getClients(),
       supabaseService.getProjects(),
       supabaseService.getRetainers(),
       supabaseService.getDocuments(),
       supabaseService.getAlertsLog(),
-      supabaseService.getAIToolAccounts()
+      supabaseService.getAIToolAccounts(),
+      supabaseService.getInvoices()
     ]);
     setState(prev => ({
       ...prev,
@@ -618,7 +729,8 @@ export default function App() {
       retainers,
       documents,
       alertsLog,
-      aiToolAccounts
+      aiToolAccounts,
+      invoices
     }));
     setIsLoading(false);
   };
@@ -633,7 +745,8 @@ export default function App() {
       retainers: [],
       documents: [],
       alertsLog: [],
-      aiToolAccounts: []
+      aiToolAccounts: [],
+      invoices: []
     }));
     setIsLoading(false);
   };
@@ -771,6 +884,7 @@ export default function App() {
       case 'alerts_dash': return 'Dispatch Event Stream';
       case 'wizard': return 'Client Intake Pipeline';
       case 'github': return 'GitHub Integration Hub';
+      case 'invoices_dash': return 'Invoice Command Centre';
       default: return 'Command Centre';
     }
   };
@@ -990,6 +1104,18 @@ export default function App() {
               )}
 
               {currentTab === 'github' && <GitHubDashboard />}
+
+              {currentTab === 'invoices_dash' && (
+                <InvoicesDashboard
+                  state={state}
+                  isAdmin={state.isAdmin}
+                  onSaveInvoice={handleSaveInvoice}
+                  onDeleteInvoice={handleDeleteInvoice}
+                  onMarkPaid={handleMarkInvoicePaid}
+                  onSendInvoice={handleSendInvoiceEmail}
+                  onRunInvoiceReminders={handleRunInvoiceReminders}
+                />
+              )}
             </>
           )}
 
