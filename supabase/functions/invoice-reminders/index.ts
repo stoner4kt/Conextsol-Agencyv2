@@ -129,7 +129,7 @@ async function sendInvoiceEmail(
         ${notes}
         <p style="color: #64748b; font-size: 12px; line-height: 1.6; margin: 28px 0 0;">Please arrange payment by the due date. If you have any questions, contact us at billing@conextsol.com.</p>
       </div>
-      <p style="color: #334155; font-size: 11px; text-align: center; margin-top: 16px;">Conextsol Agency · conextsol.com</p>
+      <p style="color: #334155; font-size: 11px; text-align: center; margin-top: 16px;">Conextsol Agency · conextsol.co.za</p>
     </div>
   `;
 
@@ -140,7 +140,7 @@ async function sendInvoiceEmail(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "billing@conextsol.com",
+      from: "billing@conextsol.co.za",
       to: [client.email],
       subject: `Invoice ${invoice.invoice_number} from Conextsol`,
       html: emailBody,
