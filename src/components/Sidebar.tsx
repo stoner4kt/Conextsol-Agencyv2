@@ -12,8 +12,8 @@ import {
   BellRing,
   PieChart,
   Zap,
-  Github,
-  Receipt
+  Receipt,
+  Wallet
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -47,7 +47,7 @@ export default function Sidebar({
     { id: 'ai_tools_tracker', label: 'AI Tool Limits', icon: Zap, code: '06' },
     { id: 'alerts_dash', label: 'Dispatched Webhooks', icon: BellRing, code: '07' },
     { id: 'wizard', label: 'Onboarding Pipeline', icon: UserCheck, code: '08' },
-    { id: 'github', label: 'GitHub', icon: Github, code: '09' },
+    { id: 'expenses_dash', label: 'Recurring Expenses', icon: Wallet, code: '09' },
     { id: 'invoices_dash', label: 'Invoicing', icon: Receipt, code: '10' },
   ];
 
