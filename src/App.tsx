@@ -25,8 +25,8 @@ import RetainersDashboard from './components/RetainersDashboard';
 import DocumentsDashboard from './components/DocumentsDashboard';
 import AlertsDashboard from './components/AlertsDashboard';
 import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
-import GitHubDashboard from './components/GitHubDashboard';
 import InvoicesDashboard from './components/InvoicesDashboard';
+import ExpensesRoute from './components/ExpensesRoute';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
@@ -87,15 +87,18 @@ export default function App() {
 
         // Only fetch data if we have an active session or are logged in
         if (hasActiveSession || isLoggedIn) {
-          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices] = await Promise.all([
+          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
             supabaseService.getClients(),
             supabaseService.getProjects(),
             supabaseService.getRetainers(),
             supabaseService.getDocuments(),
             supabaseService.getAlertsLog(),
             supabaseService.getAIToolAccounts(),
-            supabaseService.getInvoices()
+            supabaseService.getInvoices(),
+            supabaseService.getRecurringExpenses(),
+            supabaseService.getExpenseEntries()
           ]);
+          const expenseEntries = await supabaseService.ensureMonthlyExpenseEntries(recurringExpenses, existingExpenseEntries);
           
           setState(prev => ({
             ...prev,
@@ -105,7 +108,9 @@ export default function App() {
             documents,
             alertsLog,
             aiToolAccounts,
-            invoices
+            invoices,
+            recurringExpenses,
+            expenseEntries
           }));
         } else {
           // Clear cached state if signed out
@@ -117,7 +122,9 @@ export default function App() {
             documents: [],
             alertsLog: [],
             aiToolAccounts: [],
-            invoices: []
+            invoices: [],
+            recurringExpenses: [],
+            expenseEntries: []
           }));
         }
       } catch (err) {
@@ -208,6 +215,7 @@ export default function App() {
     setCurrentTab('dashboard');
     setSelectedClientId(null);
     setSelectedDocumentId(null);
+    setState(prev => ({ ...prev, recurringExpenses: [], expenseEntries: [] }));
   };
 
   // Save/Edit Client (persists to DB and react state)
@@ -713,15 +721,18 @@ export default function App() {
   const handleSeedDemoData = async () => {
     setIsLoading(true);
     await supabaseService.seedDemoData();
-    const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices] = await Promise.all([
+    const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
       supabaseService.getClients(),
       supabaseService.getProjects(),
       supabaseService.getRetainers(),
       supabaseService.getDocuments(),
       supabaseService.getAlertsLog(),
       supabaseService.getAIToolAccounts(),
-      supabaseService.getInvoices()
+      supabaseService.getInvoices(),
+      supabaseService.getRecurringExpenses(),
+      supabaseService.getExpenseEntries()
     ]);
+    const expenseEntries = await supabaseService.ensureMonthlyExpenseEntries(recurringExpenses, existingExpenseEntries);
     setState(prev => ({
       ...prev,
       clients,
@@ -730,7 +741,9 @@ export default function App() {
       documents,
       alertsLog,
       aiToolAccounts,
-      invoices
+      invoices,
+      recurringExpenses,
+      expenseEntries
     }));
     setIsLoading(false);
   };
@@ -746,7 +759,9 @@ export default function App() {
       documents: [],
       alertsLog: [],
       aiToolAccounts: [],
-      invoices: []
+      invoices: [],
+      recurringExpenses: [],
+      expenseEntries: []
     }));
     setIsLoading(false);
   };
@@ -883,7 +898,7 @@ export default function App() {
       case 'ai_tools_tracker': return 'AI Resource Capacity Grid';
       case 'alerts_dash': return 'Dispatch Event Stream';
       case 'wizard': return 'Client Intake Pipeline';
-      case 'github': return 'GitHub Integration Hub';
+      case 'expenses_dash': return 'Recurring Expenses Console';
       case 'invoices_dash': return 'Invoice Command Centre';
       default: return 'Command Centre';
     }
@@ -1103,7 +1118,9 @@ export default function App() {
                 />
               )}
 
-              {currentTab === 'github' && <GitHubDashboard />}
+              {currentTab === 'expenses_dash' && (
+                <ExpensesRoute state={state} setState={setState} />
+              )}
 
               {currentTab === 'invoices_dash' && (
                 <InvoicesDashboard

@@ -102,6 +102,30 @@ export interface Invoice {
   updated_at: string;
 }
 
+/** Template for a cost that repeats on the 1st of every month. */
+export interface RecurringExpense {
+  id: string;
+  description: string;
+  amount: number;
+  /** First month this expense applies (YYYY-MM-01). Applied on day 1 of that month and every month after while active. */
+  start_date: string;
+  is_active: boolean;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Concrete expense instance generated for a specific month from a recurring template. */
+export interface ExpenseEntry {
+  id: string;
+  recurring_expense_id: string | null;
+  description: string;
+  amount: number;
+  /** Month this expense belongs to (YYYY-MM-01). */
+  expense_month: string;
+  created_at: string;
+}
+
 export interface AppState {
   clients: Client[];
   projects: Project[];
@@ -110,6 +134,8 @@ export interface AppState {
   alertsLog: WebhookAlert[];
   aiToolAccounts: AIToolAccount[];
   invoices: Invoice[];
+  recurringExpenses: RecurringExpense[];
+  expenseEntries: ExpenseEntry[];
   isAdmin: boolean;
   userEmail: string | null;
 }

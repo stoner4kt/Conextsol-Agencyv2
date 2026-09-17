@@ -12,8 +12,8 @@ import {
   BellRing,
   PieChart,
   Zap,
-  Github,
-  Receipt
+  Receipt,
+  Wallet
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -47,7 +47,7 @@ export default function Sidebar({
     { id: 'ai_tools_tracker', label: 'AI Tool Limits', icon: Zap, code: '06' },
     { id: 'alerts_dash', label: 'Dispatched Webhooks', icon: BellRing, code: '07' },
     { id: 'wizard', label: 'Onboarding Pipeline', icon: UserCheck, code: '08' },
-    { id: 'github', label: 'GitHub', icon: Github, code: '09' },
+    { id: 'expenses_dash', label: 'Recurring Expenses', icon: Wallet, code: '09' },
     { id: 'invoices_dash', label: 'Invoicing', icon: Receipt, code: '10' },
   ];
 
@@ -63,13 +63,11 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Sidebar Operations Rail */}
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-[#080b12] text-slate-200 flex flex-col justify-between
         transform lg:transform-none lg:opacity-100 transition-all duration-300 border-r border-[#1a2234]
         ${mobileOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0'}
       `}>
-        {/* Brand Header */}
         <div className="p-5 border-b border-[#1a2234] flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="relative">
@@ -99,7 +97,6 @@ export default function Sidebar({
           </button>
         </div>
 
-        {/* Navigation Items */}
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           <div className="flex items-center justify-between px-2 mb-2">
             <p className="text-[10px] font-mono uppercase text-slate-400 tracking-widest font-semibold">
@@ -128,7 +125,7 @@ export default function Sidebar({
               >
                 <div className="flex items-center space-x-2.5 min-w-0">
                   <Icon size={16} className={`shrink-0 transition-colors ${isActive ? 'text-cyan-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                  <span className="truncate">{item.label}</span>
+                  <span className={'truncate'}>{item.label}</span>
                 </div>
                 <span className={`font-mono text-[9px] px-1.5 py-0.2 rounded border ${
                   isActive ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-bold' : 'bg-[#0e1422] text-slate-600 border-slate-800 group-hover:text-slate-400'
@@ -139,7 +136,6 @@ export default function Sidebar({
             );
           })}
 
-          {/* Access Control Information Widget */}
           <div className="mt-6 pt-4 border-t border-[#1a2234]">
             <p className="text-[10px] font-mono uppercase text-slate-400 tracking-widest font-semibold px-2 mb-2">
               Security Context
@@ -179,7 +175,6 @@ export default function Sidebar({
           </div>
         </nav>
 
-        {/* User Context Controls (Role Toggle Switcher) */}
         <div className="p-3 border-t border-[#1a2234] bg-[#080b12]">
           <button
             id="role-toggle-btn"
@@ -201,7 +196,6 @@ export default function Sidebar({
         </div>
       </aside>
 
-      {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
         <div 
           onClick={() => setMobileOpen(false)}
