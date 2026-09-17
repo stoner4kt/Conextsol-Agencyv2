@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-import { Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice } from './types';
+import { Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice, RecurringExpense, ExpenseEntry } from './types';
 import { 
   INITIAL_CLIENTS, 
   INITIAL_PROJECTS, 
@@ -7,7 +7,9 @@ import {
   INITIAL_DOCUMENTS, 
   INITIAL_ALERTS,
   INITIAL_AI_TOOL_ACCOUNTS,
-  INITIAL_INVOICES
+  INITIAL_INVOICES,
+  INITIAL_RECURRING_EXPENSES,
+  INITIAL_EXPENSE_ENTRIES
 } from './mockData';
 
 const CLIENTS_KEY = 'conextsol_clients';
@@ -17,6 +19,8 @@ const DOCS_KEY = 'conextsol_documents';
 const ALERTS_STORAGE_KEY = 'conextsol_alerts_log';
 const AI_ACCOUNTS_KEY = 'conextsol_ai_tool_accounts';
 const INVOICES_KEY = 'conextsol_invoices';
+const RECURRING_EXPENSES_KEY = 'conextsol_recurring_expenses';
+const EXPENSE_ENTRIES_KEY = 'conextsol_expense_entries';
 
 // Helper for local storage reading with default initial dataset
 function getLocalCollection<T>(key: string, initialDefault: T[]): T[] {
@@ -568,6 +572,99 @@ export const supabaseService = {
     }
   },
 
+  // RECURRING EXPENSES CRUD
+  async getRecurringExpenses(): Promise<RecurringExpense[]> {
+    if (!isSupabaseConfigured || !supabase) return getLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES);
+    try {
+      const { data, error } = await supabase.from('recurring_expenses').select('*').order('start_date', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(expense => ({ ...expense, amount: Number(expense.amount) })) as RecurringExpense[];
+    } catch (err) {
+      console.warn('Supabase recurring expenses fetch failed, using LocalStorage:', err);
+      return getLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES);
+    }
+  },
+
+  async saveRecurringExpense(expense: RecurringExpense): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      const current = getLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES);
+      saveLocalCollection(RECURRING_EXPENSES_KEY, current.some(item => item.id === expense.id) ? current.map(item => item.id === expense.id ? expense : item) : [...current, expense]);
+      return;
+    }
+    try {
+      const { error } = await supabase.from('recurring_expenses').upsert({ ...expense, updated_at: new Date().toISOString() });
+      if (error) throw error;
+    } catch (err) {
+      console.warn('Supabase recurring expense save failed, using LocalStorage:', err);
+      const current = getLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES);
+      saveLocalCollection(RECURRING_EXPENSES_KEY, current.some(item => item.id === expense.id) ? current.map(item => item.id === expense.id ? expense : item) : [...current, expense]);
+    }
+  },
+
+  async deleteRecurringExpense(id: string): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) {
+      saveLocalCollection(RECURRING_EXPENSES_KEY, getLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES).filter(item => item.id !== id));
+      return;
+    }
+    try {
+      const { error } = await supabase.from('recurring_expenses').delete().eq('id', id);
+      if (error) throw error;
+    } catch (err) {
+      console.warn('Supabase recurring expense delete failed, using LocalStorage:', err);
+      saveLocalCollection(RECURRING_EXPENSES_KEY, getLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES).filter(item => item.id !== id));
+    }
+  },
+
+  async getExpenseEntries(): Promise<ExpenseEntry[]> {
+    if (!isSupabaseConfigured || !supabase) return getLocalCollection(EXPENSE_ENTRIES_KEY, INITIAL_EXPENSE_ENTRIES);
+    try {
+      const { data, error } = await supabase.from('expense_entries').select('*').order('expense_month', { ascending: false });
+      if (error) throw error;
+      return (data || []).map(entry => ({ ...entry, amount: Number(entry.amount) })) as ExpenseEntry[];
+    } catch (err) {
+      console.warn('Supabase expense entries fetch failed, using LocalStorage:', err);
+      return getLocalCollection(EXPENSE_ENTRIES_KEY, INITIAL_EXPENSE_ENTRIES);
+    }
+  },
+
+  /** Posts any missing first-of-month entries through the current month. Safe to call repeatedly. */
+  async ensureMonthlyExpenseEntries(expenses: RecurringExpense[], currentEntries: ExpenseEntry[] = []): Promise<ExpenseEntry[]> {
+    const now = new Date();
+    const currentMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString().slice(0, 10);
+    const existing = new Set(currentEntries.map(entry => `${entry.recurring_expense_id}:${entry.expense_month.slice(0, 10)}`));
+    const additions: ExpenseEntry[] = [];
+
+    for (const expense of expenses.filter(item => item.is_active)) {
+      const start = new Date(`${expense.start_date.slice(0, 10)}T00:00:00Z`);
+      start.setUTCDate(1);
+      for (let month = new Date(start); month.toISOString().slice(0, 10) <= currentMonth; month.setUTCMonth(month.getUTCMonth() + 1)) {
+        const expenseMonth = month.toISOString().slice(0, 10);
+        const key = `${expense.id}:${expenseMonth}`;
+        if (!existing.has(key)) {
+          additions.push({ id: crypto.randomUUID(), recurring_expense_id: expense.id, description: expense.description, amount: expense.amount, expense_month: expenseMonth, created_at: new Date().toISOString() });
+          existing.add(key);
+        }
+      }
+    }
+
+    if (!additions.length) return currentEntries;
+    if (!isSupabaseConfigured || !supabase) {
+      const updated = [...currentEntries, ...additions];
+      saveLocalCollection(EXPENSE_ENTRIES_KEY, updated);
+      return updated;
+    }
+    try {
+      const { error } = await supabase.from('expense_entries').upsert(additions, { onConflict: 'recurring_expense_id,expense_month', ignoreDuplicates: true });
+      if (error) throw error;
+      return await this.getExpenseEntries();
+    } catch (err) {
+      console.warn('Supabase expense posting failed, using LocalStorage:', err);
+      const updated = [...currentEntries, ...additions];
+      saveLocalCollection(EXPENSE_ENTRIES_KEY, updated);
+      return updated;
+    }
+  },
+
   // SEED & WIPE
   async seedDemoData(): Promise<void> {
     saveLocalCollection(CLIENTS_KEY, INITIAL_CLIENTS);
@@ -577,6 +674,8 @@ export const supabaseService = {
     saveLocalCollection(ALERTS_STORAGE_KEY, INITIAL_ALERTS);
     saveLocalCollection(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
     saveLocalCollection(INVOICES_KEY, INITIAL_INVOICES);
+    saveLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES);
+    saveLocalCollection(EXPENSE_ENTRIES_KEY, INITIAL_EXPENSE_ENTRIES);
   },
 
   async clearAllData(): Promise<void> {
@@ -587,6 +686,7 @@ export const supabaseService = {
     localStorage.removeItem(ALERTS_STORAGE_KEY);
     localStorage.removeItem(AI_ACCOUNTS_KEY);
     localStorage.removeItem(INVOICES_KEY);
+    localStorage.removeItem(RECURRING_EXPENSES_KEY);
+    localStorage.removeItem(EXPENSE_ENTRIES_KEY);
   }
 };
-
