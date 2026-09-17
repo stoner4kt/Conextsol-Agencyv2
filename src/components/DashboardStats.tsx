@@ -46,6 +46,12 @@ export default function DashboardStats({
     .filter(r => r.is_active)
     .reduce((total, r) => total + r.billing_amount, 0);
 
+  const currentMonth = new Date().toISOString().slice(0, 7);
+  const monthlyExpenses = (state.expenseEntries || [])
+    .filter(entry => entry.expense_month.slice(0, 7) === currentMonth)
+    .reduce((total, entry) => total + entry.amount, 0);
+  const monthlyNet = monthlyRetainersStream - monthlyExpenses;
+
   // Trigger simulated alerts
   const handleRunDeadline = () => {
     setRunningAlert('deadline');
@@ -156,12 +162,12 @@ export default function DashboardStats({
         {/* Metric 3 */}
         <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-5 flex items-center justify-between shadow-lg hover:border-cyan-500/30 transition-all">
           <div className="space-y-1">
-            <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">Active Recurring MRR</p>
+            <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">Monthly Net Retainers</p>
             <h4 className="text-2xl font-display font-extrabold text-white tracking-tight">
-              R {monthlyRetainersStream.toLocaleString()}
+              R {monthlyNet.toLocaleString()}
             </h4>
             <p className="text-[10px] text-emerald-400 font-semibold font-mono">
-              {state.retainers.filter(r => r.is_active).length} active retainers stream
+              R {monthlyRetainersStream.toLocaleString()} revenue less monthly costs
             </p>
           </div>
           <div className="h-10 w-10 rounded-xl bg-[#101726] border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
@@ -172,12 +178,12 @@ export default function DashboardStats({
         {/* Metric 4 */}
         <div className="bg-[#0b0f19] rounded-xl border border-[#1a2234] p-5 flex items-center justify-between shadow-lg hover:border-cyan-500/30 transition-all">
           <div className="space-y-1">
-            <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">System Cron Monitors</p>
+            <p className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">Monthly Expenses</p>
             <h4 className="text-2xl font-display font-extrabold text-white tracking-tight">
-              2 <span className="text-xs font-mono text-slate-500 font-normal">Active Jobs</span>
+              R {monthlyExpenses.toLocaleString()}
             </h4>
             <p className="text-[10px] text-amber-400 font-semibold font-mono">
-              Automated Telegram Webhooks
+              {state.expenseEntries.filter(entry => entry.expense_month.slice(0, 7) === currentMonth).length} posted cost entries
             </p>
           </div>
           <div className="h-10 w-10 rounded-xl bg-[#101726] border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
