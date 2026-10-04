@@ -15,10 +15,12 @@ import {
   Tag,
   Mail,
   ShieldAlert,
-  ExternalLink
+  ExternalLink,
+  Star
 } from 'lucide-react';
 import { Project, AppState } from '../types';
 import GitHubResourceList from './github/GitHubResourceList';
+import SendReviewEmailModal from './SendReviewEmailModal';
 
 interface ProjectsDashboardProps {
   state: AppState;
@@ -26,6 +28,7 @@ interface ProjectsDashboardProps {
   onDeleteProject: (projectId: string) => void;
   onSelectClient: (clientId: string) => void;
   isAdmin: boolean;
+  onProjectStatusChange: (projectId: string, newStatus: string) => void;
 }
 
 export default function ProjectsDashboard({
@@ -39,6 +42,7 @@ export default function ProjectsDashboard({
   const [filterClient, setFilterClient] = useState<string>('all');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [reviewModalProject, setReviewModalProject] = useState<Project | null>(null);
 
   // Edit states
   const [editForm, setEditForm] = useState<Partial<Project>>({});
@@ -684,6 +688,11 @@ export default function ProjectsDashboard({
                     </div>
                   ) : (
                     <div className="flex items-center space-x-1">
+                      {isAdmin && editingId !== project.id && (
+                        <button title="Send Review Request" onClick={() => setReviewModalProject(project)} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-800/30 rounded-lg transition-colors">
+                          <Star className="w-3.5 h-3.5" />Review
+                        </button>
+                      )}
                       {isAdmin && (
                         <button
                           onClick={() => handleStartEdit(project)}
@@ -721,6 +730,10 @@ export default function ProjectsDashboard({
           </div>
         )}
       </div>
+      {reviewModalProject && (() => {
+        const modalClient = state.clients.find(c => c.id === reviewModalProject.client_id);
+        return modalClient ? <SendReviewEmailModal project={reviewModalProject} client={modalClient} onClose={() => setReviewModalProject(null)} onSent={(projectId) => { onProjectStatusChange(projectId, 'review_requested'); setReviewModalProject(null); }} /> : null;
+      })()}
     </div>
   );
 }
