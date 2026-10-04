@@ -1,5 +1,5 @@
-import { supabase, isSupabaseConfigured } from './supabaseClient';
-import { Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice, RecurringExpense, ExpenseEntry } from './types';
+import { supabase, supabaseUrl, isSupabaseConfigured } from './supabaseClient';
+import { Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice, RecurringExpense, ExpenseEntry, ReviewRequest } from './types';
 import { 
   INITIAL_CLIENTS, 
   INITIAL_PROJECTS, 
@@ -663,6 +663,58 @@ export const supabaseService = {
       saveLocalCollection(EXPENSE_ENTRIES_KEY, updated);
       return updated;
     }
+  },
+
+  // ─── Review Requests ─────────────────────────────────────────────────────────
+
+  async getReviewRequests(): Promise<ReviewRequest[]> {
+    if (!isSupabaseConfigured || !supabase) return [];
+    try {
+      const { data, error } = await supabase.from('review_requests').select('*').order('sent_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    } catch (err) {
+      console.warn('Failed to fetch review requests:', err);
+      return [];
+    }
+  },
+
+  async sendReviewEmail(payload: {
+    project_id: string;
+    client_id: string;
+    recipient_email: string;
+    recipient_name?: string;
+    custom_message?: string;
+  }): Promise<{ success: boolean; error?: string; review_request_id?: string }> {
+    if (!isSupabaseConfigured || !supabase) return { success: false, error: 'Supabase not configured' };
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const response = await fetch(supabaseUrl + '/functions/v1/send-review-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (token ?? '') },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      if (!response.ok) return { success: false, error: result.error || 'Unknown error' };
+      return { success: true, review_request_id: result.review_request_id };
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Network error' };
+    }
+  },
+
+  async updateClientReviewSettings(clientId: string, settings: {
+    google_review_url?: string;
+    google_place_id?: string;
+    review_automation_enabled?: boolean;
+    review_from_name?: string;
+    review_from_email?: string;
+    review_reply_to_email?: string;
+    subdomain?: string;
+  }): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) return;
+    const { error } = await supabase.from('clients').update({ ...settings, updated_at: new Date().toISOString() }).eq('id', clientId);
+    if (error) throw error;
   },
 
   // SEED & WIPE
