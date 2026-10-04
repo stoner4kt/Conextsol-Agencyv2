@@ -740,7 +740,8 @@ export const supabaseService = {
     localStorage.removeItem(INVOICES_KEY);
     localStorage.removeItem(RECURRING_EXPENSES_KEY);
     localStorage.removeItem(EXPENSE_ENTRIES_KEY);
-  }
+  },
+
   // ─── Client Portal Methods ────────────────────────────────────────────────
   async getMyClientRecord(): Promise<Client | null> {
     if (!isSupabaseConfigured || !supabase) return null;
