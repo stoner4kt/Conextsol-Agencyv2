@@ -21,6 +21,7 @@ export function getInitialState(): AppState {
     invoices: INITIAL_INVOICES,
     recurringExpenses: INITIAL_RECURRING_EXPENSES,
     expenseEntries: INITIAL_EXPENSE_ENTRIES,
+    reviewRequests: [],
     isAdmin: true,
     userEmail: 'admin@conextsol.com',
   };
