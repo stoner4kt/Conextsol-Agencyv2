@@ -23,6 +23,7 @@ export default function ReviewAutomationDashboard({
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [clientOverrides, setClientOverrides] = useState<Record<string, Client>>({});
 
   const clients = state.clients;
   const projects = state.projects;
@@ -38,7 +39,9 @@ export default function ReviewAutomationDashboard({
   const awaitingReviews = projects.filter(p => p.completion_status === 'review_requested').length;
   const receivedReviews = projects.filter(p => p.completion_status === 'review_received').length;
 
-  const selectedClient = clients.find(c => c.id === selectedClientId) || null;
+  const selectedClient = selectedClientId
+    ? clientOverrides[selectedClientId] || clients.find(c => c.id === selectedClientId) || null
+    : null;
   const selectedProjects = useMemo(
     () => selectedClient ? projects.filter(p => p.client_id === selectedClient.id) : [],
     [selectedClient, projects]
