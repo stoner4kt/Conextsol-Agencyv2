@@ -28,6 +28,7 @@ import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
 import InvoicesDashboard from './components/InvoicesDashboard';
 import ExpensesRoute from './components/ExpensesRoute';
 import ReviewAutomationDashboard from './components/ReviewAutomationDashboard';
+import ClientPortal from './components/ClientPortal';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
@@ -45,6 +46,10 @@ export default function App() {
 
   // Mobile responsive sidebar drawer state
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const [clientRecord, setClientRecord] = useState<Client | null>(null);
+  const [clientProjects, setClientProjects] = useState<Project[]>([]);
+  const [clientRequests, setClientRequests] = useState<ReviewRequest[]>([]);
+  const [clientLoading, setClientLoading] = useState(false);
 
   // Authentication State Simulation / Real
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -79,6 +84,18 @@ export default function App() {
               userEmail: currentEmail
             }));
             hasActiveSession = true;
+            if (!adminMode) {
+              setClientLoading(true);
+              const [myClient, myProjects, myRequests] = await Promise.all([
+                supabaseService.getMyClientRecord(),
+                supabaseService.getMyProjects(),
+                supabaseService.getMyReviewRequests(),
+              ]);
+              setClientRecord(myClient);
+              setClientProjects(myProjects);
+              setClientRequests(myRequests);
+              setClientLoading(false);
+            }
           } else {
             // No active session in Supabase - clear login if we had one
             localStorage.removeItem('conextsol_auth_logged_in');
@@ -893,6 +910,16 @@ export default function App() {
         </div>
       </div>
     );
+  }
+
+  if (isLoggedIn && !state.isAdmin) {
+    return <ClientPortal client={clientRecord} projects={clientProjects} reviewRequests={clientRequests} loading={clientLoading} onRefresh={async () => {
+      const [myProjects, myRequests] = await Promise.all([supabaseService.getMyProjects(), supabaseService.getMyReviewRequests()]);
+      setClientProjects(myProjects); setClientRequests(myRequests);
+    }} onUpdateEmails={async (projectId, emails) => {
+      await supabaseService.updateProjectAssociatedEmails(projectId, emails);
+      setClientProjects(await supabaseService.getMyProjects());
+    }} />;
   }
 
   // Helper title bar maps
