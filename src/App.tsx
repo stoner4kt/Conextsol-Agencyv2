@@ -87,7 +87,7 @@ export default function App() {
 
         // Only fetch data if we have an active session or are logged in
         if (hasActiveSession || isLoggedIn) {
-          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
+          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries, reviewRequests] = await Promise.all([
             supabaseService.getClients(),
             supabaseService.getProjects(),
             supabaseService.getRetainers(),
@@ -96,7 +96,8 @@ export default function App() {
             supabaseService.getAIToolAccounts(),
             supabaseService.getInvoices(),
             supabaseService.getRecurringExpenses(),
-            supabaseService.getExpenseEntries()
+            supabaseService.getExpenseEntries(),
+            supabaseService.getReviewRequests()
           ]);
           const expenseEntries = await supabaseService.ensureMonthlyExpenseEntries(recurringExpenses, existingExpenseEntries);
           
@@ -111,7 +112,7 @@ export default function App() {
             invoices,
             recurringExpenses,
             expenseEntries,
-            reviewRequests: await supabaseService.getReviewRequests()
+            reviewRequests
           }));
         } else {
           // Clear cached state if signed out
