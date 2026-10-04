@@ -27,6 +27,7 @@ import AlertsDashboard from './components/AlertsDashboard';
 import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
 import InvoicesDashboard from './components/InvoicesDashboard';
 import ExpensesRoute from './components/ExpensesRoute';
+import ReviewAutomationDashboard from './components/ReviewAutomationDashboard';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
@@ -907,6 +908,7 @@ export default function App() {
       case 'wizard': return 'Client Intake Pipeline';
       case 'expenses_dash': return 'Recurring Expenses Console';
       case 'invoices_dash': return 'Invoice Command Centre';
+      case 'review_automation': return 'Review Automation Console';
       default: return 'Command Centre';
     }
   };
@@ -1083,6 +1085,7 @@ export default function App() {
                     setCurrentTab('clients_dash');
                   }}
                   isAdmin={state.isAdmin}
+                  onProjectStatusChange={handleProjectStatusChange}
                 />
               )}
 
@@ -1129,6 +1132,15 @@ export default function App() {
 
               {currentTab === 'expenses_dash' && (
                 <ExpensesRoute state={state} setState={setState} />
+              )}
+
+              {currentTab === 'review_automation' && (
+                <ReviewAutomationDashboard
+                  state={state}
+                  isAdmin={state.isAdmin}
+                  onProjectStatusChange={handleProjectStatusChange}
+                  onReviewSent={(projectId) => setState(prev => ({ ...prev, reviewRequests: prev.reviewRequests }))}
+                />
               )}
 
               {currentTab === 'invoices_dash' && (
