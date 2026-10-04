@@ -11,8 +11,9 @@ import {
   ShieldAlert,
   ArrowUpRight
 } from 'lucide-react';
-import { AppState } from '../types';
+import { AppState, Client } from '../types';
 import GitHubResourceList from './github/GitHubResourceList';
+import ClientReviewSettings from './ClientReviewSettings';
 
 interface ClientDetailProps {
   clientId: string;
@@ -21,6 +22,7 @@ interface ClientDetailProps {
   onAddRetainer: (clientId: string, serviceType: string, amount: number, cycleDay: number) => void;
   onAddDoc: (projectId: string, title: string, content: string, files: string) => void;
   onSelectProject: (projectId: string) => void;
+  onSaveClient: (client: Client) => void;
 }
 
 export default function ClientDetail({
@@ -424,6 +426,7 @@ export default function ClientDetail({
           )}
         </div>
       </div>
+      <ClientReviewSettings client={client} onClientUpdated={onSaveClient} />
     </div>
   );
 }
