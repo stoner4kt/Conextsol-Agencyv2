@@ -10,7 +10,7 @@ import {
   Radio,
   Clock
 } from 'lucide-react';
-import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice } from './types';
+import { AppState, Client, Project, Retainer, DocumentAndNote, WebhookAlert, AIToolAccount, Invoice, ReviewRequest } from './types';
 import { 
   getInitialState
 } from './mockData';
@@ -110,7 +110,8 @@ export default function App() {
             aiToolAccounts,
             invoices,
             recurringExpenses,
-            expenseEntries
+            expenseEntries,
+            reviewRequests: await supabaseService.getReviewRequests()
           }));
         } else {
           // Clear cached state if signed out
@@ -124,7 +125,8 @@ export default function App() {
             aiToolAccounts: [],
             invoices: [],
             recurringExpenses: [],
-            expenseEntries: []
+            expenseEntries: [],
+            reviewRequests: []
           }));
         }
       } catch (err) {
@@ -242,6 +244,10 @@ export default function App() {
       retainers: prev.retainers.filter(r => r.client_id !== id)
     }));
     await supabaseService.deleteClient(id);
+  };
+
+  const handleProjectStatusChange = (projectId: string, newStatus: string) => {
+    setState(prev => ({ ...prev, projects: prev.projects.map(p => p.id === projectId ? { ...p, completion_status: newStatus as Project['completion_status'] } : p) }));
   };
 
   // Save/Edit Project
@@ -1021,6 +1027,7 @@ export default function App() {
               onBack={() => setSelectedClientId(null)}
               onAddRetainer={handleAddRetainer}
               onAddDoc={handleAddDoc}
+              onSaveClient={handleSaveClient}
               onSelectProject={(projectId) => {
                 const doc = state.documents.find(d => d.project_id === projectId);
                 if (doc) {
@@ -1061,6 +1068,7 @@ export default function App() {
                   onDeleteClient={handleDeleteClient}
                   onOpenWizard={() => setCurrentTab('wizard')}
                   isAdmin={state.isAdmin}
+                  onProjectStatusChange={handleProjectStatusChange}
                 />
               )}
 
