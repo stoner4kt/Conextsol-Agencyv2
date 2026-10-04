@@ -13,7 +13,8 @@ import {
   PieChart,
   Zap,
   Receipt,
-  Wallet
+  Wallet,
+  Star
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -49,6 +50,7 @@ export default function Sidebar({
     { id: 'wizard', label: 'Onboarding Pipeline', icon: UserCheck, code: '08' },
     { id: 'expenses_dash', label: 'Recurring Expenses', icon: Wallet, code: '09' },
     { id: 'invoices_dash', label: 'Invoicing', icon: Receipt, code: '10' },
+    { id: 'review_automation', label: 'Review Automation', icon: Star, code: '11' },
   ];
 
   const toggleAdmin = () => {
@@ -102,7 +104,7 @@ export default function Sidebar({
             <p className="text-[10px] font-mono uppercase text-slate-400 tracking-widest font-semibold">
               Mission Modules
             </p>
-             <span className="text-[9px] font-mono text-cyan-400/80 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-900/40">10 READY</span>
+             <span className="text-[9px] font-mono text-cyan-400/80 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-900/40">11 READY</span>
           </div>
           {navItems.map((item) => {
             const Icon = item.icon;
