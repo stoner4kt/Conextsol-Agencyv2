@@ -12,6 +12,14 @@ export interface Client {
   status: 'active' | 'paused' | 'inactive';
   created_at: string;
   updated_at: string;
+  subdomain?:                     string;
+  google_place_id?:               string;
+  google_review_url?:             string;
+  review_automation_enabled?:     boolean;
+  review_from_name?:              string;
+  review_from_email?:             string;  // per-client Resend verified sender address
+  review_reply_to_email?:         string;
+  // google_oauth_refresh_token_enc is intentionally omitted — never expose to browser
 }
 
 export interface Project {
@@ -29,6 +37,9 @@ export interface Project {
   associated_emails: string[]; // managing emails
   created_at: string;
   updated_at: string;
+  completion_status?:         'in_progress' | 'completed' | 'review_requested' | 'review_received';
+  review_email_sent_at?:      string;
+  last_review_request_id?:    string;
 }
 
 export interface Retainer {
@@ -136,6 +147,31 @@ export interface AppState {
   invoices: Invoice[];
   recurringExpenses: RecurringExpense[];
   expenseEntries: ExpenseEntry[];
+  reviewRequests: ReviewRequest[];
   isAdmin: boolean;
   userEmail: string | null;
+}
+
+// ─── Review Automation ───────────────────────────────────────────────────────
+
+export type CompletionStatus =
+  | 'in_progress'
+  | 'completed'
+  | 'review_requested'
+  | 'review_received';
+
+export interface ReviewRequest {
+  id:                 string;
+  project_id:         string;
+  client_id:          string;
+  sent_at:            string;
+  sent_by_user_id?:   string;
+  recipient_email:    string;
+  recipient_name?:    string;
+  email_subject?:     string;
+  resend_message_id?: string;
+  status:             'sent' | 'delivered' | 'bounced' | 'failed';
+  notes?:             string;
+  created_at:         string;
+  updated_at:         string;
 }
