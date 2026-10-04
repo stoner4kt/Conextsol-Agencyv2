@@ -741,4 +741,31 @@ export const supabaseService = {
     localStorage.removeItem(RECURRING_EXPENSES_KEY);
     localStorage.removeItem(EXPENSE_ENTRIES_KEY);
   }
+  // ─── Client Portal Methods ────────────────────────────────────────────────
+  async getMyClientRecord(): Promise<Client | null> {
+    if (!isSupabaseConfigured || !supabase) return null;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) return null;
+      const { data, error } = await supabase.from('clients').select('*').eq('email', user.email).maybeSingle();
+      if (error) throw error;
+      return data;
+    } catch (err) { console.warn('getMyClientRecord failed:', err); return null; }
+  },
+  async getMyProjects(): Promise<Project[]> {
+    if (!isSupabaseConfigured || !supabase) return [];
+    try { const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: false }); if (error) throw error; return data || []; }
+    catch (err) { console.warn('getMyProjects failed:', err); return []; }
+  },
+  async getMyReviewRequests(): Promise<ReviewRequest[]> {
+    if (!isSupabaseConfigured || !supabase) return [];
+    try { const { data, error } = await supabase.from('review_requests').select('*').order('sent_at', { ascending: false }); if (error) throw error; return data || []; }
+    catch (err) { console.warn('getMyReviewRequests failed:', err); return []; }
+  },
+  async updateProjectAssociatedEmails(projectId: string, emails: string[]): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) return;
+    const { error } = await supabase.from('projects').update({ associated_emails: emails, updated_at: new Date().toISOString() }).eq('id', projectId);
+    if (error) throw error;
+  },
+
 };
