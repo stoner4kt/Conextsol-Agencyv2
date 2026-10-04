@@ -1,0 +1,15 @@
+import React from 'react';
+import { Star, LayoutGrid, Clock, CheckCircle, Mail, LogOut, RefreshCw, ChevronRight } from 'lucide-react';
+import { Client, Project, ReviewRequest } from '../types';
+import { supabase } from '../supabaseClient';
+
+export default function ClientPortal({client,projects,reviewRequests,loading,onRefresh,onUpdateEmails}:{client:Client|null;projects:Project[];reviewRequests:ReviewRequest[];loading:boolean;onRefresh:()=>Promise<void>;onUpdateEmails:(projectId:string,emails:string[])=>Promise<void>}) {
+  if (loading) return <div className="min-h-screen bg-[#070b14] flex items-center justify-center"><p className="text-xs font-mono text-slate-500">Loading your dashboard…</p></div>;
+  return <div className="min-h-screen bg-[#070b14] text-slate-300">
+    <nav className="sticky top-0 z-40 bg-[#0b0f19]/90 border-b border-[#1a2234]"><div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between"><div className="flex items-center gap-3"><Star className="w-4 h-4 text-cyan-400"/><span className="font-display font-bold text-white">ReviewPortal</span><ChevronRight className="w-3 h-3"/><span>{client?.company_name||'Your Dashboard'}</span></div><button onClick={async()=>{await supabase?.auth.signOut()}} className="text-xs font-mono"><LogOut className="inline w-3 h-3 mr-1"/>Sign out</button></div></nav>
+    <main className="max-w-5xl mx-auto px-4 py-8 space-y-6"><div><p className="text-[10px] font-mono uppercase text-cyan-500">Welcome back</p><h1 className="text-3xl font-display font-extrabold text-white">{client?.company_name||'Your Dashboard'}</h1></div>
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3"><Stat icon={<LayoutGrid/>} label="Projects" value={projects.length}/><Stat icon={<CheckCircle/>} label="Completed" value={projects.filter(p=>p.completion_status&&p.completion_status!=='in_progress').length}/><Stat icon={<Star/>} label="Reviews Sent" value={reviewRequests.length}/><Stat icon={<Clock/>} label="Received" value={projects.filter(p=>p.completion_status==='review_received').length}/></div>
+    <div className="flex gap-2"><button onClick={onRefresh} className="px-3 py-2 text-xs font-mono border border-[#1a2234] rounded-lg"><RefreshCw className="inline w-3 h-3 mr-1"/>Refresh</button><span className="text-xs font-mono text-slate-500 px-2 py-2"><Mail className="inline w-3 h-3 mr-1"/>Review requests: {reviewRequests.length}</span></div>
+    </main></div>;
+}
+function Stat({icon,label,value}:{icon:React.ReactNode;label:string;value:number}){return <div className="bg-[#0d1629] border border-[#1a2234] rounded-xl p-4"><div className="flex items-center gap-2 text-slate-600">{React.cloneElement(icon as React.ReactElement,{className:'w-3.5 h-3.5'})}<span className="text-[10px] font-mono uppercase">{label}</span></div><p className="text-2xl font-display font-extrabold text-white mt-2">{value}</p></div>}
