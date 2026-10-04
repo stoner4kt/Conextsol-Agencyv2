@@ -15,16 +15,22 @@ serve(async (req: Request) => {
   if (!resendApiKey) return err("Email service not configured", "INTERNAL_ERROR", 500);
   const isInternal = req.headers.get("x-internal-call") === "true";
   const token = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/, "");
+  let callerEmail: string | undefined;
   if (!isInternal) {
     const check = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: "Bearer " + token } } });
     const { data: { user }, error } = await check.auth.getUser();
     if (error || !user) return err("Authentication required", "AUTHENTICATION_REQUIRED", 401);
+    callerEmail = user.email;
   }
   const admin = createClient(supabaseUrl, serviceRoleKey);
   let payload: Payload;
   try { payload = await req.json(); } catch { return err("Invalid JSON body", "INVALID_REQUEST", 400); }
   const { project_id, client_id, recipient_email, recipient_name, custom_message } = payload;
   if (!project_id || !client_id || !recipient_email) return err("project_id, client_id, and recipient_email are required", "INVALID_REQUEST", 400);
+  if (!isInternal && callerEmail) {
+    const { data: owns, error: ownsErr } = await admin.rpc('verify_project_ownership', { p_project_id: project_id, p_user_email: callerEmail });
+    if (ownsErr || !owns) return err("You do not have access to this project", "AUTHORIZATION_FAILED", 403);
+  }
   const { data: project, error: pErr } = await admin.from("projects").select("id, project_name, production_url").eq("id", project_id).single();
   if (pErr || !project) return err("Project not found", "PROJECT_NOT_FOUND", 404);
   const { data: client, error: cErr } = await admin.from("clients").select("id, company_name, primary_contact_name, google_review_url, review_from_name, review_from_email, review_reply_to_email").eq("id", client_id).single();
