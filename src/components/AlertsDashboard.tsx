@@ -8,6 +8,8 @@ import {
   RefreshCw, 
   X
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import { AppState } from '../types';
 
 interface AlertsDashboardProps {
@@ -27,8 +29,9 @@ export default function AlertsDashboard({
 }: AlertsDashboardProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
-  const [runningAlert, setRunningAlert] = useState<'deadline' | 'retainer' | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const { execute: runDeadline, isLoading: deadlineLoading } = useAsyncAction(onRunDeadlineAlerts, { successMsg: 'Deadline scanner executed — project backlog checked.', errorMsg: 'Deadline scanner invocation failed.' });
+  const { execute: runRetainers, isLoading: retainerLoading } = useAsyncAction(onRunRetainerAlerts, { successMsg: 'Retainer billing scanner executed — active SLA cycles parsed.', errorMsg: 'Retainer scanner invocation failed.' });
+  const { execute: clearLog, isLoading: clearLoading } = useAsyncAction(onClearAlertsLog, { successMsg: 'Alert log cleared.' });
 
   // Stats
   const totalCount = state.alertsLog.length;
@@ -46,42 +49,8 @@ export default function AlertsDashboard({
     return matchesSearch && matchesType;
   });
 
-  // Action dispatches
-  const handleRunDeadline = () => {
-    setRunningAlert('deadline');
-    setTimeout(() => {
-      onRunDeadlineAlerts();
-      setRunningAlert(null);
-      setSuccessMsg('Deadline Scan Executed: Checked active project deliverables terminating within 48 hours.');
-      setTimeout(() => setSuccessMsg(null), 5000);
-    }, 700);
-  };
-
-  const handleRunRetainers = () => {
-    setRunningAlert('retainer');
-    setTimeout(() => {
-      onRunRetainerAlerts();
-      setRunningAlert(null);
-      setSuccessMsg('Retainer Cycle Scan Executed: Parsed billing cycle schedules for monthly SLA streams.');
-      setTimeout(() => setSuccessMsg(null), 5000);
-    }, 700);
-  };
-
   return (
     <div className="space-y-6">
-      {/* Toast */}
-      {successMsg && (
-        <div className="p-4 bg-emerald-950/80 border border-emerald-800 text-emerald-300 rounded-xl flex items-center justify-between text-xs md:text-sm shadow-lg animate-fadeIn font-mono">
-          <div className="flex items-center space-x-2.5">
-            <Bot size={18} className="shrink-0 text-emerald-400" />
-            <span className="font-semibold">{successMsg}</span>
-          </div>
-          <button onClick={() => setSuccessMsg(null)} className="p-1 hover:bg-emerald-900 rounded text-emerald-400">
-            <X size={14} />
-          </button>
-        </div>
-      )}
-
       {/* 1. Header Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-[#0b0f19] border border-[#1a2234] rounded-xl p-4 md:p-5 shadow-lg">
@@ -128,21 +97,21 @@ export default function AlertsDashboard({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono">
           <button
-            onClick={handleRunDeadline}
-            disabled={runningAlert !== null}
-            className="flex items-center justify-center space-x-2 py-3 bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] text-xs text-slate-200 font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50"
+            onClick={() => runDeadline()}
+            disabled={deadlineLoading}
+            className="flex items-center justify-center space-x-2 py-3 bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] text-xs text-slate-200 font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <RefreshCw size={12} className={runningAlert === 'deadline' ? 'animate-spin text-cyan-400' : 'text-slate-400'} />
-            <span>{runningAlert === 'deadline' ? 'Scanning Projects...' : 'Run Project Deadline Scan'}</span>
+            {deadlineLoading ? <Spinner size={12} /> : <RefreshCw size={12} className="text-slate-400" />}
+            <span>{deadlineLoading ? 'Scanning Projects...' : 'Run Project Deadline Scan'}</span>
           </button>
 
           <button
-            onClick={handleRunRetainers}
-            disabled={runningAlert !== null}
+            onClick={() => runRetainers()}
+            disabled={retainerLoading}
             className="flex items-center justify-center space-x-2 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 text-xs font-extrabold rounded-xl transition-all cursor-pointer disabled:opacity-50 font-sans"
           >
-            <RefreshCw size={12} className={runningAlert === 'retainer' ? 'animate-spin text-slate-950' : 'text-slate-950'} />
-            <span>{runningAlert === 'retainer' ? 'Scanning Retainers...' : 'Run Retainer Billing Scan'}</span>
+            {retainerLoading ? <Spinner size={12} className="text-slate-950" /> : <RefreshCw size={12} className="text-slate-950" />}
+            <span>{retainerLoading ? 'Scanning Retainers...' : 'Run Retainer Billing Scan'}</span>
           </button>
         </div>
       </div>
@@ -177,10 +146,10 @@ export default function AlertsDashboard({
             <button
               onClick={() => {
                 if (confirm('Clear alert dispatch history?')) {
-                  onClearAlertsLog();
+                  void clearLog();
                 }
               }}
-              className="flex items-center space-x-1.5 px-4 py-2 bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] text-slate-400 hover:text-rose-400 text-xs font-bold rounded-xl transition-all cursor-pointer"
+              disabled={clearLoading} className="flex items-center space-x-1.5 px-4 py-2 bg-[#06080d] hover:bg-[#121826] border border-[#1a2234] text-slate-400 hover:text-rose-400 text-xs font-bold rounded-xl transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Trash2 size={13} />
               <span>Reset Logs</span>
