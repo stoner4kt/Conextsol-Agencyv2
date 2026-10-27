@@ -17,6 +17,8 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import type { AppState, Client, Invoice, InvoiceLineItem } from '../types';
 import { generateInvoicePDF } from '../lib/invoicePDF';
 
@@ -364,10 +366,10 @@ function InvoiceForm({
             Cancel
           </button>
           <button
-            onClick={handleSubmit}
+            onClick={handleSubmit} disabled={savingInvoice}
             className="flex items-center gap-1.5 px-6 py-2.5 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 text-xs font-extrabold rounded-xl shadow-md"
           >
-            <Save size={13} /> {isEdit ? 'Update Invoice' : 'Create Invoice'}
+            {savingInvoice ? <Spinner size={13} /> : <Save size={13} />} {savingInvoice ? 'Saving...' : isEdit ? 'Update Invoice' : 'Create Invoice'}
           </button>
         </div>
       </div>
@@ -391,6 +393,12 @@ export default function InvoicesDashboard({
   const [editInvoice, setEditInvoice] = useState<Invoice | undefined>();
   const [markPaidInvoice, setMarkPaidInvoice] = useState<Invoice | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [sendingInvoiceId, setSendingInvoiceId] = useState<string | null>(null);
+  const [deletingInvoiceId, setDeletingInvoiceId] = useState<string | null>(null);
+  const { execute: runReminders, isLoading: runningReminders } = useAsyncAction(onRunInvoiceReminders, { successMsg: 'Invoice reminder scan complete.', errorMsg: 'Invoice reminder scan failed.' });
+  const { execute: saveInvoice, isLoading: savingInvoice } = useAsyncAction(onSaveInvoice, { successMsg: 'Invoice saved successfully.' });
+  const { execute: deleteInvoice, isLoading: deletingInvoice } = useAsyncAction(onDeleteInvoice, { successMsg: 'Invoice deleted.' });
+  const { execute: markPaid, isLoading: markingPaid } = useAsyncAction(onMarkPaid, { successMsg: 'Invoice marked as paid.' });
 
   const getClient = (clientId: string) => state.clients.find(client => client.id === clientId);
 
@@ -422,8 +430,8 @@ export default function InvoicesDashboard({
         <MarkPaidModal
           invoice={markPaidInvoice}
           clientName={getClient(markPaidInvoice.client_id)?.company_name ?? '—'}
-          onConfirm={notes => {
-            onMarkPaid(markPaidInvoice.id, notes);
+          onConfirm={async notes => {
+            await markPaid(markPaidInvoice.id, notes);
             setMarkPaidInvoice(null);
           }}
           onClose={() => setMarkPaidInvoice(null)}
@@ -436,7 +444,7 @@ export default function InvoicesDashboard({
           existingInvoices={state.invoices}
           invoiceToEdit={editInvoice}
           onSave={invoice => {
-            onSaveInvoice(invoice);
+            void saveInvoice(invoice);
             setShowForm(false);
             setEditInvoice(undefined);
           }}
@@ -511,10 +519,10 @@ export default function InvoicesDashboard({
         <div className="flex items-center gap-2 shrink-0 w-full md:w-auto">
           {isAdmin && (
             <button
-              onClick={onRunInvoiceReminders}
+              onClick={() => runReminders()} disabled={runningReminders}
               className="flex items-center gap-1.5 px-3 py-2 bg-[#121826] border border-[#1a2234] hover:border-cyan-800 text-cyan-300 text-xs font-mono font-bold rounded-xl transition-colors"
             >
-              <Clock size={13} /> Scan Reminders
+              {runningReminders ? <Spinner size={13} /> : <Clock size={13} />} {runningReminders ? 'Scanning...' : 'Scan Reminders'}
             </button>
           )}
           {isAdmin && (
@@ -572,11 +580,11 @@ export default function InvoicesDashboard({
                       </button>
                       {isAdmin && invoice.status !== 'draft' && (
                         <button
-                          onClick={() => onSendInvoice(invoice)}
+                          onClick={async () => { if (sendingInvoiceId) return; setSendingInvoiceId(invoice.id); try { await onSendInvoice(invoice); } finally { setSendingInvoiceId(null); } }} disabled={sendingInvoiceId === invoice.id}
                           title="Send invoice email"
                           className="p-1.5 bg-cyan-950/50 border border-cyan-800/50 rounded-lg text-cyan-300 hover:bg-cyan-950 transition-colors"
                         >
-                          <Send size={13} />
+                          {sendingInvoiceId === invoice.id ? <Spinner size={13} /> : <Send size={13} />}
                         </button>
                       )}
                       {isAdmin && invoice.status !== 'paid' && (
@@ -601,13 +609,14 @@ export default function InvoicesDashboard({
                         <button
                           onClick={() => {
                             if (confirm(`Delete ${invoice.invoice_number}? This cannot be undone.`)) {
-                              onDeleteInvoice(invoice.id);
+                              void deleteInvoice(invoice.id);
                             }
                           }}
                           title="Delete"
+                          disabled={deletingInvoice}
                           className="p-1.5 hover:bg-[#1a2234] rounded-lg text-slate-500 hover:text-rose-400 transition-colors"
                         >
-                          <Trash2 size={13} />
+                          {deletingInvoice ? <Spinner size={13} /> : <Trash2 size={13} />}
                         </button>
                       )}
                     </div>
