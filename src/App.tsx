@@ -52,6 +52,9 @@ export default function App() {
   const [loginPassword, setLoginPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [passwordResetMessage, setPasswordResetMessage] = useState('');
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
   // Sync state with Database on mount and auth status changes
   useEffect(() => {
@@ -136,6 +139,49 @@ export default function App() {
     loadDbState();
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+        setAuthError('');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setPasswordResetMessage('');
+    if (newPassword.length < 8) {
+      setAuthError('Choose a password with at least 8 characters.');
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      setAuthError('The passwords do not match.');
+      return;
+    }
+    if (!supabase) {
+      setAuthError('Password updates are unavailable until Supabase is configured.');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      setIsPasswordRecovery(false);
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setPasswordResetMessage('Your password has been updated. You can now sign in with your new password.');
+      await supabase.auth.signOut();
+    } catch (err: any) {
+      setAuthError(err?.message || 'Unable to update your password. Please request a new reset link.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Handle Real Supabase Authentication or Local Demo Mode
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -205,7 +251,7 @@ export default function App() {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(loginEmail.trim(), {
-        redirectTo: window.location.origin,
+        redirectTo: `${window.location.origin}/`,
       });
       if (error) throw error;
       setPasswordResetMessage('If an account exists for this email, a password reset link has been sent.');
@@ -848,6 +894,48 @@ export default function App() {
               </div>
             )}
 
+            {isPasswordRecovery && (
+              <form className="space-y-4" onSubmit={handleUpdatePassword}>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Set a new password</h3>
+                  <p className="mt-1 text-xs text-slate-400">Choose a new password for your Conextsol account.</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1.5">New password</label>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    minLength={8}
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                    className="w-full px-3 py-2.5 bg-[#06080d] border border-[#1d263b] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                    placeholder="At least 8 characters"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1.5">Confirm new password</label>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    minLength={8}
+                    value={confirmNewPassword}
+                    onChange={e => setConfirmNewPassword(e.target.value)}
+                    className="w-full px-3 py-2.5 bg-[#06080d] border border-[#1d263b] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 font-mono"
+                    placeholder="Re-enter your new password"
+                  />
+                </div>
+                <button type="submit" disabled={isLoading} className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 text-xs font-extrabold rounded-xl disabled:opacity-50">
+                  {isLoading ? 'Updating password…' : 'Update password'}
+                </button>
+                <button type="button" onClick={() => { setIsPasswordRecovery(false); setAuthError(''); }} className="w-full py-2 text-xs text-slate-400 hover:text-white">
+                  Back to sign in
+                </button>
+              </form>
+            )}
+
+            {!isPasswordRecovery && (
             <form className="space-y-4" onSubmit={handleLogin}>
               <div>
                 <label className="block text-xs font-mono text-slate-300 mb-1.5">User Handle / Email</label>
@@ -922,6 +1010,7 @@ export default function App() {
                 </div>
               </div>
             </form>
+            )}
           </div>
         </div>
       </div>
