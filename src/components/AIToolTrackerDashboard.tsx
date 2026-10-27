@@ -180,7 +180,7 @@ export default function AIToolTrackerDashboard({
           updated_at: new Date().toISOString()
         };
 
-        await void saveAction(accountRecord);
+        await saveAction(accountRecord);
       }
     }
 
