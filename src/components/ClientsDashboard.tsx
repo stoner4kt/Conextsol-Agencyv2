@@ -15,6 +15,8 @@ import {
   UserCheck,
   Users
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import { Client, AppState } from '../types';
 
 interface ClientsDashboardProps {
@@ -34,6 +36,8 @@ export default function ClientsDashboard({
   onOpenWizard,
   isAdmin
 }: ClientsDashboardProps) {
+  const { execute: saveAction, isLoading: savingAction } = useAsyncAction(onSaveClient, { successMsg: 'Client profile saved successfully.' });
+  const { execute: deleteAction, isLoading: deletingAction } = useAsyncAction(onDeleteClient, { successMsg: 'Client removed from registry.' });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -89,7 +93,7 @@ export default function ClientsDashboard({
     if (!editForm.company_name || !editForm.primary_contact_name || !editForm.email) {
       return;
     }
-    onSaveClient(editForm as Client);
+    void saveAction(editForm as Client);
     setEditingId(null);
   };
 
@@ -118,7 +122,7 @@ export default function ClientsDashboard({
       updated_at: new Date().toISOString()
     };
 
-    onSaveClient(created);
+    void saveAction(created);
     setIsAdding(false);
     setNewForm({
       company_name: '',
@@ -467,7 +471,7 @@ export default function ClientsDashboard({
                               <button
                                 onClick={() => {
                                   if (confirm(`Are you sure you want to permanently delete client "${client.company_name}"? All associated projects, retainers, and specs will be cascade-deleted.`)) {
-                                    onDeleteClient(client.id);
+                                    void deleteAction(client.id);
                                   }
                                 }}
                                 className="p-1 hover:bg-[#121826] rounded-lg text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
@@ -632,7 +636,7 @@ export default function ClientsDashboard({
                           <button
                             onClick={() => {
                               if (confirm(`Are you sure you want to delete client "${client.company_name}"?`)) {
-                                onDeleteClient(client.id);
+                                void deleteAction(client.id);
                               }
                             }}
                             className="p-1 text-slate-500 hover:text-rose-400"
