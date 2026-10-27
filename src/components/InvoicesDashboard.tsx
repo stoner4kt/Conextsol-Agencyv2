@@ -64,11 +64,13 @@ function MarkPaidModal({
   clientName,
   onConfirm,
   onClose,
+  isLoading = false,
 }: {
   invoice: Invoice;
   clientName: string;
   onConfirm: (notes: string) => void;
   onClose: () => void;
+  isLoading?: boolean;
 }) {
   const [notes, setNotes] = useState('');
 
@@ -121,10 +123,10 @@ function MarkPaidModal({
             Cancel
           </button>
           <button
-            onClick={() => onConfirm(notes)}
+            onClick={() => onConfirm(notes)} disabled={isLoading}
             className="px-5 py-2 bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 text-xs font-extrabold rounded-xl shadow-md flex items-center gap-1.5"
           >
-            <Check size={13} /> Confirm Payment
+            {isLoading ? <Spinner size={13} /> : <Check size={13} />} {isLoading ? 'Saving...' : 'Confirm Payment'}
           </button>
         </div>
       </div>
@@ -138,12 +140,14 @@ function InvoiceForm({
   invoiceToEdit,
   onSave,
   onClose,
+  savingInvoice,
 }: {
   clients: Client[];
   existingInvoices: Invoice[];
   invoiceToEdit?: Invoice;
   onSave: (invoice: Invoice) => void;
   onClose: () => void;
+  savingInvoice: boolean;
 }) {
   const isEdit = Boolean(invoiceToEdit);
   const [clientId, setClientId] = useState(invoiceToEdit?.client_id ?? '');
@@ -394,7 +398,6 @@ export default function InvoicesDashboard({
   const [markPaidInvoice, setMarkPaidInvoice] = useState<Invoice | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [sendingInvoiceId, setSendingInvoiceId] = useState<string | null>(null);
-  const [deletingInvoiceId, setDeletingInvoiceId] = useState<string | null>(null);
   const { execute: runReminders, isLoading: runningReminders } = useAsyncAction(onRunInvoiceReminders, { successMsg: 'Invoice reminder scan complete.', errorMsg: 'Invoice reminder scan failed.' });
   const { execute: saveInvoice, isLoading: savingInvoice } = useAsyncAction(onSaveInvoice, { successMsg: 'Invoice saved successfully.' });
   const { execute: deleteInvoice, isLoading: deletingInvoice } = useAsyncAction(onDeleteInvoice, { successMsg: 'Invoice deleted.' });
@@ -435,6 +438,7 @@ export default function InvoicesDashboard({
             setMarkPaidInvoice(null);
           }}
           onClose={() => setMarkPaidInvoice(null)}
+          isLoading={markingPaid}
         />
       )}
 
@@ -443,6 +447,7 @@ export default function InvoicesDashboard({
           clients={state.clients}
           existingInvoices={state.invoices}
           invoiceToEdit={editInvoice}
+          savingInvoice={savingInvoice}
           onSave={invoice => {
             void saveInvoice(invoice);
             setShowForm(false);
