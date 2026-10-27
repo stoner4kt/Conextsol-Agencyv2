@@ -17,6 +17,8 @@ import {
   Check, 
   Layers
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import { AppState, AIToolAccount } from '../types';
 
 interface AIToolTrackerDashboardProps {
@@ -42,6 +44,8 @@ export default function AIToolTrackerDashboard({
   onDeleteAccount,
   isAdmin
 }: AIToolTrackerDashboardProps) {
+  const { execute: saveAction, isLoading: savingAction } = useAsyncAction(onSaveAccount, { successMsg: 'AI tool account updated.' });
+  const { execute: deleteAction, isLoading: deletingAction } = useAsyncAction(onDeleteAccount, { successMsg: 'AI tool account removed.' });
   // Navigation & Filtering
   const [selectedEmailFilter, setSelectedEmailFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -176,7 +180,7 @@ export default function AIToolTrackerDashboard({
           updated_at: new Date().toISOString()
         };
 
-        await onSaveAccount(accountRecord);
+        await void saveAction(accountRecord);
       }
     }
 
@@ -192,7 +196,7 @@ export default function AIToolTrackerDashboard({
       last_checked: getTodayDateStr(),
       updated_at: new Date().toISOString()
     };
-    await onSaveAccount(updated);
+    await void saveAction(updated);
   };
 
   // Overall Statistics
@@ -562,7 +566,7 @@ export default function AIToolTrackerDashboard({
                             <button
                               onClick={() => {
                                 if (confirm(`Remove ${serviceItem.service_name} limit record for ${email}?`)) {
-                                  onDeleteAccount(serviceItem.id);
+                                  void deleteAction(serviceItem.id);
                                 }
                               }}
                               title="Delete Record"
