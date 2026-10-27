@@ -196,7 +196,7 @@ export default function AIToolTrackerDashboard({
       last_checked: getTodayDateStr(),
       updated_at: new Date().toISOString()
     };
-    await void saveAction(updated);
+    await saveAction(updated);
   };
 
   // Overall Statistics
