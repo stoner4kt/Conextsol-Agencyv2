@@ -11,6 +11,8 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { Client, Project, DocumentAndNote } from '../types';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 
 interface OnboardingWizardProps {
   onComplete: (newClient: Client, newProject: Project, newDoc: DocumentAndNote) => void;
@@ -18,6 +20,7 @@ interface OnboardingWizardProps {
 }
 
 export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWizardProps) {
+  const { execute: completeOnboarding, isLoading: completingOnboarding } = useAsyncAction(onComplete, { successMsg: 'Client onboarding completed.' });
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   // Auto-generate realistic UUIDs for simulation
@@ -161,7 +164,7 @@ export default function OnboardingWizard({ onComplete, onCancel }: OnboardingWiz
       updated_at: new Date().toISOString(),
     };
 
-    onComplete(finalClient, finalProject, finalDoc);
+    void completeOnboarding(finalClient, finalProject, finalDoc);
     setStep(4);
   };
 

@@ -11,6 +11,8 @@ import {
   ShieldAlert 
 } from 'lucide-react';
 import { AppState } from '../types';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 
 interface DocumentEditorProps {
   documentId: string;
@@ -34,6 +36,10 @@ export default function DocumentEditor({
   const [editedContent, setEditedContent] = useState('');
   const [editedFileRefs, setEditedFileRefs] = useState('');
   const [success, setSuccess] = useState(false);
+  const { execute: saveDoc, isLoading: savingDoc } = useAsyncAction(
+    (id: string, title: string, content: string, fileRefs: string[]) => onSaveDocument(id, title, content, fileRefs),
+    { successMsg: 'Specification document saved.' },
+  );
 
   // Sync state if document selection shifts
   useEffect(() => {
@@ -63,7 +69,7 @@ export default function DocumentEditor({
       ? editedFileRefs.split(',').map(r => r.trim()).filter(Boolean)
       : [];
 
-    onSaveDocument(doc.id, editedTitle, editedContent, parsedRefs);
+    void saveDoc(doc.id, editedTitle, editedContent, parsedRefs);
     setIsEditing(false);
     setSuccess(true);
     setTimeout(() => setSuccess(false), 3000);

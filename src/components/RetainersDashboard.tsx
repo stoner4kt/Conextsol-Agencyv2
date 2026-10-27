@@ -10,6 +10,8 @@ import {
   Zap,
   Power
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import { Retainer, AppState } from '../types';
 
 interface RetainersDashboardProps {
@@ -27,6 +29,8 @@ export default function RetainersDashboard({
   onSelectClient,
   isAdmin
 }: RetainersDashboardProps) {
+  const { execute: saveAction, isLoading: savingAction } = useAsyncAction(onSaveRetainer, { successMsg: 'Retainer contract saved.' });
+  const { execute: deleteAction, isLoading: deletingAction } = useAsyncAction(onDeleteRetainer, { successMsg: 'Retainer contract removed.' });
   const [filterClient, setFilterClient] = useState<string>('all');
   const [filterService, setFilterService] = useState<string>('all');
   const [filterState, setFilterState] = useState<string>('all');
@@ -87,7 +91,7 @@ export default function RetainersDashboard({
       updated_at: new Date().toISOString()
     };
 
-    onSaveRetainer(updated);
+    void saveAction(updated);
     setEditingId(null);
   };
 
@@ -98,7 +102,7 @@ export default function RetainersDashboard({
       is_active: !retainer.is_active,
       updated_at: new Date().toISOString()
     };
-    onSaveRetainer(updated);
+    void saveAction(updated);
   };
 
   const handleAddSubmit = (e: React.FormEvent) => {
@@ -131,7 +135,7 @@ export default function RetainersDashboard({
       updated_at: new Date().toISOString()
     };
 
-    onSaveRetainer(created);
+    void saveAction(created);
     setIsAdding(false);
     setNewForm({
       client_id: '',
@@ -467,7 +471,7 @@ export default function RetainersDashboard({
                               <button
                                 onClick={() => {
                                   if (confirm(`Are you sure you want to permanently cancel and delete this monthly retainer billing subscription?`)) {
-                                    onDeleteRetainer(retainer.id);
+                                    void deleteAction(retainer.id);
                                   }
                                 }}
                                 className="p-1 hover:bg-[#121826] rounded-lg text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
@@ -594,7 +598,7 @@ export default function RetainersDashboard({
                     <button
                       onClick={() => {
                         if (confirm(`Delete retainer?`)) {
-                          onDeleteRetainer(retainer.id);
+                          void deleteAction(retainer.id);
                         }
                       }}
                       className="text-xs text-slate-500 hover:text-rose-400 flex items-center space-x-1"

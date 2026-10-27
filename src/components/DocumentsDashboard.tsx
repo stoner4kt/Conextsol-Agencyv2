@@ -12,6 +12,8 @@ import {
   ChevronRight, 
   ExternalLink
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import { DocumentAndNote, AppState } from '../types';
 
 interface DocumentsDashboardProps {
@@ -27,6 +29,8 @@ export default function DocumentsDashboard({
   onDeleteDocument,
   isAdmin
 }: DocumentsDashboardProps) {
+  const { execute: saveAction, isLoading: savingAction } = useAsyncAction(onSaveDocument, { successMsg: 'Document saved to vault.' });
+  const { execute: deleteAction, isLoading: deletingAction } = useAsyncAction(onDeleteDocument, { successMsg: 'Document removed from vault.' });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProject, setFilterProject] = useState<string>('all');
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
@@ -109,7 +113,7 @@ export default function DocumentsDashboard({
       updated_at: new Date().toISOString()
     };
 
-    onSaveDocument(updated);
+    void saveAction(updated);
     setIsAdding(false);
     setIsEditing(false);
     setSelectedDocId(updated.id);
@@ -357,7 +361,7 @@ export default function DocumentsDashboard({
                     <button
                       onClick={() => {
                         if (confirm(`Are you sure you want to delete specification "${selectedDoc.title}"?`)) {
-                          onDeleteDocument(selectedDoc.id);
+                          void deleteAction(selectedDoc.id);
                           setSelectedDocId(null);
                         }
                       }}

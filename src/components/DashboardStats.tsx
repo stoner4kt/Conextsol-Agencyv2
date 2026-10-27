@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   TrendingUp, 
   Clock, 
@@ -17,6 +17,8 @@ import {
   ArrowUpRight,
   Terminal
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import { AppState } from '../types';
 
 interface DashboardStatsProps {
@@ -34,8 +36,8 @@ export default function DashboardStats({
   onSelectClient,
   onOpenWizard
 }: DashboardStatsProps) {
-  const [runningAlert, setRunningAlert] = useState<'deadline' | 'retainer' | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const { execute: runDeadline, isLoading: deadlineLoading } = useAsyncAction(onRunDeadlineAlerts, { successMsg: 'Deadline scan complete — active projects checked for 48-hour window.', errorMsg: 'Deadline scanner failed — check edge function logs.' });
+  const { execute: runRetainers, isLoading: retainerLoading } = useAsyncAction(onRunRetainerAlerts, { successMsg: 'Retainer billing scan complete — monthly SLA streams processed.', errorMsg: 'Retainer scanner failed — check edge function logs.' });
 
   // Math helper stats
   const activeClients = state.clients.filter(c => c.status === 'active').length;
@@ -51,27 +53,6 @@ export default function DashboardStats({
     .filter(entry => entry.expense_month.slice(0, 7) === currentMonth)
     .reduce((total, entry) => total + entry.amount, 0);
   const monthlyNet = monthlyRetainersStream - monthlyExpenses;
-
-  // Trigger simulated alerts
-  const handleRunDeadline = () => {
-    setRunningAlert('deadline');
-    setTimeout(() => {
-      onRunDeadlineAlerts();
-      setRunningAlert(null);
-      setSuccessMsg('Project deadline scanner completed! Dispatched alert for projects near completion window.');
-      setTimeout(() => setSuccessMsg(null), 5000);
-    }, 800);
-  };
-
-  const handleRunRetainers = () => {
-    setRunningAlert('retainer');
-    setTimeout(() => {
-      onRunRetainerAlerts();
-      setRunningAlert(null);
-      setSuccessMsg('Retainer cycle check complete! Dispatched billing webhooks for active retainers due today.');
-      setTimeout(() => setSuccessMsg(null), 5000);
-    }, 800);
-  };
 
   // Safe client name lookup
   const getClientName = (clientId: string) => {
@@ -220,11 +201,11 @@ export default function DashboardStats({
             </div>
             <button
               id="run-deadline-scan-btn"
-              onClick={handleRunDeadline}
-              disabled={runningAlert !== null}
-              className="w-full py-2.5 bg-[#121826] hover:bg-[#1a2234] border border-cyan-500/40 text-cyan-300 hover:text-white font-mono text-xs font-semibold rounded-lg shadow-sm transition-all cursor-pointer disabled:opacity-50"
+              onClick={() => runDeadline()}
+              disabled={deadlineLoading}
+              className="w-full py-2.5 bg-[#121826] hover:bg-[#1a2234] border border-cyan-500/40 text-cyan-300 hover:text-white font-mono text-xs font-semibold rounded-lg shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {runningAlert === 'deadline' ? 'Executing Database Scan...' : 'Run Target Deadline Scanner'}
+              {deadlineLoading ? <><Spinner size={14} /> Running Scan...</> : 'Run Target Deadline Scanner'}
             </button>
           </div>
 
@@ -243,11 +224,11 @@ export default function DashboardStats({
             </div>
             <button
               id="run-billing-scan-btn"
-              onClick={handleRunRetainers}
-              disabled={runningAlert !== null}
+              onClick={() => runRetainers()}
+              disabled={retainerLoading}
               className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-mono text-xs font-extrabold rounded-lg shadow-md transition-all cursor-pointer disabled:opacity-50"
             >
-              {runningAlert === 'retainer' ? 'Executing Retainer Scan...' : 'Run Retainer Billing Scanner'}
+              {retainerLoading ? <><Spinner size={14} /> Running Scan...</> : 'Run Retainer Billing Scanner'}
             </button>
           </div>
         </div>
