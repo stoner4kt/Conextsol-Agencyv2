@@ -567,6 +567,7 @@ export default function App() {
         alertsLog: [failedAlert, ...prev.alertsLog]
       }));
       await supabaseService.saveAlert(failedAlert);
+      throw err instanceof Error ? err : new Error(String(err));
     }
   };
 
@@ -638,6 +639,7 @@ export default function App() {
         alertsLog: [failedAlert, ...prev.alertsLog]
       }));
       await supabaseService.saveAlert(failedAlert);
+      throw err instanceof Error ? err : new Error(String(err));
     }
   };
 
