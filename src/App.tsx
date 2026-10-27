@@ -264,6 +264,18 @@ export default function App() {
     }
   };
 
+  const handleDemoLogin = () => {
+    localStorage.setItem('conextsol_auth_logged_in', 'true');
+    setIsLoggedIn(true);
+    setAuthError('');
+    const userEmail = 'admin@conextsol.com';
+    setState(prev => ({
+      ...prev,
+      isAdmin: true,
+      userEmail,
+    }));
+  };
+
   const handleSignOut = async () => {
     if (isSupabaseConfigured && supabase) {
       try {
@@ -991,7 +1003,7 @@ export default function App() {
                 <div className="grid grid-cols-1 gap-2">
                   <button
                     type="button"
-                    onClick={() => handleDemoLogin(true)}
+                    onClick={handleDemoLogin}
                     className="py-2 bg-[#121826] hover:bg-[#1a2234] border border-cyan-800/60 text-cyan-300 font-mono text-[11px] font-bold rounded-xl transition-all cursor-pointer text-center flex items-center justify-center gap-1"
                   >
                     <ShieldCheck size={13} />
