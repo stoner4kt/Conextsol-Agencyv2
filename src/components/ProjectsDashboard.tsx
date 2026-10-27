@@ -17,6 +17,8 @@ import {
   ShieldAlert,
   ExternalLink
 } from 'lucide-react';
+import { useAsyncAction } from '../hooks/useAsyncAction';
+import Spinner from './ui/Spinner';
 import { Project, AppState } from '../types';
 import GitHubResourceList from './github/GitHubResourceList';
 
@@ -35,6 +37,8 @@ export default function ProjectsDashboard({
   onSelectClient,
   isAdmin
 }: ProjectsDashboardProps) {
+  const { execute: saveAction, isLoading: savingAction } = useAsyncAction(onSaveProject, { successMsg: 'Project record saved.' });
+  const { execute: deleteAction, isLoading: deletingAction } = useAsyncAction(onDeleteProject, { successMsg: 'Project removed from board.' });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterClient, setFilterClient] = useState<string>('all');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -132,7 +136,7 @@ export default function ProjectsDashboard({
       updated_at: new Date().toISOString()
     };
 
-    onSaveProject(updated);
+    void saveAction(updated);
     setEditingId(null);
   };
 
@@ -176,7 +180,7 @@ export default function ProjectsDashboard({
       updated_at: new Date().toISOString()
     };
 
-    onSaveProject(created);
+    void saveAction(created);
     setIsAdding(false);
     setNewForm({
       client_id: '',
@@ -697,7 +701,7 @@ export default function ProjectsDashboard({
                         <button
                           onClick={() => {
                             if (confirm(`Are you sure you want to delete project "${project.project_name}"?`)) {
-                              onDeleteProject(project.id);
+                              void deleteAction(project.id);
                             }
                           }}
                           className="p-1 hover:bg-[#121826] rounded-lg text-slate-500 hover:text-rose-400 transition-colors cursor-pointer"
