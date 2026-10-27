@@ -24,7 +24,6 @@ import ProjectsDashboard from './components/ProjectsDashboard';
 import RetainersDashboard from './components/RetainersDashboard';
 import DocumentsDashboard from './components/DocumentsDashboard';
 import AlertsDashboard from './components/AlertsDashboard';
-import AIToolTrackerDashboard from './components/AIToolTrackerDashboard';
 import InvoicesDashboard from './components/InvoicesDashboard';
 import ExpensesRoute from './components/ExpensesRoute';
 import { supabaseService } from './supabaseService';
@@ -52,6 +51,7 @@ export default function App() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [authError, setAuthError] = useState('');
+  const [passwordResetMessage, setPasswordResetMessage] = useState('');
 
   // Sync state with Database on mount and auth status changes
   useEffect(() => {
@@ -186,6 +186,33 @@ export default function App() {
         isAdmin: adminMode,
         userEmail: userEmail
       }));
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    setAuthError('');
+    setPasswordResetMessage('');
+
+    if (!loginEmail.trim()) {
+      setAuthError('Enter your account email address first.');
+      return;
+    }
+    if (!isSupabaseConfigured || !supabase) {
+      setAuthError('Password reset is unavailable until Supabase is configured.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(loginEmail.trim(), {
+        redirectTo: window.location.origin,
+      });
+      if (error) throw error;
+      setPasswordResetMessage('If an account exists for this email, a password reset link has been sent.');
+    } catch (err: any) {
+      setAuthError(err?.message || 'Unable to request a password reset. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -854,6 +881,23 @@ export default function App() {
                 </div>
               </div>
 
+              {passwordResetMessage && (
+                <div className="p-3 bg-emerald-950/50 border border-emerald-800/70 text-emerald-300 text-xs rounded-xl font-mono">
+                  {passwordResetMessage}
+                </div>
+              )}
+
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={isLoading}
+                  className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 underline underline-offset-4 disabled:opacity-50"
+                >
+                  Forgot password?
+                </button>
+              </div>
+
               <button
                 type="submit"
                 id="login-submit-btn"
@@ -866,7 +910,7 @@ export default function App() {
                 <p className="text-[10px] text-slate-400 text-center font-mono uppercase tracking-wider">
                   Instant Simulation Modes:
                 </p>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   <button
                     type="button"
                     onClick={() => handleDemoLogin(true)}
@@ -874,13 +918,6 @@ export default function App() {
                   >
                     <ShieldCheck size={13} />
                     Admin OS
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDemoLogin(false)}
-                    className="py-2 bg-[#090d16] hover:bg-[#101624] border border-[#1d263b] text-slate-400 font-mono text-[11px] font-medium rounded-xl transition-all cursor-pointer text-center"
-                  >
-                    Client Guest
                   </button>
                 </div>
               </div>
@@ -899,7 +936,6 @@ export default function App() {
       case 'projects_dash': return 'Project Operations Board';
       case 'retainers_dash': return 'Recurring Revenue Console';
       case 'documents_dash': return 'Specification Vault';
-      case 'ai_tools_tracker': return 'AI Resource Capacity Grid';
       case 'alerts_dash': return 'Dispatch Event Stream';
       case 'wizard': return 'Client Intake Pipeline';
       case 'expenses_dash': return 'Recurring Expenses Console';
@@ -1099,15 +1135,6 @@ export default function App() {
                   state={state}
                   onSaveDocument={handleSaveDocumentSingle}
                   onDeleteDocument={handleDeleteDocument}
-                  isAdmin={state.isAdmin}
-                />
-              )}
-
-              {currentTab === 'ai_tools_tracker' && (
-                <AIToolTrackerDashboard 
-                  state={state}
-                  onSaveAccount={handleSaveAIToolAccount}
-                  onDeleteAccount={handleDeleteAIToolAccount}
                   isAdmin={state.isAdmin}
                 />
               )}
