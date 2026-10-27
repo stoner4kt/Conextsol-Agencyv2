@@ -171,6 +171,8 @@ export default function App() {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
       setIsPasswordRecovery(false);
+      setIsLoggedIn(false);
+      localStorage.removeItem('conextsol_auth_logged_in');
       setNewPassword('');
       setConfirmNewPassword('');
       setPasswordResetMessage('Your password has been updated. You can now sign in with your new password.');
@@ -260,18 +262,6 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleDemoLogin = (asAdmin: boolean = true) => {
-    localStorage.setItem('conextsol_auth_logged_in', 'true');
-    setIsLoggedIn(true);
-    setAuthError('');
-    const userEmail = asAdmin ? 'admin@conextsol.com' : 'client@zenithretail.co';
-    setState(prev => ({
-      ...prev,
-      isAdmin: asAdmin,
-      userEmail: userEmail
-    }));
   };
 
   const handleSignOut = async () => {
@@ -844,7 +834,7 @@ export default function App() {
   };
 
   // Render Login Frame if not authenticated
-  if (!isLoggedIn) {
+  if (!isLoggedIn || isPasswordRecovery) {
     return (
       <div className="min-h-screen bg-[#06080d] bg-command-grid flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans text-slate-200">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-900/10 rounded-full blur-[140px] pointer-events-none" />
