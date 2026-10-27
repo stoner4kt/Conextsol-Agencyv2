@@ -97,14 +97,6 @@ export default function DashboardStats({
         </button>
       </div>
 
-      {/* Success Notification Alert Toast */}
-      {successMsg && (
-        <div className="p-4 bg-emerald-950/80 border border-emerald-800/80 text-emerald-200 rounded-xl flex items-center space-x-3 text-xs md:text-sm shadow-md font-mono animate-fadeIn">
-          <Bot size={18} className="text-emerald-400 shrink-0" />
-          <span className="font-medium">{successMsg}</span>
-        </div>
-      )}
-
       {/* Metric KPI Telemetry Strip */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Metric 1 */}
