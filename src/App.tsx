@@ -417,6 +417,7 @@ export default function App() {
       };
       setState(prev => ({ ...prev, alertsLog: [alert, ...prev.alertsLog] }));
       await supabaseService.saveAlert(alert);
+      throw err instanceof Error ? err : new Error(String(err));
     }
   };
 
@@ -443,6 +444,7 @@ export default function App() {
       await supabaseService.saveAlert(alert);
     } catch (err) {
       console.error('invoice-reminders invocation failed:', err);
+      throw err instanceof Error ? err : new Error(String(err));
     }
   };
 
