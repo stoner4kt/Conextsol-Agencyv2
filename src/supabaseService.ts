@@ -59,7 +59,8 @@ export const supabaseService = {
       if (error) throw error;
       return data || [];
     } catch (err) {
-      console.warn('Supabase fetch failed, falling back to LocalStorage:', err);
+      console.error('Supabase clients fetch failed:', err);
+      throw err;
       return getLocalCollection<Client>(CLIENTS_KEY, INITIAL_CLIENTS);
     }
   },
@@ -143,7 +144,8 @@ export const supabaseService = {
             : []
       }));
     } catch (err) {
-      console.warn('Supabase fetch failed, falling back to LocalStorage:', err);
+      console.error('Supabase projects fetch failed:', err);
+      throw err;
       return getLocalCollection<Project>(PROJECTS_KEY, INITIAL_PROJECTS);
     }
   },
@@ -220,7 +222,8 @@ export const supabaseService = {
       if (error) throw error;
       return data || [];
     } catch (err) {
-      console.warn('Supabase fetch failed, falling back to LocalStorage:', err);
+      console.error('Supabase retainers fetch failed:', err);
+      throw err;
       return getLocalCollection<Retainer>(RETAINERS_KEY, INITIAL_RETAINERS);
     }
   },
@@ -291,7 +294,8 @@ export const supabaseService = {
       if (error) throw error;
       return data || [];
     } catch (err) {
-      console.warn('Supabase fetch failed, falling back to LocalStorage:', err);
+      console.error('Supabase documents fetch failed:', err);
+      throw err;
       return getLocalCollection<DocumentAndNote>(DOCS_KEY, INITIAL_DOCUMENTS);
     }
   },
@@ -376,7 +380,8 @@ export const supabaseService = {
       if (error) throw error;
       return data || [];
     } catch (err) {
-      console.warn('Supabase fetch failed for AI accounts, falling back to LocalStorage:', err);
+      console.error('Supabase AI accounts fetch failed:', err);
+      throw err;
       return getLocalCollection<AIToolAccount>(AI_ACCOUNTS_KEY, INITIAL_AI_TOOL_ACCOUNTS);
     }
   },
@@ -470,7 +475,8 @@ export const supabaseService = {
         };
       }) as Invoice[];
     } catch (err) {
-      console.warn('Supabase invoices fetch failed, using LocalStorage:', err);
+      console.error('Supabase invoices fetch failed:', err);
+      throw err;
       return getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
     }
   },
@@ -580,7 +586,8 @@ export const supabaseService = {
       if (error) throw error;
       return (data || []).map(expense => ({ ...expense, amount: Number(expense.amount) })) as RecurringExpense[];
     } catch (err) {
-      console.warn('Supabase recurring expenses fetch failed, using LocalStorage:', err);
+      console.error('Supabase recurring expenses fetch failed:', err);
+      throw err;
       return getLocalCollection(RECURRING_EXPENSES_KEY, INITIAL_RECURRING_EXPENSES);
     }
   },
@@ -622,7 +629,8 @@ export const supabaseService = {
       if (error) throw error;
       return (data || []).map(entry => ({ ...entry, amount: Number(entry.amount) })) as ExpenseEntry[];
     } catch (err) {
-      console.warn('Supabase expense entries fetch failed, using LocalStorage:', err);
+      console.error('Supabase expense entries fetch failed:', err);
+      throw err;
       return getLocalCollection(EXPENSE_ENTRIES_KEY, INITIAL_EXPENSE_ENTRIES);
     }
   },
