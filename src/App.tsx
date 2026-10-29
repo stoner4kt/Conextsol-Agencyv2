@@ -29,6 +29,14 @@ import ExpensesRoute from './components/ExpensesRoute';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 
+const ADMIN_EMAILS = ['reeqieric41@gmail.com', 'juliangreen237@gmail.com'];
+
+const isAdminEmail = (email: string): boolean => {
+  const normalizedEmail = email.trim().toLowerCase();
+  return normalizedEmail.endsWith('@conextsol.com') ||
+    ADMIN_EMAILS.some(adminEmail => adminEmail.toLowerCase() === normalizedEmail);
+};
+
 export default function App() {
   // Load initial local state
   const [state, setState] = useState<AppState>(getInitialState);
@@ -74,7 +82,7 @@ export default function App() {
             currentEmail = session.user.email || '';
             localStorage.setItem('conextsol_auth_logged_in', 'true');
             setIsLoggedIn(true);
-            const adminMode = currentEmail.endsWith('@conextsol.com') || currentEmail === 'reeqieric41@gmail.com';
+            const adminMode = isAdminEmail(currentEmail);
             setState(prev => ({
               ...prev,
               isAdmin: adminMode,
@@ -211,7 +219,7 @@ export default function App() {
         setAuthError('');
 
         const userEmail = data.user?.email || loginEmail;
-        const adminMode = userEmail.endsWith('@conextsol.com') || userEmail === 'reeqieric41@gmail.com';
+        const adminMode = isAdminEmail(userEmail);
         setState(prev => ({
           ...prev,
           isAdmin: adminMode,
