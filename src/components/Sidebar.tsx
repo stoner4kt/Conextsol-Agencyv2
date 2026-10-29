@@ -11,7 +11,6 @@ import {
   CreditCard,
   BellRing,
   PieChart,
-  Zap,
   Receipt,
   Wallet
 } from 'lucide-react';
@@ -44,22 +43,11 @@ export default function Sidebar({
     { id: 'projects_dash', label: 'Projects Dashboard', icon: Layers, code: '03' },
     { id: 'retainers_dash', label: 'Retainers Dashboard', icon: CreditCard, code: '04' },
     { id: 'documents_dash', label: 'Specifications Docs', icon: FileText, code: '05' },
-    { id: 'ai_tools_tracker', label: 'AI Tool Limits', icon: Zap, code: '06' },
-    { id: 'alerts_dash', label: 'Dispatched Webhooks', icon: BellRing, code: '07' },
-    { id: 'wizard', label: 'Onboarding Pipeline', icon: UserCheck, code: '08' },
-    { id: 'expenses_dash', label: 'Recurring Expenses', icon: Wallet, code: '09' },
-    { id: 'invoices_dash', label: 'Invoicing', icon: Receipt, code: '10' },
+    { id: 'alerts_dash', label: 'Dispatched Webhooks', icon: BellRing, code: '06' },
+    { id: 'wizard', label: 'Onboarding Pipeline', icon: UserCheck, code: '07' },
+    { id: 'expenses_dash', label: 'Recurring Expenses', icon: Wallet, code: '08' },
+    { id: 'invoices_dash', label: 'Invoicing', icon: Receipt, code: '09' },
   ];
-
-  const toggleAdmin = () => {
-    if (isAdmin) {
-      setIsAdmin(false);
-      setUserEmail('client@zenithretail.co');
-    } else {
-      setIsAdmin(true);
-      setUserEmail('reeqieric41@gmail.com');
-    }
-  };
 
   return (
     <>
@@ -102,7 +90,7 @@ export default function Sidebar({
             <p className="text-[10px] font-mono uppercase text-slate-400 tracking-widest font-semibold">
               Mission Modules
             </p>
-             <span className="text-[9px] font-mono text-cyan-400/80 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-900/40">10 READY</span>
+             <span className="text-[9px] font-mono text-cyan-400/80 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-900/40">9 READY</span>
           </div>
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -175,25 +163,6 @@ export default function Sidebar({
           </div>
         </nav>
 
-        <div className="p-3 border-t border-[#1a2234] bg-[#080b12]">
-          <button
-            id="role-toggle-btn"
-            onClick={toggleAdmin}
-            className="w-full flex items-center justify-between bg-[#0e1422] hover:bg-[#141c2e] border border-[#1a2234] rounded-xl p-2.5 text-xs text-slate-200 transition-all cursor-pointer group"
-          >
-            <div className="text-left">
-              <p className="font-semibold text-[11px] group-hover:text-white transition-colors">Role Simulation</p>
-              <p className="text-[9px] text-slate-400 font-mono">Toggle Admin / Guest</p>
-            </div>
-            <div className={`relative inline-flex items-center h-5 rounded-full w-9 transition-colors border ${
-              isAdmin ? 'bg-cyan-950 border-cyan-600' : 'bg-slate-900 border-slate-700'
-            }`}>
-              <span className={`inline-block w-3.5 h-3.5 transform rounded-full transition-transform ${
-                isAdmin ? 'translate-x-4.5 bg-cyan-400 shadow-sm shadow-cyan-400' : 'translate-x-0.5 bg-slate-400'
-              }`} />
-            </div>
-          </button>
-        </div>
       </aside>
 
       {mobileOpen && (
