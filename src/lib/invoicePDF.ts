@@ -137,14 +137,51 @@ export function generateInvoicePDF(invoice: Invoice, client: Client): void {
   totalOffset += 2;
   drawTotal('TOTAL DUE', formatCurrency(invoice.total), true, [6, 182, 212]);
 
+  let paymentY = finalY + totalOffset + (invoice.payment_notes ? 15 : 8);
   if (invoice.payment_notes) {
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(8);
     doc.setTextColor(120, 130, 150);
-    doc.text(`Payment note: ${invoice.payment_notes}`, margin, finalY + totalOffset + 6);
+    const paymentNoteLines = doc.splitTextToSize(`Payment note: ${invoice.payment_notes}`, pageWidth - margin * 2);
+    doc.text(paymentNoteLines, margin, finalY + totalOffset + 6);
+    paymentY += Math.max(0, paymentNoteLines.length - 1) * 4;
   }
 
+  // Keep payment instructions on the invoice PDF as well as in the email.
+  const paymentBlockHeight = 43;
   const footerY = pageHeight - 14;
+  if (paymentY + paymentBlockHeight > footerY - 8) {
+    doc.addPage();
+    paymentY = 20;
+  }
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(6, 145, 180);
+  doc.text('PAYMENT DETAILS', margin, paymentY);
+  paymentY += 6;
+
+  const paymentDetails: Array<[string, string]> = [
+    ['Account Name', 'Conextsol'],
+    ['Bank', 'Capitec Bank'],
+    ['Account Number', '2499307338'],
+    ['Branch Code', '470010'],
+    ['SWIFT / BIC', 'CABLZAJJ'],
+    ['Payment Reference', invoice.invoice_number],
+  ];
+
+  paymentDetails.forEach(([label, value]) => {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 110, 125);
+    doc.text(label, margin, paymentY);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(35, 45, 60);
+    doc.text(value, margin + 42, paymentY);
+    paymentY += 5;
+  });
+
+
   doc.setFillColor(6, 8, 13);
   doc.rect(0, footerY - 4, pageWidth, 20, 'F');
   doc.setFont('helvetica', 'normal');
