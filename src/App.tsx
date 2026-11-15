@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Lock, 
-  ShieldCheck, 
   LogOut, 
   Mail, 
   Menu,
@@ -956,7 +955,6 @@ export default function App() {
                 <a className="text-cyan-400 underline underline-offset-4" href={isClientLoginRoute ? '/admin/login' : '/client/login'}>{isClientLoginRoute ? 'Admin sign in' : 'Client sign in'}</a>
                 <p className="mt-2 text-[10px]">Client accounts are created by invitation only. Public registration is disabled.</p>
               </div>
-div>
             </form>
             )}
           </div>
