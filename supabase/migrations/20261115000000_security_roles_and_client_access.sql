@@ -21,6 +21,7 @@ create table if not exists private.client_user_access (
   primary key (user_id, client_id)
 );
 alter table private.client_user_access enable row level security;
+create index if not exists client_user_access_client_user_idx on private.client_user_access (client_id, user_id);
 revoke all on private.client_user_access from public, anon, authenticated;
 grant select, insert, update, delete on private.client_user_access to service_role;
 
