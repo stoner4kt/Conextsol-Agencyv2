@@ -126,6 +126,9 @@ export default function App() {
         }
       } catch (err) {
         console.error('Failed to load initial DB state:', err);
+        if (supabase) await supabase.auth.signOut();
+        setIsLoggedIn(false);
+        setState(prev => ({ ...prev, isAdmin: false, userEmail: null, clients: [], projects: [], retainers: [], documents: [], alertsLog: [], aiToolAccounts: [], invoices: [], recurringExpenses: [], expenseEntries: [] }));
       } finally {
         setIsLoading(false);
       }
@@ -194,8 +197,12 @@ export default function App() {
       setState(prev => ({ ...prev, isAdmin: adminMode === true, userEmail: user?.email ?? loginEmail.trim() }));
       setIsLoggedIn(true);
       window.history.replaceState({}, '', adminMode === true ? '/admin' : '/client');
-    } catch (err: any) { setAuthError(err?.message || 'Authentication failed. Please try again.'); }
-    finally { setIsLoading(false); }
+    } catch (err: any) {
+      if (supabase) await supabase.auth.signOut();
+      setIsLoggedIn(false);
+      setState(prev => ({ ...prev, isAdmin: false, userEmail: null }));
+      setAuthError(err?.message || 'Authentication failed. Please try again.');
+    } finally { setIsLoading(false); }
   };
 
   const handleForgotPassword = async () => {
