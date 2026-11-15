@@ -53,7 +53,7 @@ export const supabaseService = {
     try {
       const { data, error } = await supabase
         .from('clients')
-        .select('*')
+        .select('id, company_name, primary_contact_name, email, phone, status, created_at, updated_at, subdomain, google_place_id, google_review_url, review_automation_enabled, review_from_name, review_reply_to_email, review_from_email')
         .order('company_name', { ascending: true });
       
       if (error) throw error;
@@ -440,14 +440,14 @@ export const supabaseService = {
   },
 
   // INVOICES CRUD
-  async getInvoices(): Promise<Invoice[]> {
+  async getInvoices(isAdmin = true): Promise<Invoice[]> {
     if (!isSupabaseConfigured || !supabase) {
       return getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
     }
 
     try {
       const { data, error } = await supabase
-        .from('invoices')
+        .from(isAdmin ? 'admin_invoices' : 'client_portal_invoices')
         .select('*')
         .order('issued_date', { ascending: false });
 
