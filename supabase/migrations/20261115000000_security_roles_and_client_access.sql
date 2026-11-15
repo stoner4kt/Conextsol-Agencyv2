@@ -270,7 +270,8 @@ select
   i.id, i.invoice_number, i.client_id, i.total, i.status,
   i.due_date, i.issued_date, i.paid_at, i.payment_notes, i.created_at, i.updated_at
 from public.invoices i
-where private.client_has_access(i.client_id, (select auth.uid()));
+where private.client_has_access(i.client_id, (select auth.uid()))
+  and i.status <> 'draft';
 
 revoke all on public.admin_invoices from public, anon;
 revoke all on public.client_portal_invoices from public, anon;
@@ -307,7 +308,7 @@ where private.is_admin_user((select auth.uid()));
 
 create or replace view public.client_portal_projects with (security_barrier = true) as
 select p.id, p.client_id, p.project_name, p.start_date, p.end_date,
-       p.short_note, p.production_url, p.services_listed, p.completion_status
+       p.production_url, p.services_listed, p.completion_status
 from public.projects p
 where private.client_has_access(p.client_id, (select auth.uid()));
 
@@ -319,3 +320,5 @@ grant select (id) on public.clients to authenticated;
 
 revoke select on public.projects from anon, authenticated;
 grant select (id, client_id) on public.projects to authenticated;
+
+revoke all on table public.clients, public.projects, public.invoices, public.retainers, public.documents_and_notes, public.ai_tool_accounts, public.recurring_expenses, public.expense_entries, public.github_repositories, public.github_resource_links, public.review_requests from anon;
