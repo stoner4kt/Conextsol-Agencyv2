@@ -63,7 +63,7 @@ export default function ClientPortal({ state, onSignOut }: ClientPortalProps) {
             <article key={project.id} className="rounded-xl border border-[#1d263b] bg-[#0b0f19] p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <h3 className="font-semibold text-white">{project.project_name}</h3>
-                <span className="rounded-full border border-cyan-900 bg-cyan-950/40 px-2.5 py-1 text-[11px] text-cyan-300">{project.completion_status ?? 'In progress'}</span>
+                <span className="rounded-full border border-cyan-900 bg-cyan-950/40 px-2.5 py-1 text-[11px] text-cyan-300">{'In progress'}</span>
               </div>
               <p className="mt-2 text-xs text-slate-400">Target completion: {project.end_date}</p>
               {project.short_note && <p className="mt-3 text-sm text-slate-300">{project.short_note}</p>}
