@@ -26,6 +26,7 @@ interface ClientsDashboardProps {
   onDeleteClient: (clientId: string) => void;
   onOpenWizard: () => void;
   isAdmin: boolean;
+  onInviteClient: (clientId: string) => Promise<void>;
 }
 
 export default function ClientsDashboard({
@@ -34,7 +35,8 @@ export default function ClientsDashboard({
   onSaveClient,
   onDeleteClient,
   onOpenWizard,
-  isAdmin
+  isAdmin,
+  onInviteClient
 }: ClientsDashboardProps) {
   const { execute: saveAction, isLoading: savingAction } = useAsyncAction(onSaveClient, { successMsg: 'Client profile saved successfully.' });
   const { execute: deleteAction, isLoading: deletingAction } = useAsyncAction(onDeleteClient, { successMsg: 'Client removed from registry.' });
@@ -451,6 +453,17 @@ export default function ClientsDashboard({
                           </>
                         ) : (
                           <>
+                            {isAdmin && (
+                              <button
+                                onClick={() => {
+                                  void onInviteClient(client.id).catch(error => window.alert(error instanceof Error ? error.message : 'Invitation failed.'));
+                                }}
+                                className="p-1 hover:bg-[#121826] rounded-lg text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
+                                title="Invite client to their portal"
+                              >
+                                <UserCheck size={13} />
+                              </button>
+                            )}
                             {isAdmin && (
                               <button
                                 onClick={() => handleStartEdit(client)}
