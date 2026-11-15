@@ -190,3 +190,67 @@ end;
 $$;
 revoke all on function public.assign_client_user(uuid, uuid) from public, anon, authenticated;
 grant execute on function public.assign_client_user(uuid, uuid) to service_role;
+
+-- Close the SECURITY DEFINER exposure and make ownership checks use auth.uid(), never a caller-supplied email.
+create or replace function public.verify_project_ownership(p_project_id uuid, p_user_email text)
+returns boolean
+language sql
+stable
+security invoker
+set search_path = pg_catalog, public, private
+as $$
+  select exists (
+    select 1
+    from public.projects p
+    where p.id = p_project_id
+      and (
+        private.is_admin_user((select auth.uid()))
+        or private.client_has_access(p.client_id, (select auth.uid()))
+      )
+  );
+$$;
+revoke all on function public.verify_project_ownership(uuid, text) from public, anon;
+grant execute on function public.verify_project_ownership(uuid, text) to authenticated;
+
+-- Pin trigger function search paths to prevent object-shadowing attacks.
+alter function public.update_modified_column() set search_path = pg_catalog, public;
+
+-- Database-triggered Notion sync is authenticated with a secret stored in Supabase Vault.
+create or replace function public.sync_to_notion_webhook()
+returns trigger
+language plpgsql
+set search_path = pg_catalog, public, net, vault
+as $function$
+declare
+  payload jsonb;
+  sync_secret text;
+begin
+  select decrypted_secret into sync_secret
+  from vault.decrypted_secrets
+  where name = 'notion_sync_webhook_secret'
+  limit 1;
+
+  if sync_secret is null or length(sync_secret) < 32 then
+    raise exception 'Notion sync webhook secret is missing or too short';
+  end if;
+
+  payload := jsonb_build_object(
+    'type', TG_OP,
+    'table', TG_TABLE_NAME,
+    'schema', TG_TABLE_SCHEMA,
+    'record', case when TG_OP = 'DELETE' then null else to_jsonb(NEW) end,
+    'old_record', case when TG_OP = 'DELETE' then to_jsonb(OLD) else null end
+  );
+
+  perform net.http_post(
+    url := 'https://lutlyvmcddmennmppbgw.functions.supabase.co/sync-to-notion',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'x-notion-sync-secret', sync_secret
+    ),
+    body := payload
+  );
+
+  return coalesce(NEW, OLD);
+end;
+$function$;
