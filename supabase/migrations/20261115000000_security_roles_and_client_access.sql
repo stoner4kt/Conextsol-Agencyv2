@@ -255,15 +255,16 @@ revoke all on public.client_portal_invoices from public, anon;
 grant select on public.admin_invoices to authenticated;
 grant select on public.client_portal_invoices to authenticated;
 
-revoke select on public.clients from anon, authenticated;
-grant select (
-  id, company_name, primary_contact_name, email, phone, status,
-  created_at, updated_at, subdomain, google_place_id, google_review_url,
-  review_automation_enabled, review_from_name, review_reply_to_email, review_from_email
-) on public.clients to authenticated;
+revoke all on table public.clients, public.projects, public.invoices from public, anon, authenticated;
 
-revoke select on public.invoices from anon, authenticated;
+grant select (id) on public.clients to authenticated;
+grant insert, update, delete on public.clients to authenticated;
+
+grant select (id, client_id) on public.projects to authenticated;
+grant insert, update, delete on public.projects to authenticated;
+
 grant select (id, invoice_number, client_id) on public.invoices to authenticated;
+grant insert, update, delete on public.invoices to authenticated;
 
 -- Expose separate role-filtered read models for client and admin dashboards.
 create or replace view public.admin_clients with (security_barrier = true) as
