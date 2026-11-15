@@ -29,6 +29,7 @@ export interface Project {
   associated_emails: string[]; // managing emails
   created_at: string;
   updated_at: string;
+  completion_status?: 'in_progress' | 'completed' | 'review_requested' | 'review_received';
 }
 
 export interface Retainer {
