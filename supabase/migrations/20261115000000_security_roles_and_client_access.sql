@@ -171,8 +171,8 @@ begin
   if coalesce(auth.jwt() ->> 'role', '') <> 'service_role' then
     raise exception 'service role required' using errcode = '42501';
   end if;
-  if not exists (select 1 from auth.users where id = p_user_id and email_confirmed_at is not null) then
-    raise exception 'invited user must have a confirmed email' using errcode = '23514';
+  if not exists (select 1 from auth.users where id = p_user_id) then
+    raise exception 'user not found' using errcode = '23503';
   end if;
   if not exists (select 1 from public.clients where id = p_client_id) then
     raise exception 'client not found' using errcode = '23503';
