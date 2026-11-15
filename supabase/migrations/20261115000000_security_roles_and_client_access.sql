@@ -36,52 +36,27 @@ where u.email_confirmed_at is not null
   )
 on conflict (user_id) do update set role = excluded.role;
 
-create or replace function private.is_admin_user(p_user_id uuid)
-returns boolean
-language sql
-stable
-security definer
+create or replace function private.is_admin_user()
+returns boolean language sql stable security definer
 set search_path = pg_catalog, private
-as $$
-  select exists (
-    select 1 from private.user_roles r
-    where r.user_id = p_user_id and r.role = 'admin'
-  );
-$$;
-revoke all on function private.is_admin_user(uuid) from public, anon;
-grant execute on function private.is_admin_user(uuid) to authenticated, service_role;
+as $$ select exists (select 1 from private.user_roles r where r.user_id = (select auth.uid()) and r.role = 'admin'); $$;
+revoke all on function private.is_admin_user() from public, anon;
+grant execute on function private.is_admin_user() to authenticated, service_role;
 
-create or replace function private.is_client_user(p_user_id uuid)
-returns boolean
-language sql
-stable
-security definer
+create or replace function private.is_client_user()
+returns boolean language sql stable security definer
 set search_path = pg_catalog, private
-as $$
-  select exists (
-    select 1 from private.user_roles r
-    where r.user_id = p_user_id and r.role = 'client'
-  ) and exists (
-    select 1 from private.client_user_access a where a.user_id = p_user_id
-  );
-$$;
-revoke all on function private.is_client_user(uuid) from public, anon;
-grant execute on function private.is_client_user(uuid) to authenticated, service_role;
+as $$ select exists (select 1 from private.user_roles r where r.user_id = (select auth.uid()) and r.role = 'client')
+and exists (select 1 from private.client_user_access a where a.user_id = (select auth.uid())); $$;
+revoke all on function private.is_client_user() from public, anon;
+grant execute on function private.is_client_user() to authenticated, service_role;
 
-create or replace function private.client_has_access(p_client_id uuid, p_user_id uuid)
-returns boolean
-language sql
-stable
-security definer
+create or replace function private.client_has_access(p_client_id uuid)
+returns boolean language sql stable security definer
 set search_path = pg_catalog, private
-as $$
-  select exists (
-    select 1 from private.client_user_access a
-    where a.client_id = p_client_id and a.user_id = p_user_id
-  );
-$$;
-revoke all on function private.client_has_access(uuid, uuid) from public, anon;
-grant execute on function private.client_has_access(uuid, uuid) to authenticated, service_role;
+as $$ select exists (select 1 from private.client_user_access a where a.client_id = p_client_id and a.user_id = (select auth.uid())); $$;
+revoke all on function private.client_has_access(uuid) from public, anon;
+grant execute on function private.client_has_access(uuid) to authenticated, service_role;
 
 create or replace function public.is_current_user_admin()
 returns boolean
@@ -89,7 +64,7 @@ language sql
 stable
 security invoker
 set search_path = pg_catalog, public, private
-as $$ select private.is_admin_user((select auth.uid())); $$;
+as $ select private.is_admin_user(); $;
 revoke all on function public.is_current_user_admin() from public, anon;
 grant execute on function public.is_current_user_admin() to authenticated;
 
@@ -99,7 +74,7 @@ language sql
 stable
 security invoker
 set search_path = pg_catalog, public, private
-as $$ select private.is_client_user((select auth.uid())); $$;
+as $ select private.is_client_user(); $;
 revoke all on function public.is_current_user_client() from public, anon;
 grant execute on function public.is_current_user_client() to authenticated;
 
@@ -131,7 +106,7 @@ begin
     'github_repositories','github_resource_links','review_requests'
   ] loop
     execute format(
-      'create policy %I on public.%I for all to authenticated using (private.is_admin_user((select auth.uid()))) with check (private.is_admin_user((select auth.uid())))',
+      'create policy %I on public.%I for all to authenticated using (private.is_admin_user()) with check (private.is_admin_user((select auth.uid())))',
       'agency_admin_full_access', t
     );
   end loop;
@@ -140,11 +115,11 @@ end $$;
 -- Client portal: read-only access to the client's own profile, projects and invoices.
 create policy "client reads assigned profile" on public.clients
 for select to authenticated
-using (private.client_has_access(id, (select auth.uid())));
+using (private.client_has_access(id));
 
 create policy "client reads assigned projects" on public.projects
 for select to authenticated
-using (private.client_has_access(client_id, (select auth.uid())));
+using (private.client_has_access(client_id));
 
 create policy "client reads assigned invoices" on public.invoices
 for select to authenticated
@@ -206,7 +181,7 @@ as $$
     where p.id = p_project_id
       and (
         private.is_admin_user((select auth.uid()))
-        or private.client_has_access(p.client_id, (select auth.uid()))
+        or private.client_has_access(p.client_id)
       )
   );
 $$;
@@ -268,10 +243,11 @@ where private.is_admin_user((select auth.uid()));
 
 create or replace view public.client_portal_invoices with (security_barrier = true) as
 select
-  i.id, i.invoice_number, i.client_id, i.total, i.status,
-  i.due_date, i.issued_date, i.paid_at, i.payment_notes, i.created_at, i.updated_at
+  i.id, i.invoice_number, i.client_id, i.line_items, i.subtotal, i.tax_rate,
+  i.tax_amount, i.total, i.status, i.due_date, i.issued_date,
+  i.paid_at, i.payment_notes, i.created_at, i.updated_at
 from public.invoices i
-where private.client_has_access(i.client_id, (select auth.uid()))
+where private.client_has_access(i.client_id)
   and i.status <> 'draft';
 
 revoke all on public.admin_invoices from public, anon;
