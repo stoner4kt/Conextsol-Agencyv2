@@ -227,6 +227,14 @@ export default function App() {
     }
   };
 
+  const handleInviteClient = async (clientId: string) => {
+    if (!supabase || !isSupabaseConfigured) throw new Error('Supabase is not configured.');
+    const { data, error } = await supabase.functions.invoke('client-invitations', { body: { clientId } });
+    if (error) throw error;
+    if (!data?.success) throw new Error(data?.error || 'Client invitation failed.');
+    window.alert(data.message || 'Client portal invitation processed.');
+  };
+
   const handleSignOut = async () => {
     if (isSupabaseConfigured && supabase) {
       try {
@@ -1138,6 +1146,7 @@ export default function App() {
                   onDeleteClient={handleDeleteClient}
                   onOpenWizard={() => setCurrentTab('wizard')}
                   isAdmin={state.isAdmin}
+                  onInviteClient={handleInviteClient}
                 />
               )}
 
