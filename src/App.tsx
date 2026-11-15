@@ -89,8 +89,8 @@ export default function App() {
         if (hasActiveSession) {
           if (isAdminSession) {
             const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
-              supabaseService.getClients(),
-              supabaseService.getProjects(),
+              supabaseService.getClients(true),
+              supabaseService.getProjects(true),
               supabaseService.getRetainers(),
               supabaseService.getDocuments(),
               supabaseService.getAlertsLog(),
@@ -103,8 +103,8 @@ export default function App() {
             setState(prev => ({ ...prev, clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, expenseEntries }));
           } else {
             const [clients, projects, invoices] = await Promise.all([
-              supabaseService.getClients(),
-              supabaseService.getProjects(),
+              supabaseService.getClients(false),
+              supabaseService.getProjects(false),
               supabaseService.getInvoices(false),
             ]);
             setState(prev => ({ ...prev, clients, projects, invoices, retainers: [], documents: [], alertsLog: [], aiToolAccounts: [], recurringExpenses: [], expenseEntries: [] }));
