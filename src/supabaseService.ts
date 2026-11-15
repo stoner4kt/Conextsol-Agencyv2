@@ -46,14 +46,14 @@ function saveLocalCollection<T>(key: string, items: T[]): void {
 
 export const supabaseService = {
   // CLIENTS CRUD
-  async getClients(): Promise<Client[]> {
+  async getClients(isAdmin = true): Promise<Client[]> {
     if (!isSupabaseConfigured || !supabase) {
       return getLocalCollection<Client>(CLIENTS_KEY, INITIAL_CLIENTS);
     }
     try {
       const { data, error } = await supabase
-        .from('clients')
-        .select('id, company_name, primary_contact_name, email, phone, status, created_at, updated_at, subdomain, google_place_id, google_review_url, review_automation_enabled, review_from_name, review_reply_to_email, review_from_email')
+        .from(isAdmin ? 'admin_clients' : 'client_portal_profiles')
+        .select('*')
         .order('company_name', { ascending: true });
       
       if (error) throw error;
@@ -118,13 +118,13 @@ export const supabaseService = {
   },
 
   // PROJECTS CRUD
-  async getProjects(): Promise<Project[]> {
+  async getProjects(isAdmin = true): Promise<Project[]> {
     if (!isSupabaseConfigured || !supabase) {
       return getLocalCollection<Project>(PROJECTS_KEY, INITIAL_PROJECTS);
     }
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from(isAdmin ? 'admin_projects' : 'client_portal_projects')
         .select('*')
         .order('project_name', { ascending: true });
       
