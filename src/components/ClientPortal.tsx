@@ -67,7 +67,6 @@ export default function ClientPortal({ state, onSignOut }: ClientPortalProps) {
                 <span className="rounded-full border border-cyan-900 bg-cyan-950/40 px-2.5 py-1 text-[11px] text-cyan-300">{'In progress'}</span>
               </div>
               <p className="mt-2 text-xs text-slate-400">Target completion: {project.end_date}</p>
-              {project.short_note && <p className="mt-3 text-sm text-slate-300">{project.short_note}</p>}
               {project.production_url && <a className="mt-3 inline-block text-xs text-cyan-400 underline" href={project.production_url} target="_blank" rel="noreferrer">View live website</a>}
             </article>
           ))}
