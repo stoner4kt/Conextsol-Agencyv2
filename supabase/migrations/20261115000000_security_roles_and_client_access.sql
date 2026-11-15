@@ -219,6 +219,7 @@ alter function public.update_modified_column() set search_path = pg_catalog, pub
 create or replace function public.sync_to_notion_webhook()
 returns trigger
 language plpgsql
+security definer
 set search_path = pg_catalog, public, net, vault
 as $function$
 declare
@@ -254,3 +255,6 @@ begin
   return coalesce(NEW, OLD);
 end;
 $function$;
+
+revoke all on function public.sync_to_notion_webhook() from public, anon, authenticated;
+grant execute on function public.sync_to_notion_webhook() to service_role;
