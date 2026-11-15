@@ -106,7 +106,7 @@ begin
     'github_repositories','github_resource_links','review_requests'
   ] loop
     execute format(
-      'create policy %I on public.%I for all to authenticated using (private.is_admin_user()) with check (private.is_admin_user((select auth.uid())))',
+      'create policy %I on public.%I for all to authenticated using (private.is_admin_user()) with check (private.is_admin_user())',
       'agency_admin_full_access', t
     );
   end loop;
@@ -123,7 +123,7 @@ using (private.client_has_access(client_id));
 
 create policy "client reads assigned invoices" on public.invoices
 for select to authenticated
-using (private.client_has_access(client_id, (select auth.uid())));
+using (private.client_has_access(client_id));
 
 -- Review-request logs remain service-role writable; clients can only read their own records.
 create policy "service role inserts review requests" on public.review_requests
@@ -132,7 +132,7 @@ create policy "service role updates review requests" on public.review_requests
 for update to service_role using (true) with check (true);
 create policy "client reads assigned review requests" on public.review_requests
 for select to authenticated
-using (private.client_has_access(client_id, (select auth.uid())));
+using (private.client_has_access(client_id));
 
 -- No direct client mutation of agency records or of the client-to-user mapping.
 
@@ -180,7 +180,7 @@ as $$
     from public.projects p
     where p.id = p_project_id
       and (
-        private.is_admin_user((select auth.uid()))
+        private.is_admin_user()
         or private.client_has_access(p.client_id)
       )
   );
@@ -239,7 +239,7 @@ grant execute on function public.sync_to_notion_webhook() to service_role;
 create or replace view public.admin_invoices with (security_barrier = true) as
 select i.*
 from public.invoices i
-where private.is_admin_user((select auth.uid()));
+where private.is_admin_user();
 
 create or replace view public.client_portal_invoices with (security_barrier = true) as
 select
@@ -271,23 +271,23 @@ select c.id, c.company_name, c.primary_contact_name, c.email, c.phone, c.status,
        c.created_at, c.updated_at, c.subdomain, c.google_place_id, c.google_review_url,
        c.review_automation_enabled, c.review_from_name, c.review_reply_to_email, c.review_from_email
 from public.clients c
-where private.is_admin_user((select auth.uid()));
+where private.is_admin_user();
 
 create or replace view public.client_portal_profiles with (security_barrier = true) as
 select c.id, c.company_name, c.primary_contact_name, c.email, c.phone, c.status
 from public.clients c
-where private.client_has_access(c.id, (select auth.uid()));
+where private.client_has_access(c.id);
 
 create or replace view public.admin_projects with (security_barrier = true) as
 select p.*
 from public.projects p
-where private.is_admin_user((select auth.uid()));
+where private.is_admin_user();
 
 create or replace view public.client_portal_projects with (security_barrier = true) as
 select p.id, p.client_id, p.project_name, p.start_date, p.end_date,
        p.production_url, p.services_listed, p.completion_status
 from public.projects p
-where private.client_has_access(p.client_id, (select auth.uid()));
+where private.client_has_access(p.client_id);
 
 revoke all on public.admin_clients, public.client_portal_profiles, public.admin_projects, public.client_portal_projects from public, anon;
 grant select on public.admin_clients, public.client_portal_profiles, public.admin_projects, public.client_portal_projects to authenticated;
