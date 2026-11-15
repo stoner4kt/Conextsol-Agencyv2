@@ -8,10 +8,11 @@ interface ClientPortalProps {
 }
 
 export default function ClientPortal({ state, onSignOut }: ClientPortalProps) {
-  const client = state.clients[0];
-  const clientProjects = state.projects.filter(project => project.client_id === client?.id);
+  const clientIds = new Set(state.clients.map(client => client.id));
+  const clientNames = state.clients.map(client => client.company_name).join(', ');
+  const clientProjects = state.projects.filter(project => clientIds.has(project.client_id));
   const clientInvoices = state.invoices
-    .filter(invoice => invoice.client_id === client?.id)
+    .filter(invoice => clientIds.has(invoice.client_id))
     .sort((a, b) => b.issued_date.localeCompare(a.issued_date));
 
   const currency = (amount: number) => new Intl.NumberFormat('en-ZA', {
@@ -25,7 +26,7 @@ export default function ClientPortal({ state, onSignOut }: ClientPortalProps) {
           <img src="/logo.png" alt="Conextsol" className="h-9 w-9 object-contain" />
           <div>
             <p className="font-bold text-white">Conextsol Client Portal</p>
-            <p className="text-xs text-slate-400">{client?.company_name ?? state.userEmail}</p>
+            <p className="text-xs text-slate-400">{clientNames || state.userEmail}</p>
           </div>
         </div>
         <button onClick={onSignOut} className="inline-flex items-center gap-2 rounded-lg border border-[#263249] px-3 py-2 text-xs text-slate-300 hover:text-white">
