@@ -286,3 +286,36 @@ grant select (
 
 revoke select on public.invoices from anon, authenticated;
 grant select (id, invoice_number, client_id) on public.invoices to authenticated;
+
+-- Expose separate role-filtered read models for client and admin dashboards.
+create or replace view public.admin_clients with (security_barrier = true) as
+select c.id, c.company_name, c.primary_contact_name, c.email, c.phone, c.status,
+       c.created_at, c.updated_at, c.subdomain, c.google_place_id, c.google_review_url,
+       c.review_automation_enabled, c.review_from_name, c.review_reply_to_email, c.review_from_email
+from public.clients c
+where private.is_admin_user((select auth.uid()));
+
+create or replace view public.client_portal_profiles with (security_barrier = true) as
+select c.id, c.company_name, c.primary_contact_name, c.email, c.phone, c.status
+from public.clients c
+where private.client_has_access(c.id, (select auth.uid()));
+
+create or replace view public.admin_projects with (security_barrier = true) as
+select p.*
+from public.projects p
+where private.is_admin_user((select auth.uid()));
+
+create or replace view public.client_portal_projects with (security_barrier = true) as
+select p.id, p.client_id, p.project_name, p.start_date, p.end_date,
+       p.short_note, p.production_url, p.services_listed, p.completion_status
+from public.projects p
+where private.client_has_access(p.client_id, (select auth.uid()));
+
+revoke all on public.admin_clients, public.client_portal_profiles, public.admin_projects, public.client_portal_projects from public, anon;
+grant select on public.admin_clients, public.client_portal_profiles, public.admin_projects, public.client_portal_projects to authenticated;
+
+revoke select on public.clients from anon, authenticated;
+grant select (id) on public.clients to authenticated;
+
+revoke select on public.projects from anon, authenticated;
+grant select (id, client_id) on public.projects to authenticated;
