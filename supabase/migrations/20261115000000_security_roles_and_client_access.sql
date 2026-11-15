@@ -258,3 +258,31 @@ $function$;
 
 revoke all on function public.sync_to_notion_webhook() from public, anon, authenticated;
 grant execute on function public.sync_to_notion_webhook() to service_role;
+
+-- Keep the encrypted Google OAuth refresh token and internal invoice notes out of browser-visible table reads.
+create or replace view public.admin_invoices with (security_barrier = true) as
+select i.*
+from public.invoices i
+where private.is_admin_user((select auth.uid()));
+
+create or replace view public.client_portal_invoices with (security_barrier = true) as
+select
+  i.id, i.invoice_number, i.client_id, i.total, i.status,
+  i.due_date, i.issued_date, i.paid_at, i.payment_notes, i.created_at, i.updated_at
+from public.invoices i
+where private.client_has_access(i.client_id, (select auth.uid()));
+
+revoke all on public.admin_invoices from public, anon;
+revoke all on public.client_portal_invoices from public, anon;
+grant select on public.admin_invoices to authenticated;
+grant select on public.client_portal_invoices to authenticated;
+
+revoke select on public.clients from anon, authenticated;
+grant select (
+  id, company_name, primary_contact_name, email, phone, status,
+  created_at, updated_at, subdomain, google_place_id, google_review_url,
+  review_automation_enabled, review_from_name, review_reply_to_email, review_from_email
+) on public.clients to authenticated;
+
+revoke select on public.invoices from anon, authenticated;
+grant select (id, invoice_number, client_id) on public.invoices to authenticated;
