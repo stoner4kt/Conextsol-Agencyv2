@@ -62,6 +62,7 @@ export default function App() {
         setIsLoading(true);
         let currentEmail = '';
         let hasActiveSession = false;
+        let isAdminSession = false;
         
         // If Supabase is configured, check for active session
         if (isSupabaseConfigured && supabase) {
@@ -76,7 +77,7 @@ export default function App() {
             const [{ data: adminMode, error: adminRoleError }, { data: clientMode, error: clientRoleError }] = await Promise.all([supabase.rpc('is_current_user_admin'), supabase.rpc('is_current_user_client')]);
             if (adminRoleError || clientRoleError) throw adminRoleError || clientRoleError;
             if (adminMode !== true && clientMode !== true) { await supabase.auth.signOut(); setIsLoggedIn(false); }
-            else { setIsLoggedIn(true); setState(prev => ({ ...prev, isAdmin: adminMode === true, userEmail: currentEmail })); window.history.replaceState({}, '', adminMode === true ? '/admin' : '/client'); hasActiveSession = true; }
+            else { isAdminSession = adminMode === true; setIsLoggedIn(true); setState(prev => ({ ...prev, isAdmin: isAdminSession, userEmail: currentEmail })); window.history.replaceState({}, '', adminMode === true ? '/admin' : '/client'); hasActiveSession = true; }
           } else {
             // No active session in Supabase - clear login if we had one
 
@@ -86,31 +87,28 @@ export default function App() {
 
         // Only fetch data if we have an active session or are logged in
         if (hasActiveSession) {
-          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
-            supabaseService.getClients(),
-            supabaseService.getProjects(),
-            supabaseService.getRetainers(),
-            supabaseService.getDocuments(),
-            supabaseService.getAlertsLog(),
-            supabaseService.getAIToolAccounts(),
-            supabaseService.getInvoices(),
-            supabaseService.getRecurringExpenses(),
-            supabaseService.getExpenseEntries()
-          ]);
-          const expenseEntries = await supabaseService.ensureMonthlyExpenseEntries(recurringExpenses, existingExpenseEntries);
-          
-          setState(prev => ({
-            ...prev,
-            clients,
-            projects,
-            retainers,
-            documents,
-            alertsLog,
-            aiToolAccounts,
-            invoices,
-            recurringExpenses,
-            expenseEntries
-          }));
+          if (isAdminSession) {
+            const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
+              supabaseService.getClients(),
+              supabaseService.getProjects(),
+              supabaseService.getRetainers(),
+              supabaseService.getDocuments(),
+              supabaseService.getAlertsLog(),
+              supabaseService.getAIToolAccounts(),
+              supabaseService.getInvoices(true),
+              supabaseService.getRecurringExpenses(),
+              supabaseService.getExpenseEntries()
+            ]);
+            const expenseEntries = await supabaseService.ensureMonthlyExpenseEntries(recurringExpenses, existingExpenseEntries);
+            setState(prev => ({ ...prev, clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, expenseEntries }));
+          } else {
+            const [clients, projects, invoices] = await Promise.all([
+              supabaseService.getClients(),
+              supabaseService.getProjects(),
+              supabaseService.getInvoices(false),
+            ]);
+            setState(prev => ({ ...prev, clients, projects, invoices, retainers: [], documents: [], alertsLog: [], aiToolAccounts: [], recurringExpenses: [], expenseEntries: [] }));
+          }
         } else {
           // Clear cached state if signed out
           setState(prev => ({
