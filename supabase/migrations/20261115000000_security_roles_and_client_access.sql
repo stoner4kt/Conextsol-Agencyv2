@@ -159,3 +159,34 @@ for select to authenticated
 using (private.client_has_access(client_id, (select auth.uid())));
 
 -- No direct client mutation of agency records or of the client-to-user mapping.
+
+-- Called only by the invitation Edge Function using the service-role JWT.
+create or replace function public.assign_client_user(p_user_id uuid, p_client_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = pg_catalog, public, private
+as $$
+begin
+  if coalesce(auth.jwt() ->> 'role', '') <> 'service_role' then
+    raise exception 'service role required' using errcode = '42501';
+  end if;
+  if not exists (select 1 from auth.users where id = p_user_id and email_confirmed_at is not null) then
+    raise exception 'invited user must have a confirmed email' using errcode = '23514';
+  end if;
+  if not exists (select 1 from public.clients where id = p_client_id) then
+    raise exception 'client not found' using errcode = '23503';
+  end if;
+  insert into private.user_roles (user_id, role)
+  values (p_user_id, 'client')
+  on conflict (user_id) do nothing;
+  if exists (select 1 from private.user_roles where user_id = p_user_id and role <> 'client') then
+    raise exception 'an administrator account cannot be converted to a client account' using errcode = '23514';
+  end if;
+  insert into private.client_user_access (user_id, client_id)
+  values (p_user_id, p_client_id)
+  on conflict do nothing;
+end;
+$$;
+revoke all on function public.assign_client_user(uuid, uuid) from public, anon, authenticated;
+grant execute on function public.assign_client_user(uuid, uuid) to service_role;
