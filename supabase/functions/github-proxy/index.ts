@@ -92,6 +92,8 @@ serve(async (req) => {
   const supabase = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: req.headers.get("Authorization") || "" } }, auth: { persistSession: false } });
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) return appError(req, 401, "AUTHENTICATION_REQUIRED", "Sign in before accessing GitHub resources.");
+  const { data: isAdmin, error: roleError } = await supabase.rpc("is_current_user_admin");
+  if (roleError || isAdmin !== true) return appError(req, 403, "AUTHORIZATION_FAILED", "Administrator access is required for GitHub operations.");
 
   let payload: GitHubAction;
   try { payload = await req.json(); } catch { return appError(req, 400, "INVALID_REQUEST", "Request body must be valid JSON."); }

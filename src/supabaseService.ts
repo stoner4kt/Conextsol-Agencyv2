@@ -46,13 +46,13 @@ function saveLocalCollection<T>(key: string, items: T[]): void {
 
 export const supabaseService = {
   // CLIENTS CRUD
-  async getClients(): Promise<Client[]> {
+  async getClients(isAdmin = true): Promise<Client[]> {
     if (!isSupabaseConfigured || !supabase) {
       return getLocalCollection<Client>(CLIENTS_KEY, INITIAL_CLIENTS);
     }
     try {
       const { data, error } = await supabase
-        .from('clients')
+        .from(isAdmin ? 'admin_clients' : 'client_portal_profiles')
         .select('*')
         .order('company_name', { ascending: true });
       
@@ -118,13 +118,13 @@ export const supabaseService = {
   },
 
   // PROJECTS CRUD
-  async getProjects(): Promise<Project[]> {
+  async getProjects(isAdmin = true): Promise<Project[]> {
     if (!isSupabaseConfigured || !supabase) {
       return getLocalCollection<Project>(PROJECTS_KEY, INITIAL_PROJECTS);
     }
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from(isAdmin ? 'admin_projects' : 'client_portal_projects')
         .select('*')
         .order('project_name', { ascending: true });
       
@@ -440,14 +440,14 @@ export const supabaseService = {
   },
 
   // INVOICES CRUD
-  async getInvoices(): Promise<Invoice[]> {
+  async getInvoices(isAdmin = true): Promise<Invoice[]> {
     if (!isSupabaseConfigured || !supabase) {
       return getLocalCollection<Invoice>(INVOICES_KEY, INITIAL_INVOICES);
     }
 
     try {
       const { data, error } = await supabase
-        .from('invoices')
+        .from(isAdmin ? 'admin_invoices' : 'client_portal_invoices')
         .select('*')
         .order('issued_date', { ascending: false });
 

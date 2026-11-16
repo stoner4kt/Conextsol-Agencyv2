@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Lock, 
-  ShieldCheck, 
   LogOut, 
   Mail, 
   Menu,
@@ -28,18 +27,11 @@ import InvoicesDashboard from './components/InvoicesDashboard';
 import ExpensesRoute from './components/ExpensesRoute';
 import { supabaseService } from './supabaseService';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-
-const ADMIN_EMAILS = ['reeqieric41@gmail.com', 'juliangreen237@gmail.com'];
-
-const isAdminEmail = (email: string): boolean => {
-  const normalizedEmail = email.trim().toLowerCase();
-  return normalizedEmail.endsWith('@conextsol.com') ||
-    ADMIN_EMAILS.some(adminEmail => adminEmail.toLowerCase() === normalizedEmail);
-};
+import ClientPortal from './components/ClientPortal';
 
 export default function App() {
   // Load initial local state
-  const [state, setState] = useState<AppState>(getInitialState);
+  const [state, setState] = useState<AppState>(() => ({ ...getInitialState(), isAdmin: false, userEmail: null }));
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   // Tab Routing: 'dashboard' | 'clients_dash' | 'projects_dash' | ...
@@ -53,9 +45,8 @@ export default function App() {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 
   // Authentication State Simulation / Real
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem('conextsol_auth_logged_in') === 'true';
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const isClientLoginRoute = window.location.pathname.startsWith('/client');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [authError, setAuthError] = useState('');
@@ -71,6 +62,7 @@ export default function App() {
         setIsLoading(true);
         let currentEmail = '';
         let hasActiveSession = false;
+        let isAdminSession = false;
         
         // If Supabase is configured, check for active session
         if (isSupabaseConfigured && supabase) {
@@ -80,49 +72,43 @@ export default function App() {
           }
           if (session) {
             currentEmail = session.user.email || '';
-            localStorage.setItem('conextsol_auth_logged_in', 'true');
+
             setIsLoggedIn(true);
-            const adminMode = isAdminEmail(currentEmail);
-            setState(prev => ({
-              ...prev,
-              isAdmin: adminMode,
-              userEmail: currentEmail
-            }));
-            hasActiveSession = true;
+            const [{ data: adminMode, error: adminRoleError }, { data: clientMode, error: clientRoleError }] = await Promise.all([supabase.rpc('is_current_user_admin'), supabase.rpc('is_current_user_client')]);
+            if (adminRoleError || clientRoleError) throw adminRoleError || clientRoleError;
+            if (adminMode !== true && clientMode !== true) { await supabase.auth.signOut(); setIsLoggedIn(false); }
+            else { isAdminSession = adminMode === true; setIsLoggedIn(true); setState(prev => ({ ...prev, isAdmin: isAdminSession, userEmail: currentEmail })); window.history.replaceState({}, '', adminMode === true ? '/admin' : '/client'); hasActiveSession = true; }
           } else {
             // No active session in Supabase - clear login if we had one
-            localStorage.removeItem('conextsol_auth_logged_in');
+
             setIsLoggedIn(false);
           }
         }
 
         // Only fetch data if we have an active session or are logged in
-        if (hasActiveSession || isLoggedIn) {
-          const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
-            supabaseService.getClients(),
-            supabaseService.getProjects(),
-            supabaseService.getRetainers(),
-            supabaseService.getDocuments(),
-            supabaseService.getAlertsLog(),
-            supabaseService.getAIToolAccounts(),
-            supabaseService.getInvoices(),
-            supabaseService.getRecurringExpenses(),
-            supabaseService.getExpenseEntries()
-          ]);
-          const expenseEntries = await supabaseService.ensureMonthlyExpenseEntries(recurringExpenses, existingExpenseEntries);
-          
-          setState(prev => ({
-            ...prev,
-            clients,
-            projects,
-            retainers,
-            documents,
-            alertsLog,
-            aiToolAccounts,
-            invoices,
-            recurringExpenses,
-            expenseEntries
-          }));
+        if (hasActiveSession) {
+          if (isAdminSession) {
+            const [clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, existingExpenseEntries] = await Promise.all([
+              supabaseService.getClients(true),
+              supabaseService.getProjects(true),
+              supabaseService.getRetainers(),
+              supabaseService.getDocuments(),
+              supabaseService.getAlertsLog(),
+              supabaseService.getAIToolAccounts(),
+              supabaseService.getInvoices(true),
+              supabaseService.getRecurringExpenses(),
+              supabaseService.getExpenseEntries()
+            ]);
+            const expenseEntries = await supabaseService.ensureMonthlyExpenseEntries(recurringExpenses, existingExpenseEntries);
+            setState(prev => ({ ...prev, clients, projects, retainers, documents, alertsLog, aiToolAccounts, invoices, recurringExpenses, expenseEntries }));
+          } else {
+            const [clients, projects, invoices] = await Promise.all([
+              supabaseService.getClients(false),
+              supabaseService.getProjects(false),
+              supabaseService.getInvoices(false),
+            ]);
+            setState(prev => ({ ...prev, clients, projects, invoices, retainers: [], documents: [], alertsLog: [], aiToolAccounts: [], recurringExpenses: [], expenseEntries: [] }));
+          }
         } else {
           // Clear cached state if signed out
           setState(prev => ({
@@ -140,6 +126,9 @@ export default function App() {
         }
       } catch (err) {
         console.error('Failed to load initial DB state:', err);
+        if (supabase) await supabase.auth.signOut();
+        setIsLoggedIn(false);
+        setState(prev => ({ ...prev, isAdmin: false, userEmail: null, clients: [], projects: [], retainers: [], documents: [], alertsLog: [], aiToolAccounts: [], invoices: [], recurringExpenses: [], expenseEntries: [] }));
       } finally {
         setIsLoading(false);
       }
@@ -180,7 +169,7 @@ export default function App() {
       if (error) throw error;
       setIsPasswordRecovery(false);
       setIsLoggedIn(false);
-      localStorage.removeItem('conextsol_auth_logged_in');
+
       setNewPassword('');
       setConfirmNewPassword('');
       setPasswordResetMessage('Your password has been updated. You can now sign in with your new password.');
@@ -192,57 +181,28 @@ export default function App() {
     }
   };
 
-  // Handle Real Supabase Authentication or Local Demo Mode
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginEmail || !loginPassword) {
-      setAuthError('Please fill in both email and password fields.');
-      return;
-    }
-    
-    if (isSupabaseConfigured && supabase) {
-      try {
-        setIsLoading(true);
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: loginEmail,
-          password: loginPassword,
-        });
-
-        if (error) {
-          setAuthError(error.message);
-          setIsLoading(false);
-          return;
-        }
-
-        localStorage.setItem('conextsol_auth_logged_in', 'true');
-        setIsLoggedIn(true);
-        setAuthError('');
-
-        const userEmail = data.user?.email || loginEmail;
-        const adminMode = isAdminEmail(userEmail);
-        setState(prev => ({
-          ...prev,
-          isAdmin: adminMode,
-          userEmail: userEmail
-        }));
-      } catch (err: any) {
-        setAuthError(err.message || 'An error occurred during authentication.');
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      // Local Sandbox Demo Mode
-      localStorage.setItem('conextsol_auth_logged_in', 'true');
+    setAuthError('');
+    if (!loginEmail.trim() || !loginPassword) { setAuthError('Enter your email address and password.'); return; }
+    if (!isSupabaseConfigured || !supabase) { setAuthError('Secure sign-in is unavailable because Supabase is not configured.'); return; }
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email: loginEmail.trim(), password: loginPassword });
+      if (error) throw error;
+      const [{ data: adminMode, error: adminRoleError }, { data: clientMode, error: clientRoleError }] = await Promise.all([supabase.rpc('is_current_user_admin'), supabase.rpc('is_current_user_client')]);
+      if (adminRoleError || clientRoleError) throw adminRoleError || clientRoleError;
+      if (adminMode !== true && clientMode !== true) { await supabase.auth.signOut(); throw new Error('This account has not been invited to the Conextsol portal.'); }
+      const { data: { user } } = await supabase.auth.getUser();
+      setState(prev => ({ ...prev, isAdmin: adminMode === true, userEmail: user?.email ?? loginEmail.trim() }));
       setIsLoggedIn(true);
-      setAuthError('');
-      const userEmail = loginEmail || 'admin@conextsol.com';
-      const adminMode = userEmail.endsWith('@conextsol.com') || userEmail === 'reeqieric41@gmail.com' || userEmail.includes('admin');
-      setState(prev => ({
-        ...prev,
-        isAdmin: adminMode,
-        userEmail: userEmail
-      }));
-    }
+      window.history.replaceState({}, '', adminMode === true ? '/admin' : '/client');
+    } catch (err: any) {
+      if (supabase) await supabase.auth.signOut();
+      setIsLoggedIn(false);
+      setState(prev => ({ ...prev, isAdmin: false, userEmail: null }));
+      setAuthError(err?.message || 'Authentication failed. Please try again.');
+    } finally { setIsLoading(false); }
   };
 
   const handleForgotPassword = async () => {
@@ -261,7 +221,7 @@ export default function App() {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(loginEmail.trim(), {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo: `${window.location.origin}${isClientLoginRoute ? '/client' : '/admin'}`,
       });
       if (error) throw error;
       setPasswordResetMessage('If an account exists for this email, a password reset link has been sent.');
@@ -272,16 +232,12 @@ export default function App() {
     }
   };
 
-  const handleDemoLogin = () => {
-    localStorage.setItem('conextsol_auth_logged_in', 'true');
-    setIsLoggedIn(true);
-    setAuthError('');
-    const userEmail = 'admin@conextsol.com';
-    setState(prev => ({
-      ...prev,
-      isAdmin: true,
-      userEmail,
-    }));
+  const handleInviteClient = async (clientId: string) => {
+    if (!supabase || !isSupabaseConfigured) throw new Error('Supabase is not configured.');
+    const { data, error } = await supabase.functions.invoke('client-invitations', { body: { clientId } });
+    if (error) throw error;
+    if (!data?.success) throw new Error(data?.error || 'Client invitation failed.');
+    window.alert(data.message || 'Client portal invitation processed.');
   };
 
   const handleSignOut = async () => {
@@ -292,8 +248,10 @@ export default function App() {
         console.error('Error signing out from Supabase:', err);
       }
     }
-    localStorage.removeItem('conextsol_auth_logged_in');
+
     setIsLoggedIn(false);
+    setState(prev => ({ ...prev, isAdmin: false, userEmail: null }));
+    window.history.replaceState({}, '', state.isAdmin ? '/admin/login' : '/client/login');
     // Return tab to default
     setCurrentTab('dashboard');
     setSelectedClientId(null);
@@ -871,14 +829,14 @@ export default function App() {
           </div>
           <div>
             <h2 className="text-2xl md:text-3xl font-display font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
-              Conextsol <span className="text-cyan-400 font-mono text-sm px-2 py-0.5 bg-cyan-950 border border-cyan-800 rounded-md">ADMIN OS</span>
+              Conextsol <span className="text-cyan-400 font-mono text-sm px-2 py-0.5 bg-cyan-950 border border-cyan-800 rounded-md">{isClientLoginRoute ? 'CLIENT PORTAL' : 'ADMIN OS'}</span>
             </h2>
             <p className="text-[10px] text-cyan-400 font-mono font-bold uppercase tracking-widest mt-1">
               Command Centre Terminal
             </p>
           </div>
           <p className="text-xs text-slate-400 max-w-xs mx-auto">
-            Authorized operations only. Client registries, project telemetry, retainers, and dispatch engines.
+            {isClientLoginRoute ? 'Secure access to your projects, invoices, and payment information.' : 'Authorized agency operations only.'}
           </p>
         </div>
 
@@ -891,7 +849,7 @@ export default function App() {
                     ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800' 
                     : 'bg-cyan-950/80 text-cyan-400 border-cyan-800'
                 }`}>
-                  {isSupabaseConfigured ? 'Supabase Live' : 'Local Sandbox Engine'}
+                  {isSupabaseConfigured ? 'Supabase Live' : 'Authentication Unavailable'}
                 </span>
                 <h3 className="text-xs font-mono font-semibold text-slate-300 mt-2">ACCESS AUTHENTICATION</h3>
               </div>
@@ -958,7 +916,7 @@ export default function App() {
                     value={loginEmail}
                     onChange={e => setLoginEmail(e.target.value)}
                     className="w-full pl-9 pr-3 py-2.5 bg-[#06080d] border border-[#1d263b] rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 font-mono transition-colors"
-                    placeholder="admin@conextsol.com"
+                    placeholder={isClientLoginRoute ? 'your@email.com' : 'admin@conextsol.com'}
                   />
                 </div>
               </div>
@@ -999,25 +957,16 @@ export default function App() {
               <button
                 type="submit"
                 id="login-submit-btn"
+                disabled={isLoading || !isSupabaseConfigured}
                 className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-sans text-xs font-extrabold rounded-xl shadow-lg shadow-cyan-950 transition-all cursor-pointer text-center"
               >
-                Authenticate Operations Session
+                {isClientLoginRoute ? 'Sign in to Client Portal' : 'Authenticate Admin Session'}
               </button>
 
-              <div className="pt-3 border-t border-[#1d263b] flex flex-col space-y-2">
-                <p className="text-[10px] text-slate-400 text-center font-mono uppercase tracking-wider">
-                  Instant Simulation Modes:
-                </p>
-                <div className="grid grid-cols-1 gap-2">
-                  <button
-                    type="button"
-                    onClick={handleDemoLogin}
-                    className="py-2 bg-[#121826] hover:bg-[#1a2234] border border-cyan-800/60 text-cyan-300 font-mono text-[11px] font-bold rounded-xl transition-all cursor-pointer text-center flex items-center justify-center gap-1"
-                  >
-                    <ShieldCheck size={13} />
-                    Admin OS
-                  </button>
-                </div>
+              <div className="pt-3 border-t border-[#1d263b] text-center text-[11px] text-slate-400">
+                {isClientLoginRoute ? 'Agency team member?' : 'Client account?'}{' '}
+                <a className="text-cyan-400 underline underline-offset-4" href={isClientLoginRoute ? '/admin/login' : '/client/login'}>{isClientLoginRoute ? 'Admin sign in' : 'Client sign in'}</a>
+                <p className="mt-2 text-[10px]">Client accounts are created by invitation only. Public registration is disabled.</p>
               </div>
             </form>
             )}
@@ -1026,6 +975,8 @@ export default function App() {
       </div>
     );
   }
+
+  if (isLoggedIn && !state.isAdmin) return <ClientPortal state={state} onSignOut={handleSignOut} />;
 
   // Helper title bar maps
   const getTabTitle = () => {
@@ -1200,6 +1151,7 @@ export default function App() {
                   onDeleteClient={handleDeleteClient}
                   onOpenWizard={() => setCurrentTab('wizard')}
                   isAdmin={state.isAdmin}
+                  onInviteClient={handleInviteClient}
                 />
               )}
 

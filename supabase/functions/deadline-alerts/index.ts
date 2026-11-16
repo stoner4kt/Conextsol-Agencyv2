@@ -23,9 +23,20 @@ serve(async (req) => {
     // 1. Initialize Supabase client inside Edge environment
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
     
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
+    if (!supabaseUrl || !supabaseServiceRoleKey || !supabaseAnonKey) {
       throw new Error("Missing Supabase environment secrets");
+    }
+
+    const authorization = req.headers.get("Authorization") ?? "";
+    const isInternalCall = authorization === `Bearer ${supabaseServiceRoleKey}`;
+    if (!isInternalCall) {
+      const userClient = createClient(supabaseUrl, supabaseAnonKey, { global: { headers: { Authorization: authorization } }, auth: { persistSession: false, autoRefreshToken: false } });
+      const { data: { user }, error: userError } = await userClient.auth.getUser();
+      if (userError || !user) return new Response(JSON.stringify({ success: false, error: "Authentication required." }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 });
+      const { data: isAdmin, error: roleError } = await userClient.rpc("is_current_user_admin");
+      if (roleError || isAdmin !== true) return new Response(JSON.stringify({ success: false, error: "Administrator access is required." }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 });
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {

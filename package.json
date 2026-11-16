@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "audit:security": "npm audit --audit-level=high"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -34,5 +35,8 @@
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2"
+  },
+  "overrides": {
+    "qs": "^6.16.1"
   }
 }

@@ -15,7 +15,17 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-    if (!supabaseUrl || !serviceRoleKey) throw new Error("Missing Supabase environment secrets");
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+    if (!supabaseUrl || !serviceRoleKey || !anonKey) throw new Error("Missing Supabase environment secrets");
+    const authorization = req.headers.get("Authorization") ?? "";
+    const isInternalCall = authorization === `Bearer ${serviceRoleKey}`;
+    if (!isInternalCall) {
+      const userClient = createClient(supabaseUrl, anonKey, { global: { headers: { Authorization: authorization } }, auth: { persistSession: false, autoRefreshToken: false } });
+      const { data: { user }, error: userError } = await userClient.auth.getUser();
+      if (userError || !user) return new Response(JSON.stringify({ success: false, error: "Authentication required." }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 });
+      const { data: isAdmin, error: roleError } = await userClient.rpc("is_current_user_admin");
+      if (roleError || isAdmin !== true) return new Response(JSON.stringify({ success: false, error: "Administrator access is required." }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 });
+    }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey, {
       auth: { persistSession: false, autoRefreshToken: false },
