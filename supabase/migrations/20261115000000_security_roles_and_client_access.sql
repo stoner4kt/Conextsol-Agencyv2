@@ -64,7 +64,7 @@ language sql
 stable
 security invoker
 set search_path = pg_catalog, public, private
-as $ select private.is_admin_user(); $;
+as $$ select private.is_admin_user(); $$;
 revoke all on function public.is_current_user_admin() from public, anon;
 grant execute on function public.is_current_user_admin() to authenticated;
 
@@ -74,7 +74,7 @@ language sql
 stable
 security invoker
 set search_path = pg_catalog, public, private
-as $ select private.is_client_user(); $;
+as $$ select private.is_client_user(); $$;
 revoke all on function public.is_current_user_client() from public, anon;
 grant execute on function public.is_current_user_client() to authenticated;
 
