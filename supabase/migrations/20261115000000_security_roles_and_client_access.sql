@@ -1,5 +1,5 @@
 -- Security hardening: database-backed roles and client ownership.
--- This migration is committed to a review branch only. It is not applied to Supabase production.
+-- Phase A: additive role and client-access foundation. Applied to production on 2026-11-16.
 
 create schema if not exists private;
 revoke all on schema private from public, anon;
