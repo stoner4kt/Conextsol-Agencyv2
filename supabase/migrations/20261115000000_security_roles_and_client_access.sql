@@ -112,35 +112,35 @@ grant execute on function public.assign_client_user(uuid, uuid) to service_role;
 
 -- Read models used by the new application. These views are intentionally
 -- owner-executed with security_barrier and explicit auth.uid()-bound filters.
-create or replace view public.admin_clients with (security_barrier = true) as
+create or replace view public.admin_clients with (security_barrier = true, security_invoker = true) as
 select c.id, c.company_name, c.primary_contact_name, c.email, c.phone, c.status,
        c.created_at, c.updated_at, c.subdomain, c.google_place_id, c.google_review_url,
        c.review_automation_enabled, c.review_from_name, c.review_reply_to_email, c.review_from_email
 from public.clients c
 where private.is_admin_user();
 
-create or replace view public.client_portal_profiles with (security_barrier = true) as
+create or replace view public.client_portal_profiles with (security_barrier = true, security_invoker = true) as
 select c.id, c.company_name, c.primary_contact_name, c.email, c.phone, c.status
 from public.clients c
 where private.client_has_access(c.id);
 
-create or replace view public.admin_projects with (security_barrier = true) as
+create or replace view public.admin_projects with (security_barrier = true, security_invoker = true) as
 select p.*
 from public.projects p
 where private.is_admin_user();
 
-create or replace view public.client_portal_projects with (security_barrier = true) as
+create or replace view public.client_portal_projects with (security_barrier = true, security_invoker = true) as
 select p.id, p.client_id, p.project_name, p.start_date, p.end_date,
        p.production_url, p.services_listed, p.completion_status
 from public.projects p
 where private.client_has_access(p.client_id);
 
-create or replace view public.admin_invoices with (security_barrier = true) as
+create or replace view public.admin_invoices with (security_barrier = true, security_invoker = true) as
 select i.*
 from public.invoices i
 where private.is_admin_user();
 
-create or replace view public.client_portal_invoices with (security_barrier = true) as
+create or replace view public.client_portal_invoices with (security_barrier = true, security_invoker = true) as
 select i.id, i.invoice_number, i.client_id, i.line_items, i.subtotal, i.tax_rate,
        i.tax_amount, i.total, i.status, i.due_date, i.issued_date,
        i.paid_at, i.payment_notes, i.created_at, i.updated_at
