@@ -1,6 +1,6 @@
 # Security hardening review branch
 
-This branch contains a proposed security implementation for the Conextsol Agency portal. It does not apply the migration to live Supabase and does not deploy Edge Functions or the Cloudflare app.
+This branch contains the security implementation for the Conextsol Agency portal. Production Phase A (database-backed roles, client mappings and read-model views) was applied on 16 November 2026. No Edge Functions or Cloudflare frontend have been deployed from this branch yet.
 
 ## Changes included
 
@@ -42,5 +42,5 @@ This branch contains a proposed security implementation for the Conextsol Agency
 - Leaked password protection is an Auth setting and must be enabled in the Supabase Dashboard; this SQL migration cannot safely toggle it.
 - pg_net is non-relocatable in this project and currently installed in public. This migration does not move it because that could break the existing Notion trigger. Review a supported extension migration path with Supabase first.
 - Package versions have not been blindly upgraded. Run npm audit, update dependencies with the lockfile, and run npm run lint plus npm run build before deployment.
-- The Notion webhook now requires the Vault secret and matching Edge Function secret. Update the existing database webhook configuration before deploying the new function version or automatic Notion sync will stop.
-- This is a code and migration review branch only. No Supabase production settings, schema, secrets, deployed functions or Cloudflare deployment have been changed.
+- The Notion webhook migration and Edge Function are staged but not deployed. The production database currently retains its existing Notion trigger behavior; deploy the matching function and apply Phase B together after confirming the Vault and Edge Function secrets are present.
+- Phase A is live in production. Phase B is deliberately not applied: it removes existing policies and must wait until the updated frontend and Edge Functions are deployed and the column-level grants/views have been validated. The updated Edge Function source files remain on this branch and have not been deployed.
